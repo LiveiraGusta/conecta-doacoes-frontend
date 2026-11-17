@@ -39,7 +39,7 @@ describe('AuthProvider', () => {
       ),
     );
     const { router } = renderApp('/feed');
-    await screen.findByText('Esta tela chega na fase 3 do plano.');
+    await screen.findByRole('heading', { name: /Doações de todas as cidades/ });
     await act(async () => {
       await api('/items/feed').catch(() => {});
     });
@@ -51,6 +51,6 @@ describe('AuthProvider', () => {
     server.use(http.get(apiUrl('/auth/me'), () => HttpResponse.error()));
     renderApp('/feed');
     expect(await screen.findByRole('link', { name: 'Criar conta' })).toBeInTheDocument();
-    expect(screen.getByText('Esta tela chega na fase 3 do plano.')).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /Doações de todas as cidades/ })).toBeInTheDocument();
   });
 });

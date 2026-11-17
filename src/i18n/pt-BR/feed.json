@@ -1,0 +1,65 @@
+{
+  "search": {
+    "label": "Pesquisar doações",
+    "placeholder": "Pesquise um item ou uma palavra-chave",
+    "clear": "Limpar pesquisa"
+  },
+  "categories": {
+    "title": "Categorias",
+    "all": "Todos",
+    "label": "Filtrar por categoria"
+  },
+  "list": {
+    "title": "Últimas doações ({{count}})",
+    "titleVisitor": "Doações de todas as cidades ({{count}})",
+    "loading": "Carregando doações…",
+    "loadMore": "Carregar mais",
+    "end": "Você viu todas as doações.",
+    "emptyTitle": "Nenhuma doação por aqui ainda",
+    "emptyDescription": "Quando alguém de {{city}} publicar uma doação, ela aparece aqui.",
+    "emptyVisitor": "Ainda não há doações publicadas.",
+    "notFoundTitle": "Nada encontrado",
+    "notFoundDescription": "Nenhuma doação combina com os filtros escolhidos.",
+    "clearFilters": "Limpar filtros",
+    "errorTitle": "Não deu para carregar o feed",
+    "errorDescription": "Confira a conexão e tente de novo."
+  },
+  "card": {
+    "open": "Ver detalhes de {{title}}",
+    "donorFallback": "Doador",
+    "photo": "Foto {{n}} de {{total}}: {{title}}",
+    "photoGo": "Ver foto {{n}}",
+    "noPhoto": "Sem foto"
+  },
+  "status": {
+    "inProgress": "Em negociação",
+    "selected": "Escolhida para você",
+    "openChat": "Abrir conversa"
+  },
+  "interest": {
+    "add": "Tenho interesse",
+    "addMobile": "Confirmar interesse",
+    "remove": "Desfazer interesse",
+    "added": "Interesse registrado. O doador vai ver a sua ONG na lista.",
+    "removed": "Interesse desfeito.",
+    "undo": "Desfazer",
+    "count_one": "{{count}} ONG interessada",
+    "count_other": "{{count}} ONGs interessadas"
+  },
+  "detail": {
+    "notes": "Observações do doador",
+    "publishedAt": "Publicado em {{date}}",
+    "back": "Voltar para o feed",
+    "loginForMore": "Entre para ver quem está doando e as observações.",
+    "notFoundTitle": "Item não encontrado",
+    "notFoundDescription": "Ele pode ter sido doado, removido ou o link está errado.",
+    "loading": "Carregando item…"
+  },
+  "location": {
+    "change": "Trocar localização",
+    "title": "Sua localização",
+    "description": "O feed mostra as doações da sua cidade. Mudou de cidade? Atualize aqui.",
+    "save": "Salvar localização",
+    "saved": "Localização atualizada. Mostrando doações de {{city}}."
+  }
+}

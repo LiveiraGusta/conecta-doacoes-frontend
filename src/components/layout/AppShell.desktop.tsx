@@ -1,7 +1,10 @@
+import ExpandMoreRounded from '@mui/icons-material/ExpandMoreRounded';
 import LocationOnRounded from '@mui/icons-material/LocationOnRounded';
 import AppBar from '@mui/material/AppBar';
+import ButtonBase from '@mui/material/ButtonBase';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet } from 'react-router';
 import { useAuth } from '@/core/auth/useAuth';
@@ -10,16 +13,20 @@ import { Button } from '../ui/Button';
 import { Skeleton } from '../ui/Skeleton';
 import { AccountMenu } from './AccountMenu';
 import { NgoStatusBanner, OfflineBanner } from './Banners';
+import { HeaderSlotContext } from './headerSlotContext';
+import { LocationModal } from './LocationModal';
 import { Sidebar } from './Sidebar';
 
 /**
  * Desktop (imagem design-desktop-feed): sidebar recolhível + AppBar azul alta com título,
- * espaço para a busca (fase 3), localização e nome + avatar com o menu da conta.
+ * espaço para a busca da página, localização (clique troca a cidade) e nome + avatar com o menu da conta.
  */
 export function AppShellDesktop() {
   const title = usePageTitle();
   const { user, status } = useAuth();
-  const { t } = useTranslation();
+  const { t } = useTranslation(['common', 'feed']);
+  const [slot, setSlot] = useState<HTMLElement | null>(null);
+  const [locationOpen, setLocationOpen] = useState(false);
 
   return (
     <div className="flex min-h-dvh">
@@ -32,7 +39,7 @@ export function AppShellDesktop() {
               <Typography variant="h4" component="h1" noWrap sx={{ fontWeight: 500 }}>
                 {title}
               </Typography>
-              <div id="header-slot" />
+              <div ref={setSlot} className="max-w-2xl empty:hidden" />
             </div>
             <div className="flex shrink-0 items-center gap-6">
               {status === 'loading' ? (
@@ -41,13 +48,25 @@ export function AppShellDesktop() {
                 <div className="flex flex-col items-end gap-2">
                   <AccountMenu user={user} showName />
                   {user.role !== 'ADMIN' && (
-                    <Typography variant="body2" className="flex items-center gap-1">
-                      <LocationOnRounded fontSize="inherit" aria-hidden />
-                      <strong>{t('header.location')}</strong>
-                      <span>
+                    <ButtonBase
+                      onClick={() => setLocationOpen(true)}
+                      aria-label={`${t('feed:location.change')}: ${user.city} - ${user.state}`}
+                      className="flex flex-col items-start rounded-lg px-2 py-1 text-left hover:bg-white/10"
+                    >
+                      <Typography
+                        variant="body2"
+                        component="span"
+                        className="flex items-center gap-1"
+                        sx={{ fontWeight: 700 }}
+                      >
+                        <LocationOnRounded fontSize="inherit" aria-hidden />
+                        {t('header.location')}
+                      </Typography>
+                      <Typography variant="body2" component="span" className="flex items-center gap-1">
                         {user.city} - {user.state}
-                      </span>
-                    </Typography>
+                        <ExpandMoreRounded fontSize="small" aria-hidden />
+                      </Typography>
+                    </ButtonBase>
                   )}
                 </div>
               ) : (
@@ -65,9 +84,12 @@ export function AppShellDesktop() {
         </AppBar>
         <NgoStatusBanner />
         <main id="conteudo" className="flex-1">
-          <Outlet />
+          <HeaderSlotContext.Provider value={slot}>
+            <Outlet />
+          </HeaderSlotContext.Provider>
         </main>
       </div>
+      {user && <LocationModal open={locationOpen} onClose={() => setLocationOpen(false)} />}
     </div>
   );
 }

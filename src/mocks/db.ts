@@ -1,4 +1,5 @@
 import type { Preferences, User } from '@/core/types/api';
+import { seedItems, type MockItem } from './items';
 
 /**
  * "Banco" em memória dos dados falsos (MSW), com IDs fixos para testes e para o seletor "Entrar como".
@@ -11,7 +12,9 @@ export const MOCK_PASSWORD = 'Demo1234';
 export const IDS = {
   donor: '11111111-1111-4111-8111-111111111111',
   donor2: '11111111-1111-4111-8111-111111111112',
+  donor3: '11111111-1111-4111-8111-111111111113',
   ngoActive: '22222222-2222-4222-8222-222222222221',
+  ngoActive2: '22222222-2222-4222-8222-222222222224',
   ngoPending: '22222222-2222-4222-8222-222222222222',
   ngoRejected: '22222222-2222-4222-8222-222222222223',
   admin: '33333333-3333-4333-8333-333333333331',
@@ -25,6 +28,9 @@ export interface MockUser {
 export interface MockState {
   users: Map<string, MockUser>;
   sessionUserId: string | null;
+  items: Map<string, MockItem>;
+  /** Interesses (curtidas): chave `${itemId}:${ngoId}` → quando curtiu (ISO). */
+  interests: Map<string, string>;
 }
 
 const DEFAULT_PREFS: Preferences = { theme_color: 'AZUL', theme_mode: 'SYSTEM', show_donations: false };
@@ -69,6 +75,15 @@ function seed(): Map<string, MockUser> {
     },
     { ...base(IDS.donor2, 'Carlos Lima', 'carlos@demo.conectadoacoes.local', 'DONOR'), city: 'Campinas' },
     {
+      ...base(IDS.donor3, 'Paula Reis', 'paula@demo.conectadoacoes.local', 'DONOR'),
+      city: 'Rio de Janeiro',
+      state: 'RJ',
+    },
+    {
+      ...base(IDS.ngoActive2, 'Casa do Bem', 'casadobem@demo.conectadoacoes.local', 'NGO'),
+      ngo_profile: ngoProfile('44444444-4444-4444-8444-444444444444', '98.765.432/0001-98', 'ATIVO'),
+    },
+    {
       ...base(IDS.ngoActive, 'ONG Salvadora', 'ong.ativa@demo.conectadoacoes.local', 'NGO'),
       bio: 'Atendemos 200 famílias na região central de São Paulo.',
       ngo_profile: {
@@ -105,7 +120,8 @@ function seed(): Map<string, MockUser> {
 }
 
 function fresh(): MockState {
-  return { users: seed(), sessionUserId: null };
+  const { items, interests } = seedItems(IDS);
+  return { users: seed(), sessionUserId: null, items, interests };
 }
 
 let state: MockState = fresh();
@@ -132,5 +148,11 @@ export const db = {
   insertUser(user: User, password: string) {
     state.users.set(user.id, { user, password });
     return user;
+  },
+  hasInterest(itemId: string, ngoId: string) {
+    return state.interests.has(`${itemId}:${ngoId}`);
+  },
+  interestsCount(itemId: string) {
+    return [...state.interests.keys()].filter((k) => k.startsWith(`${itemId}:`)).length;
   },
 };

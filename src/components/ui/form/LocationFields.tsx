@@ -7,10 +7,10 @@ import {
   type UseFormSetValue,
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { Combobox } from '@/components/ui/form/Combobox';
-import { SelectField } from '@/components/ui/form/SelectField';
+import { Combobox } from './Combobox';
+import { SelectField } from './SelectField';
 import { UF_LIST } from '@/core/schemas/common';
-import type { useCities } from './useCities';
+import type { useCities } from '@/core/hooks/useCities';
 
 interface LocationShape extends FieldValues {
   state: string;

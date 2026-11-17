@@ -14,8 +14,8 @@ import { registerNgo } from '@/core/services/auth';
 import { applyApiError } from '@/core/utils/apiErrors';
 import { maskCnpj } from '@/core/utils/cnpj';
 import { DOCUMENT_TYPES } from '@/core/utils/files';
-import { LocationFields } from './LocationFields';
-import { useCities } from './useCities';
+import { LocationFields } from '@/components/ui/form/LocationFields';
+import { useCities } from '@/core/hooks/useCities';
 import { useCompleteAuth } from './useCompleteAuth';
 
 const FIELDS = ['name', 'email', 'password', 'state', 'city', 'cnpj', 'website', 'document'] as const;

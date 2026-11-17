@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useCallback } from 'react';
-import { fetchCities, normalizeText } from '@/core/services/ibge';
-import type { UF } from '@/core/types/api';
+import { fetchCities, normalizeText } from '../services/ibge';
+import type { UF } from '../types/api';
 
 /**
  * Municípios da UF (IBGE) e a checagem da cidade digitada:
