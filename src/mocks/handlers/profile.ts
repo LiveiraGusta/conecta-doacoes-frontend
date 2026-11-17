@@ -273,6 +273,7 @@ export const profileHandlers = [
     if (upload.problem) return apiError(400, 'INVALID_DOCUMENT', 'Envie um PDF, JPG, PNG ou WEBP de até 5 MB.');
     ngo.status = 'PENDENTE_APROVACAO';
     ngo.rejection_reason = null;
+    db.state.documents.set(current.user.id, fileUrl(upload.file));
     return HttpResponse.json({ user: current.user });
   }),
 

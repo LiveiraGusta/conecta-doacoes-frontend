@@ -117,7 +117,7 @@ describe('Conversas (doador)', () => {
     await user.type(within(dialog).getByLabelText('O que aconteceu?'), ' demais, pediu dinheiro');
     await user.click(within(dialog).getByRole('button', { name: 'Enviar denúncia' }));
     expect(await screen.findByText('Denúncia enviada. A equipe vai analisar.')).toBeInTheDocument();
-    expect(db.state.reports.size).toBe(1);
+    expect([...db.state.reports.values()].filter((r) => r.item_id === ITEM_IDS.bike)).toHaveLength(1);
 
     await user.click(screen.getByRole('button', { name: 'Mais ações' }));
     await user.click(await screen.findByRole('menuitem', { name: 'Denunciar' }));

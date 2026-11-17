@@ -15,7 +15,7 @@ describe('rotas e guards', () => {
   it('"/" leva o Admin para a moderação de ONGs', async () => {
     const { router } = renderApp('/', { loggedAs: IDS.admin });
     await waitFor(() => expect(currentUrl(router)).toBe('/admin/ngos'));
-    expect(await screen.findByText('Esta tela chega na fase 7 do plano.')).toBeInTheDocument();
+    expect(await screen.findByRole('tab', { name: 'Em análise', selected: true })).toBeInTheDocument();
   });
 
   it('rota que exige login manda o visitante para o login com ?redirect=', async () => {

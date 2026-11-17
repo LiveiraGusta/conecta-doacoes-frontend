@@ -327,3 +327,17 @@ O detalhe técnico está em `backend/docs/DECISOES.md`, na seção "Integração
 | 6+ | Login e cadastro no celular: faixa da ilustração na cor forte do tema, com a frase do app | Usuário | Antes era o tom claro (`primary-soft`), quase branco |
 | 6+ | No `dev:mock`, CEP fora da lista do mock consulta o ViaCEP de verdade; nos testes continua "não encontrado" | Usuário | Ex.: 09910-470 (Diadema) passa a preencher |
 | 6+ | Ilustração do 403 (`forbidden.svg`, enviada pelo usuário) recolorida com `currentColor`; placeholder removido | Usuário | Todas as ilustrações do plano estão no app |
+
+## Fase 7 — Admin (moderação de ONGs e denúncias)
+
+| Fase | Decisão | Quem tomou | Consequência |
+| --- | --- | --- | --- |
+| 7 | Documento da ONG em prévia dentro do modal de análise (`<iframe>`), ao lado dos dados, com "Abrir em nova aba" e "Recarregar documento" | Usuário | CSP ganhou `frame-src 'self' blob: data: https://*.supabase.co` (com teste); a fila é buscada de novo depois de 8 min, antes do link expirar |
+| 7 | Aprovar pede confirmação ("Aprovar X?") | Usuário | A API não tem desfazer |
+| 7 | Rejeitar com motivos prontos (Ilegível, CNPJ não confere, Outra entidade, Vencido ou incompleto) que preenchem o texto, editável; mínimo de 10 caracteres | Usuário | A ONG vê o texto e pode reenviar o documento |
+| 7 | Detalhe da denúncia: atalho para a moderação da ONG denunciada, mensagens da denunciada destacadas e linha do tempo dos eventos do item | Usuário | O atalho (`/admin/ngos?ngo=`) acha a ONG em qualquer situação, procurando nas três filas |
+| 7 | Filas com abas na URL (`?status=aprovadas`, `?status=resolvidas`), mais antigas primeiro, scroll infinito; tabela no desktop e cards no celular | Spec (plano) | A ficha da ONG também fica na URL (`?ngo=`): voltar fecha |
+| 7 | Os blocos do detalhe da denúncia são regiões com nome (título ligado por `aria-labelledby`) | Claude | Achado nos testes |
+| 7 | Mock: eventos dos itens (publicação, escolha, cancelamento, conclusão) registrados pelas rotas, documento gerado (cartão CNPJ em SVG) para as ONGs do seed, 2 denúncias (uma aberta, uma resolvida) | Claude | Documento enviado no cadastro ou no reenvio aparece de verdade no `dev:mock` |
+| 7 | A tela "Em breve" (placeholders) saiu: todas as telas do plano existem | Claude | |
+| 7 | Testes: 14 novos (contrato dos mocks do admin, páginas, CSP); 275 no total | Claude | Conferido também com capturas do `dev:mock` (fila, análise, rejeitar, aprovar, denúncias, detalhe, atalho, celular) |
