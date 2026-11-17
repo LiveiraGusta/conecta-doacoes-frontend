@@ -107,3 +107,23 @@ As decisões de backend também entram em `backend/docs/DECISOES.md` (seção "I
 | Plano | GitHub Actions (lint, typecheck, testes, build) + Vercel (preview por PR, produção na `main`) | Usuário | `vercel.json` com rewrite da SPA e CSP |
 | Plano | Uma branch por fase (`feat/fase-N-…`), commit só após a aprovação, Conventional Commits em português | Usuário | — |
 | Plano | Manter este arquivo atualizado a cada fase | Usuário | As decisões de cada fase entram numa seção nova antes do commit |
+
+## Fase 0 — Backend (o que muda para o frontend)
+
+O detalhe técnico está em `backend/docs/DECISOES.md`, na seção "Integração com o frontend".
+
+| Fase | Decisão | Quem tomou | Consequência |
+| --- | --- | --- | --- |
+| 0.1 | Uma branch por sub-fase no backend, a partir da `develop` (`feat/sessao-cookie`, `feat/observacoes-item`…) | Usuário | A 0.2 saiu da `feat/sessao-cookie`, porque a 0.1 ainda não está na `develop` |
+| 0.1 | Requisição de escrita sem `X-Requested-With` → `403 CSRF_HEADER_MISSING` (código próprio, não `FORBIDDEN`) | Usuário | O cliente HTTP manda o header sempre. O código diferencia bug de integração de falta de permissão |
+| 0.1 | `GET /auth/me` sem cookie continua `401`; o frontend trata como visitante | Usuário | O 401 do boot não dispara "sessão expirada". Só dispara quando já havia usuário logado |
+| 0.1 | WebSocket com `Origin` ausente ou de outro site fecha com **4403**, não 4401 | Claude | O cliente de tempo real não reconecta com 4403 e não desloga o usuário. Só 4401 vira o fluxo de sessão expirada |
+| 0.1 | Trocar a senha reemite o cookie: o frontend **não** reloga, só reconecta o WebSocket | Claude (aprovado) | O passo "relogar depois de trocar a senha" do guia antigo saiu |
+| 0.2 | `notes` vem no `Item`/`ItemDetail` e não no `FeedItem`; visitante não vê | Usuário | O card não mostra observações. O detalhe mostra a seção "Observações do doador" só se `notes` não for `null` |
+
+### Repositórios
+
+| Fase | Decisão | Quem tomou | Consequência |
+| --- | --- | --- | --- |
+| Plano | No frontend, `main` e `develop` criadas a partir do primeiro commit (`docs/plano-frontend`) | Usuário | As branches das fases do frontend saem da `develop` |
+
