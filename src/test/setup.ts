@@ -34,8 +34,9 @@ export function setMatchMedia(matches: (query: string) => boolean) {
   });
 }
 
-// Páginas lazy: a primeira de cada arquivo de teste carrega os módulos e passa de 1 s em máquina lenta.
-configure({ asyncUtilTimeout: 3000 });
+// Páginas lazy: a primeira de cada arquivo de teste carrega os módulos; com a máquina carregada
+// (suíte inteira + cobertura) passava de 3 s de vez em quando.
+configure({ asyncUtilTimeout: 5000 });
 
 // Requisição sem handler é bug do teste: falha alto.
 beforeAll(() => server.listen({ onUnhandledFrame: 'error' }));

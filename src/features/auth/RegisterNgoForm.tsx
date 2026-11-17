@@ -1,9 +1,10 @@
+import Link from '@mui/material/Link';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router';
+import { Link as RouterLink } from 'react-router';
 import { Button } from '@/components/ui/Button';
 import { FileDropzone } from '@/components/ui/form/FileDropzone';
 import { FormAlert, TextField } from '@/components/ui/form/Field';
@@ -110,10 +111,7 @@ export function RegisterNgoForm() {
         {...form.register('email')}
       />
       {takenEmail && (
-        <Link
-          to={`/login?email=${encodeURIComponent(takenEmail)}`}
-          className="-mt-2 text-sm font-semibold text-primary-text hover:underline"
-        >
+        <Link component={RouterLink} to={`/login?email=${encodeURIComponent(takenEmail)}`} sx={{ fontWeight: 600 }}>
           {t('register.emailTakenLink')}
         </Link>
       )}

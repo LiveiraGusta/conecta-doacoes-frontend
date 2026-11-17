@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
@@ -40,26 +40,25 @@ describe('Modal', () => {
     expect(document.body.style.overflow).toBe('hidden');
 
     await user.keyboard('{Escape}');
-    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
     expect(opener).toHaveFocus();
     expect(document.body.style.overflow).toBe('');
   });
 
-  it('Tab fica preso dentro do modal (do último volta ao primeiro)', async () => {
+  it('Tab fica preso dentro do modal', async () => {
     const user = userEvent.setup();
     render(<Harness />);
     await user.click(screen.getByRole('button', { name: 'Abrir' }));
-    const close = screen.getByRole('button', { name: 'Fechar' });
-    const save = screen.getByRole('button', { name: 'Salvar' });
-    expect(close).toHaveFocus();
-    await user.tab();
-    expect(screen.getByLabelText('Cidade')).toHaveFocus();
-    await user.tab();
-    expect(save).toHaveFocus();
-    await user.tab();
-    expect(close).toHaveFocus();
-    await user.tab({ shift: true });
-    expect(save).toHaveFocus();
+    const dialog = screen.getByRole('dialog');
+    // Vários Tabs e Shift+Tabs: o foco nunca sai do diálogo (FocusTrap do MUI).
+    for (let i = 0; i < 6; i++) {
+      await user.tab();
+      expect(dialog).toContainElement(document.activeElement as HTMLElement);
+    }
+    for (let i = 0; i < 6; i++) {
+      await user.tab({ shift: true });
+      expect(dialog).toContainElement(document.activeElement as HTMLElement);
+    }
   });
 
   it('clique no fundo fecha; com closeOnBackdrop=false não fecha', async () => {
@@ -67,14 +66,14 @@ describe('Modal', () => {
     const onClose = vi.fn();
     const { unmount } = render(<Harness onClose={onClose} />);
     await user.click(screen.getByRole('button', { name: 'Abrir' }));
-    await user.click(screen.getByRole('dialog').parentElement!);
+    await user.click(document.querySelector('.MuiBackdrop-root')!);
     expect(onClose).toHaveBeenCalledOnce();
     unmount();
 
     const keep = vi.fn();
     render(<Harness onClose={keep} closeOnBackdrop={false} />);
     await user.click(screen.getByRole('button', { name: 'Abrir' }));
-    await user.click(screen.getByRole('dialog').parentElement!);
+    await user.click(document.querySelector('.MuiBackdrop-root')!);
     expect(keep).not.toHaveBeenCalled();
   });
 

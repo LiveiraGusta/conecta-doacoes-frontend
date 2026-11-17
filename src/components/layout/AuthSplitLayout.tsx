@@ -46,7 +46,8 @@ export function AuthSplitDesktop(props: AuthSplitLayoutProps) {
       aria-hidden
       className="relative hidden flex-[3] flex-col items-center justify-center gap-8 overflow-hidden bg-primary p-12 text-on-primary md:flex"
     >
-      <Illustration name={props.illustration} className="max-w-xl text-white/90" />
+      {/* No fundo azul, o destaque da ilustração vai num tom claro da mesma cor (senão some). */}
+      <Illustration name={props.illustration} className="max-w-xl text-primary-200" />
       <p className="max-w-lg text-center text-3xl leading-snug font-medium">{t('tagline')}</p>
     </section>
   );

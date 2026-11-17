@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router';
+import { Button } from '@/components/ui/Button';
 import { Illustration } from '@/components/ui/Illustration';
 import { useAuth } from '@/core/auth/useAuth';
 
@@ -14,12 +14,9 @@ export default function NgoWelcomePage() {
         <h1 className="text-2xl font-bold">{t('ngoWelcome.title')}</h1>
         <p className="text-fg-muted">{t('ngoWelcome.description', { name: user?.name ?? '' })}</p>
         <p className="text-sm text-fg-muted">{t('ngoWelcome.next')}</p>
-        <Link
-          to="/feed"
-          className="mt-2 inline-flex h-12 items-center rounded-full bg-primary px-8 font-semibold text-on-primary hover:bg-primary-hover"
-        >
+        <Button to="/feed" size="lg" className="mt-2">
           {t('ngoWelcome.cta')}
-        </Link>
+        </Button>
       </section>
     </main>
   );

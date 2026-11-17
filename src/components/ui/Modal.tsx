@@ -1,6 +1,10 @@
 import CloseRounded from '@mui/icons-material/CloseRounded';
-import { useEffect, useId, useLayoutEffect, useRef, type ReactNode } from 'react';
-import { createPortal } from 'react-dom';
+import Dialog, { type DialogProps } from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import Drawer from '@mui/material/Drawer';
+import { useId, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useIsMobile } from '@/core/hooks/useMediaQuery';
 import { cn } from '@/core/utils/cn';
@@ -24,14 +28,11 @@ export interface ModalProps {
   className?: string;
 }
 
-const SIZES: Record<ModalSize, string> = { sm: 'max-w-sm', md: 'max-w-lg', lg: 'max-w-2xl', xl: 'max-w-4xl' };
-
-const FOCUSABLE =
-  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+const SIZES: Record<ModalSize, DialogProps['maxWidth']> = { sm: 'xs', md: 'sm', lg: 'md', xl: 'lg' };
 
 /**
- * Modal base (plano, "UX"): portal no body, fundo escuro, Esc e clique fora fecham,
- * foco preso dentro enquanto aberto e devolvido a quem abriu, rolagem da página travada.
+ * Modal do app: Dialog do MUI no desktop e bottom-sheet (Drawer de baixo) no mobile.
+ * O MUI cuida do foco preso e devolvido, do Esc, do fundo e da rolagem travada.
  */
 export function Modal({
   open,
@@ -45,98 +46,66 @@ export function Modal({
   closeOnBackdrop = true,
   className,
 }: ModalProps) {
-  const panelRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
   const isMobile = useIsMobile();
   const { t } = useTranslation();
   const asSheet = sheetOnMobile && isMobile;
 
-  // O listener de teclado vive no efeito: lê o onClose mais recente pelo ref.
-  const onCloseRef = useRef(onClose);
-  useLayoutEffect(() => {
-    onCloseRef.current = onClose;
-  });
+  const handleClose = (_event: unknown, reason?: 'backdropClick' | 'escapeKeyDown') => {
+    if (reason === 'backdropClick' && !closeOnBackdrop) return;
+    onClose();
+  };
 
-  useEffect(() => {
-    if (!open) return;
-    const opener = document.activeElement as HTMLElement | null;
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-
-    const panel = panelRef.current;
-    const focusables = () => [...(panel?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? [])];
-    (focusables()[0] ?? panel)?.focus();
-
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.stopPropagation();
-        onCloseRef.current();
-        return;
-      }
-      if (e.key !== 'Tab') return;
-      const items = focusables();
-      if (items.length === 0) {
-        e.preventDefault();
-        return;
-      }
-      const first = items[0]!;
-      const last = items[items.length - 1]!;
-      if (e.shiftKey && document.activeElement === first) {
-        e.preventDefault();
-        last.focus();
-      } else if (!e.shiftKey && document.activeElement === last) {
-        e.preventDefault();
-        first.focus();
-      }
-    };
-    document.addEventListener('keydown', onKeyDown);
-
-    return () => {
-      document.removeEventListener('keydown', onKeyDown);
-      document.body.style.overflow = previousOverflow;
-      opener?.focus?.();
-    };
-  }, [open]);
-
-  if (!open) return null;
-
-  return createPortal(
-    <div
-      className={cn('fixed inset-0 z-40 flex bg-black/50', asSheet ? 'items-end' : 'items-center justify-center p-4')}
-      onMouseDown={(e) => {
-        if (closeOnBackdrop && e.target === e.currentTarget) onClose();
-      }}
+  const header = (
+    <DialogTitle
+      id={titleId}
+      component="div"
+      className={cn('flex items-center gap-2', hideTitle && 'absolute top-2 right-2 z-10 !p-0')}
     >
-      <div
-        ref={panelRef}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={titleId}
-        tabIndex={-1}
-        className={cn(
-          'flex max-h-full w-full flex-col overflow-hidden bg-surface text-fg shadow-2xl outline-none',
-          asSheet ? 'max-h-[95dvh] rounded-t-3xl' : cn('rounded-2xl', SIZES[size]),
-          className,
-        )}
+      <h2 className={cn('flex-1 text-lg font-bold', hideTitle && 'sr-only')}>{title}</h2>
+      <IconButton label={t('actions.close')} onClick={onClose}>
+        <CloseRounded fontSize="inherit" />
+      </IconButton>
+    </DialogTitle>
+  );
+  const body = (
+    <>
+      {header}
+      <DialogContent>{children}</DialogContent>
+      {footer && <DialogActions className="flex-wrap gap-2 border-t border-border px-5 py-3">{footer}</DialogActions>}
+    </>
+  );
+
+  if (asSheet) {
+    return (
+      <Drawer
+        anchor="bottom"
+        open={open}
+        onClose={handleClose}
+        slotProps={{
+          paper: {
+            role: 'dialog',
+            'aria-modal': true,
+            'aria-labelledby': titleId,
+            className: cn('max-h-[95dvh] rounded-t-3xl', className),
+          } as object,
+        }}
       >
-        <header className={cn('flex items-center gap-2 px-5 pt-4', hideTitle && 'absolute top-2 right-2 z-10 p-0')}>
-          <h2 id={titleId} className={cn('flex-1 text-lg font-bold', hideTitle && 'sr-only')}>
-            {title}
-          </h2>
-          <IconButton
-            label={t('actions.close')}
-            onClick={onClose}
-            className={cn(hideTitle && 'bg-surface/80 text-primary-text')}
-          >
-            <CloseRounded fontSize="inherit" />
-          </IconButton>
-        </header>
-        <div className="flex-1 overflow-y-auto px-5 py-4">{children}</div>
-        {footer && (
-          <footer className="flex flex-wrap justify-end gap-2 border-t border-border px-5 py-3">{footer}</footer>
-        )}
-      </div>
-    </div>,
-    document.body,
+        {body}
+      </Drawer>
+    );
+  }
+
+  return (
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      maxWidth={SIZES[size]}
+      fullWidth
+      aria-labelledby={titleId}
+      className={className}
+    >
+      {body}
+    </Dialog>
   );
 }

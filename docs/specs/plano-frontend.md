@@ -20,7 +20,8 @@ Duas decisões suas exigem mudar o backend **antes**: sessão por **cookie httpO
 | Formulários | React Hook Form + Zod |
 | Testes | Vitest + Testing Library + MSW |
 | Estrutura | A da spec original (`core/ + features/ + pages/ + routes/`) |
-| Ícones | `@mui/icons-material` (só ícones; nenhum componente MUI) |
+| Ícones | `@mui/icons-material` |
+| Componentes | **MUI (`@mui/material`)**, como no Angular Material; Tailwind só no layout (revisto na fase 1c, ver DECISOES) |
 | Chat | WebSocket + polling de 3 s como fallback |
 | Observações | Novo campo `notes` no backend |
 | Localização no header | Modal que faz `PATCH /profile` e recarrega o feed |

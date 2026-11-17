@@ -28,7 +28,7 @@ describe('LoginPage', () => {
     await user.type(screen.getByLabelText('Senha'), 'Errada123');
     await user.click(screen.getByRole('button', { name: 'Entrar' }));
     expect(await screen.findByRole('alert')).toHaveTextContent('E-mail ou senha incorretos.');
-    expect(screen.getByLabelText('E-mail')).not.toHaveAttribute('aria-invalid');
+    expect(screen.getByLabelText('E-mail')).not.toHaveAttribute('aria-invalid', 'true');
   });
 
   it('validação no cliente antes de chamar a API', async () => {

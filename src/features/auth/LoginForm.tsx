@@ -1,9 +1,10 @@
+import Link from '@mui/material/Link';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { Link, useSearchParams } from 'react-router';
+import { Link as RouterLink, useSearchParams } from 'react-router';
 import { Button } from '@/components/ui/Button';
 import { FormAlert, TextField } from '@/components/ui/form/Field';
 import { PasswordField } from '@/components/ui/form/PasswordField';
@@ -58,7 +59,13 @@ export function LoginForm() {
         error={errors.password?.message}
         {...form.register('password')}
       />
-      <Link to="/forgot-password" className="-mt-1 self-end text-sm font-semibold text-primary-text hover:underline">
+      <Link
+        component={RouterLink}
+        to="/forgot-password"
+        sx={{ fontWeight: 600 }}
+        variant="body2"
+        className="-mt-1 self-end"
+      >
         {t('login.forgot')}
       </Link>
       <Button type="submit" size="lg" fullWidth loading={mutation.isPending}>

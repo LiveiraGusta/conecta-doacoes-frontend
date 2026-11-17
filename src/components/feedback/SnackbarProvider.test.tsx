@@ -34,13 +34,14 @@ describe('SnackbarProvider', () => {
   it('mostra um por vez, na ordem, e cada um some em 4 s', () => {
     show({ message: 'Primeiro' });
     show({ message: 'Segundo', variant: 'success' });
-    expect(screen.getByRole('status')).toHaveTextContent('Primeiro');
+    expect(screen.getByRole('alert')).toHaveTextContent('Primeiro');
     expect(screen.queryByText('Segundo')).not.toBeInTheDocument();
 
-    act(() => vi.advanceTimersByTime(4000));
+    // 4 s visível + a animação de saída do MUI.
+    act(() => vi.advanceTimersByTime(4500));
     expect(screen.getByText('Segundo').closest('[data-variant]')).toHaveAttribute('data-variant', 'success');
-    act(() => vi.advanceTimersByTime(4000));
-    expect(screen.getByRole('status')).toBeEmptyDOMElement();
+    act(() => vi.advanceTimersByTime(4500));
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 
   it('ação ("Desfazer") roda e fecha; o X também fecha', async () => {
@@ -49,10 +50,12 @@ describe('SnackbarProvider', () => {
     show({ message: 'Interesse registrado', action: { label: 'Desfazer', onClick: undo } });
     await user.click(screen.getByRole('button', { name: 'Desfazer' }));
     expect(undo).toHaveBeenCalledOnce();
+    act(() => vi.advanceTimersByTime(500));
     expect(screen.queryByText('Interesse registrado')).not.toBeInTheDocument();
 
     show({ message: 'Outro', duration: 10_000 });
     await user.click(screen.getByRole('button', { name: 'Fechar' }));
+    act(() => vi.advanceTimersByTime(500));
     expect(screen.queryByText('Outro')).not.toBeInTheDocument();
   });
 
@@ -64,6 +67,7 @@ describe('SnackbarProvider', () => {
     act(() => vi.advanceTimersByTime(5000));
     expect(screen.getByText('Longo')).toBeInTheDocument();
     act(() => api.dismiss(id));
+    act(() => vi.advanceTimersByTime(500));
     expect(screen.queryByText('Longo')).not.toBeInTheDocument();
   });
 

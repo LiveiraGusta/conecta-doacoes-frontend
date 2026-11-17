@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router';
 import { describe, expect, it, vi } from 'vitest';
@@ -42,13 +42,14 @@ describe('Button', () => {
     const btn = screen.getByRole('button', { name: 'Publicar' });
     expect(btn).toBeDisabled();
     expect(btn).toHaveAttribute('aria-busy', 'true');
-    await userEvent.click(btn);
+    fireEvent.click(btn);
     expect(onClick).not.toHaveBeenCalled();
   });
 
-  it('IconButton usa o label como nome e tooltip', () => {
+  it('IconButton usa o label como nome e como tooltip', async () => {
     render(<IconButton label="Fechar">x</IconButton>);
-    expect(screen.getByRole('button', { name: 'Fechar' })).toHaveAttribute('title', 'Fechar');
+    await userEvent.hover(screen.getByRole('button', { name: 'Fechar' }));
+    expect(await screen.findByRole('tooltip')).toHaveTextContent('Fechar');
   });
 });
 
@@ -62,7 +63,8 @@ describe('Badge e CountBadge', () => {
 
   it('Badge de categoria usa o roxo de destaque', () => {
     render(<Badge tone="accent">Roupas</Badge>);
-    expect(screen.getByText('Roupas')).toHaveClass('bg-accent');
+    // Chip do MUI na cor `secondary` do tema (o roxo do design).
+    expect(screen.getByText('Roupas').closest('[data-tone]')).toHaveClass('MuiChip-colorSecondary');
   });
 });
 
@@ -114,7 +116,7 @@ describe('Menu', () => {
     await user.keyboard('{ArrowUp}');
     expect(screen.getByRole('menuitem', { name: 'Sair' })).toHaveFocus();
     await user.keyboard('{Escape}');
-    expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+    await waitFor(() => expect(screen.queryByRole('menu')).not.toBeInTheDocument());
     expect(trigger).toHaveFocus();
   });
 
@@ -123,11 +125,11 @@ describe('Menu', () => {
     await user.click(screen.getByRole('button', { name: 'Conta' }));
     await user.click(screen.getByRole('menuitem', { name: 'Sair' }));
     expect(onLogout).toHaveBeenCalledOnce();
-    expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+    await waitFor(() => expect(screen.queryByRole('menu')).not.toBeInTheDocument());
 
     await user.click(screen.getByRole('button', { name: 'Conta' }));
-    await user.click(screen.getByText('fora'));
-    expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+    await user.click(document.querySelector('.MuiBackdrop-root')!);
+    await waitFor(() => expect(screen.queryByRole('menu')).not.toBeInTheDocument());
   });
 });
 
