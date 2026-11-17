@@ -14,8 +14,8 @@ const page = (load: () => Promise<{ default: React.ComponentType }>): Pick<Route
 
 // Placeholders das próximas fases: cada fase troca a sua linha pela página real.
 const placeholders = () => import('@/pages/ComingSoonPage');
-const feed = page(async () => ({ default: (await placeholders()).FeedPlaceholder }));
-const item = page(async () => ({ default: (await placeholders()).ItemPlaceholder }));
+const feed = page(() => import('@/pages/feed/FeedPage'));
+const item = page(() => import('@/pages/feed/ItemPage'));
 const userPage = page(async () => ({ default: (await placeholders()).UserPagePlaceholder }));
 const donations = page(async () => ({ default: (await placeholders()).DonationsPlaceholder }));
 const chats = page(async () => ({ default: (await placeholders()).ChatsPlaceholder }));

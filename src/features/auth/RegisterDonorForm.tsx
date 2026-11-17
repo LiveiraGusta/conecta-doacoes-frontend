@@ -11,8 +11,8 @@ import { PasswordField } from '@/components/ui/form/PasswordField';
 import { donorRegisterSchema, type DonorRegisterValues } from '@/core/schemas/auth';
 import { registerDonor } from '@/core/services/auth';
 import { applyApiError } from '@/core/utils/apiErrors';
-import { LocationFields } from './LocationFields';
-import { useCities } from './useCities';
+import { LocationFields } from '@/components/ui/form/LocationFields';
+import { useCities } from '@/core/hooks/useCities';
 import { useCompleteAuth } from './useCompleteAuth';
 
 const FIELDS = ['name', 'email', 'password', 'state', 'city'] as const;

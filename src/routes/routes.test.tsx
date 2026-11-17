@@ -4,9 +4,9 @@ import { IDS } from '@/mocks/db';
 import { currentUrl, renderApp } from '@/test/render';
 
 describe('rotas e guards', () => {
-  it('"/" leva o visitante ao feed (placeholder da fase 3, com o título no header)', async () => {
+  it('"/" leva o visitante ao feed (com o título no header)', async () => {
     const { router } = renderApp('/');
-    expect(await screen.findByText('Esta tela chega na fase 3 do plano.')).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /Doações de todas as cidades/ })).toBeInTheDocument();
     expect(currentUrl(router)).toBe('/feed');
     expect(screen.getByRole('heading', { level: 1, name: 'Feed de Doações' })).toBeInTheDocument();
     expect(document.title).toBe('Feed de Doações · Conecta Doações');

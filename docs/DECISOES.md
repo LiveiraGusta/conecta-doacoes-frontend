@@ -239,3 +239,23 @@ O detalhe técnico está em `backend/docs/DECISOES.md`, na seção "Integração
 | 1c | E-mails longos do "Entrar como" com reticências | Claude | Não vazam da caixa no mobile nem no desktop |
 | 1c | Testes: `findBy`/`waitFor` esperam até 5 s | Claude | O teste do cadastro de ONG falhou 2 vezes, sempre na 1ª rodada com cobertura depois de editar arquivos (máquina carregada); não reproduziu em 7 rodadas, nem com o cache limpo. Fica em observação |
 
+
+## Fase 3 — Feed (logado e visitante)
+
+| Fase | Decisão | Quem tomou | Consequência |
+| --- | --- | --- | --- |
+| 3 | Fotos dos itens do mock geradas localmente (SVG em `data:` com a cor e o ícone da categoria) | Usuário | Sem imagens de terceiros nem rede no `dev:mock`; cada foto mostra título e "foto n/3" |
+| 3 | Filtros do feed na URL: `?categoria=roupas&busca=jeans` (português, minúsculas) | Usuário | Dá para compartilhar e voltar com o filtro. Trocar filtro usa `replace` (não enche o histórico). Valor desconhecido é ignorado |
+| 3 | Carrossel de fotos: rolagem lateral com *snap* e bolinhas clicáveis | Usuário | Sem biblioteca. A bolinha atual é uma pílula branca (visível sobre qualquer foto) |
+| 3 | Item em negociação: selo "Em negociação", sem botão de interesse; a ONG escolhida vê "Escolhida para você" + "Abrir conversa" | Usuário | Regra em `interestView()` (testada à parte) |
+| 3 | Busca espera 400 ms sem digitar (Enter manda na hora); no desktop fica no header (portal), no mobile no topo da página | Claude | O shell oferece o espaço por contexto (`HeaderSlotContext`) com *callback ref*, sem `id` no DOM |
+| 3 | Scroll infinito com `IntersectionObserver` e "Carregar mais" sempre visível como reserva; páginas de 12, repetidos removidos pelo `id` | Claude | Item novo publicado no meio da rolagem não aparece duas vezes |
+| 3 | Visitante usa `/public/items` (todas as cidades, título "Doações de todas as cidades"); Admin também, porque `/items/feed` responde 403 para ele | Claude | Cache separado por modo (`['feed','auth'|'public',…]`) |
+| 3 | Interesse otimista no feed e no detalhe ao mesmo tempo; erro da API volta o botão e mostra a `message` dela; códigos de "tela desatualizada" (`ITEM_NOT_AVAILABLE`, `ALREADY_SELECTED`, `ALREADY_INTERESTED`, `INTEREST_NOT_FOUND`) recarregam o item | Claude | Sucesso traz "Desfazer" no snackbar |
+| 3 | Detalhe: modal sobre o feed no desktop quando aberto do feed (`location.state.background`, mantendo os filtros); página com voltar no mobile e no link direto | Claude | Fechar volta no histórico; link direto volta para `/feed` |
+| 3 | Visitante no detalhe: sem doador e sem observações, com aviso "Entre para ver quem está doando" | Spec (0.2b-3) | `GET /public/items/:id` |
+| 3 | Localização: clique no header (desktop) ou botão acima das categorias (mobile) abre o modal com UF + cidade do IBGE | Claude | `PATCH /profile`, atualiza o usuário e recarrega o feed logado |
+| 3 | `LocationFields` e `useCities` saíram de `features/auth` para `components/ui/form` e `core/hooks` | Claude | Usados pelo cadastro e pelo shell; a regra "components não importa features" continua valendo |
+| 3 | Datas: relativa no card desktop ("há 2 h", `Intl.RelativeTimeFormat`), completa no mobile ("01/10/2026, 23:32"), como nos designs | Claude | `core/utils/format.ts` |
+| 3 | Mock: mais um doador (Rio de Janeiro) e mais uma ONG ativa (Casa do Bem); 14 itens em 3 cidades, nas 4 categorias e nos 3 status | Claude | Dá para ver o feed por cidade, o visitante, o selo de negociação e a ONG escolhida |
+| 3 | Testes: 38 novos (contrato dos mocks de itens, páginas, peças do feed e formatação); 184 no total | Claude | Conferido também com screenshots do `dev:mock` (desktop, modal, localização, visitante, mobile) |
