@@ -281,3 +281,22 @@ O detalhe técnico está em `backend/docs/DECISOES.md`, na seção "Integração
 | 4 | Prévias de arquivo com `useObjectUrl` (URL `blob:` compartilhada e com contagem de uso, liberada depois) | Claude | Corrige a miniatura quebrada no modo Strict (URL liberada no cleanup e reusada na nova montagem); vale também para o documento da ONG no cadastro |
 | 4 | O `AppShell` monta a página uma vez só, num portal para um `div` fixo que a casca desktop ou mobile encaixa no `<main>` | Claude | Redimensionar a janela ou girar o tablet perto de 768 px troca a casca sem perder o que a página tinha (achado nas capturas do Playwright: a doação pela metade sumia) |
 | 4 | Testes: 27 novos (contrato dos mocks de doações, editor de foto e schema, páginas de lista, interessadas e publicar, troca de casca); 211 no total | Claude | Conferido também com capturas do `dev:mock` (lista, interessadas, confirmação, editor, etapas, publicada, mobile e ONG) |
+
+## Fase 5 — Chat em tempo real
+
+| Fase | Decisão | Quem tomou | Consequência |
+| --- | --- | --- | --- |
+| 5 | Envio otimista: a mensagem aparece na hora com "Enviando…"; se falhar, fica "Não enviada" com "Tentar de novo" e "Descartar" | Usuário | Pendentes ficam na sala (estado local); a resposta do POST entra no cache sem repetir a que chegar pelo WebSocket |
+| 5 | Ações da sala: "Confirmar recebimento" visível no topo (só a ONG escolhida); "Ver item", "Denunciar" e "Cancelar negociação" no menu ⋮ | Usuário | Cancelar avisa "denuncie antes" com atalho "Denunciar primeiro" (depois do cancelamento a API recusa a denúncia) |
+| 5 | Teclado: no desktop Enter envia e Shift+Enter quebra linha; no celular Enter quebra linha e o botão envia | Usuário | Respeita a composição de acentos (IME) |
+| 5 | Avisos fora da sala aberta: contador na aba ("(3) Conversas · Conecta Doações"), snackbar "Nova mensagem de X" com "Abrir" e um som curto | Usuário | Som gerado com Web Audio (sem arquivo); pode ser desligado pela chave `cd:chat-sound` (a tela de configurações da fase 6 vai expor) |
+| 5 | O aviso sai do `unread.updated` (chega de todas as conversas) quando o contador daquela conversa sobe, não do `message.created` (que só chega da sala inscrita) | Claude | Achado nas capturas: fora da sala o aviso não aparecia. Fora da tela de conversas, a lista é buscada para mostrar o nome |
+| 5 | `RealtimeClient` próprio (sem biblioteca): `open` só depois do `ready`, salas inscritas de novo a cada `ready`, reconexão 1/2/5/10 s; 4401 vira sessão expirada e 4403 não reconecta | Spec (WS) | Testado com um WebSocket falso |
+| 5 | `RealtimeProvider` dentro do RootLayout: um WebSocket por sessão de doador ou ONG; os eventos viram mudanças no cache (`['chat', id]`, `['chats']`, `['unread']`) | Spec (plano) | Visitante e Admin não abrem WebSocket |
+| 5 | Sem WebSocket, a sala faz polling de 3 s com `?after=` e o badge, de 15 s; ao reconectar, salas, lista e badge são recarregados | Spec (guia §5) | Aviso discreto na sala: "Conexão em tempo real indisponível" |
+| 5 | Lida ao abrir a sala, a cada mensagem recebida com a aba visível e ao voltar para a aba | Spec (WS) | Badge e lista zeram na hora |
+| 5 | Desktop: lista e sala lado a lado, com a sala como rota filha de `/chats` (a lista não remonta); celular: telas separadas com voltar | Spec (plano) | Lista vazia na coluna estreita só com texto; a ilustração fica no painel da sala |
+| 5 | Altura do chat medida (`useFillHeight`): header, banners e barra de baixo entram na conta | Claude | Achado nas capturas: com altura fixa o campo de mensagem ficava cortado no desktop |
+| 5 | Lista de conversas sem paginação (uma página de 50) | Claude | Uma pessoa raramente tem tantas negociações abertas; a API aceita mais páginas se precisar |
+| 5 | Mock: WebSocket falso com inscrições e eventos (o `RealtimeBus` em memória), 3 conversas no seed (uma com 2 não lidas, uma doada) e resposta automática da outra parte em 2 s no `dev:mock` | Claude | Os testes de página usam o mesmo WebSocket falso (MSW `ws.link`) |
+| 5 | Testes: 22 novos (cliente WebSocket, contrato dos mocks do chat, páginas desktop/mobile, datas); 233 no total | Claude | Conferido também com capturas do `dev:mock` (lista, sala, resposta, menu, cancelar, aviso fora da sala, confirmar, doada, mobile) |

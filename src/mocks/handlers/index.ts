@@ -1,5 +1,6 @@
 import { realtimeHandlers } from '../realtime';
 import { authHandlers } from './auth';
+import { chatHandlers } from './chats';
 import { donationHandlers } from './donations';
 import { itemHandlers } from './items';
 import { profileHandlers } from './profile';
@@ -8,6 +9,7 @@ import { profileHandlers } from './profile';
 export const handlers = [
   ...authHandlers,
   ...donationHandlers,
+  ...chatHandlers,
   ...itemHandlers,
   ...profileHandlers,
   ...realtimeHandlers,

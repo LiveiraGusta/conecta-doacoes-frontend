@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMatches } from 'react-router';
+import { useCachedUnread } from './useChats';
 
 /** Metadado que cada rota declara em `handle` (routes/index.tsx). */
 export interface RouteHandle {
@@ -8,7 +9,10 @@ export interface RouteHandle {
   titleKey?: string;
 }
 
-/** Título da rota mais interna que declarou um; também atualiza o <title> da aba. */
+/**
+ * Título da rota mais interna que declarou um; também atualiza o <title> da aba, com as não lidas na frente
+ * ("(3) Conversas · Conecta Doações", decisão da fase 5).
+ */
 export function usePageTitle(): string {
   const matches = useMatches();
   const { t } = useTranslation();
@@ -16,9 +20,11 @@ export function usePageTitle(): string {
     RouteHandle | undefined;
   const title = key?.titleKey ? t(key.titleKey as never) : t('appName');
 
+  const unread = useCachedUnread();
   useEffect(() => {
-    document.title = title === t('appName') ? title : `${title} · ${t('appName')}`;
-  }, [title, t]);
+    const base = title === t('appName') ? title : `${title} · ${t('appName')}`;
+    document.title = unread > 0 ? `(${unread > 99 ? '99+' : unread}) ${base}` : base;
+  }, [title, t, unread]);
 
   return title;
 }

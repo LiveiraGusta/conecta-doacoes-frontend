@@ -20,7 +20,7 @@ const userPage = page(async () => ({ default: (await placeholders()).UserPagePla
 const donations = page(() => import('@/pages/donations/DonationsPage'));
 const newItem = page(() => import('@/pages/donations/NewItemPage'));
 const interests = page(() => import('@/pages/donations/InterestsPage'));
-const chats = page(async () => ({ default: (await placeholders()).ChatsPlaceholder }));
+const chats = page(() => import('@/pages/chats/ChatsPage'));
 const profile = page(async () => ({ default: (await placeholders()).ProfilePlaceholder }));
 const settings = page(async () => ({ default: (await placeholders()).SettingsPlaceholder }));
 const admin = page(async () => ({ default: (await placeholders()).AdminPlaceholder }));
@@ -75,8 +75,13 @@ export const routes: RouteObject[] = [
                 element: <RequireRole roles={['DONOR', 'NGO']} />,
                 children: [
                   { path: 'donations', handle: title('pages.donations'), ...donations },
-                  { path: 'chats', handle: title('pages.chats'), ...chats },
-                  { path: 'chats/:itemId', handle: title('pages.chat'), ...chats },
+                  // Sala aninhada: no desktop a lista fica montada ao trocar de conversa.
+                  {
+                    path: 'chats',
+                    handle: title('pages.chats'),
+                    ...chats,
+                    children: [{ index: true }, { path: ':itemId', handle: title('pages.chat') }],
+                  },
                   { path: 'profile', handle: title('pages.profile'), ...profile },
                 ],
               },

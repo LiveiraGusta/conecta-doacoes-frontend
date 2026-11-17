@@ -1,4 +1,6 @@
 import type { Preferences, User } from '@/core/types/api';
+import type { Message } from '@/core/types/api';
+import { seedChats, type MockReport } from './chats';
 import { seedItems, type MockItem } from './items';
 
 /**
@@ -31,6 +33,11 @@ export interface MockState {
   items: Map<string, MockItem>;
   /** Interesses (curtidas): chave `${itemId}:${ngoId}` → quando curtiu (ISO). */
   interests: Map<string, string>;
+  /** Mensagens de todas as salas (o par atual é filtrado por quem envia e recebe). */
+  messages: Message[];
+  /** Última leitura: `${itemId}:${userId}` → ISO. */
+  reads: Map<string, string>;
+  reports: Map<string, MockReport>;
 }
 
 const DEFAULT_PREFS: Preferences = { theme_color: 'AZUL', theme_mode: 'SYSTEM', show_donations: false };
@@ -121,7 +128,7 @@ function seed(): Map<string, MockUser> {
 
 function fresh(): MockState {
   const { items, interests } = seedItems(IDS);
-  return { users: seed(), sessionUserId: null, items, interests };
+  return { users: seed(), sessionUserId: null, items, interests, ...seedChats(IDS) };
 }
 
 let state: MockState = fresh();
