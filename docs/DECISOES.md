@@ -371,3 +371,10 @@ O detalhe técnico está em `backend/docs/DECISOES.md`, na seção "Integração
 | 9 | Doação concluída: modal com a ilustração "celebration" e confete em CSS (28 pedaços, sem biblioteca), só para a ONG que confirmou | Usuário | Substitui o snackbar dessa ação; o botão do rodapé é "Continuar" (o X do canto já se chama "Fechar") |
 | 9 | Quem pede menos movimento no sistema (`prefers-reduced-motion`) não vê animação nem confete | Spec (plano) | Regra global no `index.css` |
 | 9 | O `div` do conteúdo passou de `display: contents` para `block` | Claude | Precisa ter caixa para a animação de troca de página |
+
+### Integração com a API real (Passo 1)
+| Fase | Decisão | Quem decidiu | Consequência |
+| --- | --- | --- | --- |
+| 10 | Variante dos testes Playwright contra a API real (`npm run e2e:real`), em `e2e-real/`, com config própria (`playwright.real.config.ts`) | Usuário (aprovado) | Não entra no `npm run e2e` (que segue no mock) e não sobe servidor: exige o front em `npm run dev` e a API rodando |
+| 10 | Testes da API real são só de leitura, com login pelo formulário e um worker | Claude | Não sujam o seed de demo; a API limita o login a 10 por minuto, então paralelismo daria 429 |
+| 10 | Feed liberado para ONG em análise, como manda o spec (`GET /items/feed`: "Acesso DONOR e NGO"). Só demonstrar interesse exige ONG ATIVO | Spec (openapi) | O teste da variante real confirma isso, não a restrição de feed que eu tinha assumido |
