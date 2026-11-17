@@ -48,3 +48,10 @@ export const passwordSchema = z
 export const ufSchema = z.enum(UF_LIST, { error: 'validation:uf' });
 
 export const citySchema = z.string().trim().min(2, 'validation:city').max(100, 'validation:city');
+
+/** Regras da senha (as mesmas da API), para o checklist ao vivo do PasswordField. */
+export const PASSWORD_RULES = [
+  { key: 'length', test: (v: string) => v.length >= 8 && v.length <= 72 },
+  { key: 'letter', test: (v: string) => /[A-Za-z]/.test(v) },
+  { key: 'number', test: (v: string) => /\d/.test(v) },
+] as const;

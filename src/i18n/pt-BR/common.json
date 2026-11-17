@@ -97,6 +97,7 @@
     "register": "Criar conta",
     "forgotPassword": "Esqueci a senha",
     "resetPassword": "Nova senha",
+    "ngoWelcome": "Cadastro recebido",
     "notFound": "Página não encontrada",
     "forbidden": "Sem permissão",
     "error": "Algo deu errado"

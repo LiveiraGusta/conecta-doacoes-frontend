@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom/vitest';
 import { onlineManager } from '@tanstack/react-query';
-import { cleanup } from '@testing-library/react';
+import { cleanup, configure } from '@testing-library/react';
 import { afterAll, afterEach, beforeAll, vi } from 'vitest';
 import '@/i18n';
 import { db } from '@/mocks/db';
@@ -33,6 +33,9 @@ export function setMatchMedia(matches: (query: string) => boolean) {
     })),
   });
 }
+
+// Páginas lazy: a primeira de cada arquivo de teste carrega os módulos e passa de 1 s em máquina lenta.
+configure({ asyncUtilTimeout: 3000 });
 
 // Requisição sem handler é bug do teste: falha alto.
 beforeAll(() => server.listen({ onUnhandledFrame: 'error' }));

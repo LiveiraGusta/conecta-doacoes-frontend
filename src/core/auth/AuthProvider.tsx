@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useCallback, useEffect, useMemo, useRef, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router';
 import { setUnauthorizedHandler } from '../api/http';
@@ -32,7 +32,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     refetchOnWindowFocus: (query) => (query.state.data as User | null | undefined)?.role === 'NGO',
   });
 
-  const setUser = useCallback((user: User | null) => queryClient.setQueryData(ME_KEY, user), [queryClient]);
+  const [afterLogin, setAfterLogin] = useState<string | null>(null);
+  const setUser = useCallback(
+    (user: User | null, redirectTo?: string) => {
+      setAfterLogin(user ? (redirectTo ?? null) : null);
+      queryClient.setQueryData(ME_KEY, user);
+    },
+    [queryClient],
+  );
+  const clearAfterLogin = useCallback(() => setAfterLogin(null), []);
 
   // O handler de 401 vive fora do React (no cliente HTTP): lê a rota atual por ref.
   const pathRef = useRef(location.pathname + location.search);
@@ -59,6 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = useCallback(async () => {
     await logoutRequest().catch(() => {}); // sem rede: o cookie expira sozinho; o app sai mesmo assim
     queryClient.clear();
+    setAfterLogin(null);
     queryClient.setQueryData(ME_KEY, null);
     navigate('/feed', { replace: true });
   }, [queryClient, navigate]);
@@ -68,9 +77,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       status: me.isPending ? 'loading' : me.data ? 'authenticated' : 'visitor',
       user: me.data ?? null,
       setUser,
+      afterLogin,
+      clearAfterLogin,
       logout,
     }),
-    [me.isPending, me.data, setUser, logout],
+    [me.isPending, me.data, setUser, afterLogin, clearAfterLogin, logout],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

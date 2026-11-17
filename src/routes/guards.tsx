@@ -40,12 +40,16 @@ export function RequireRole({ roles }: { roles: Role[] }) {
   return <Outlet />;
 }
 
-/** Login e cadastro: quem já está logado vai para o `redirect` ou para o início do seu perfil. */
+/**
+ * Login e cadastro: quem já está logado vai embora daqui. Destino, nesta ordem: o escolhido por quem acabou
+ * de logar (`afterLogin`, ex.: boas-vindas da ONG), o `?redirect=` interno, o início do perfil.
+ * Usar o mesmo destino de quem logou evita a corrida entre a navegação (lazy, em transition) e o usuário gravado.
+ */
 export function PublicOnly() {
-  const { status, user } = useAuth();
+  const { status, user, afterLogin } = useAuth();
   const [params] = useSearchParams();
   if (status === 'loading') return <PageLoader />;
-  if (user) return <Navigate to={safeRedirect(params.get('redirect')) ?? homeFor(user.role)} replace />;
+  if (user) return <Navigate to={afterLogin ?? safeRedirect(params.get('redirect')) ?? homeFor(user.role)} replace />;
   return <Outlet />;
 }
 

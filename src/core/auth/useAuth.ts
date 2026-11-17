@@ -6,8 +6,15 @@ export type AuthStatus = 'loading' | 'visitor' | 'authenticated';
 export interface AuthContextValue {
   status: AuthStatus;
   user: User | null;
-  /** Grava o usuário depois de login/cadastro (a API já gravou o cookie). */
-  setUser(user: User | null): void;
+  /**
+   * Grava o usuário depois de login/cadastro (a API já gravou o cookie). `redirectTo` é o destino escolhido
+   * por quem logou: o PublicOnly usa o mesmo destino, então a ordem entre navegar e gravar não importa.
+   */
+  setUser(user: User | null, redirectTo?: string): void;
+  /** Destino pós-login gravado por `setUser` (null se não houver). */
+  afterLogin: string | null;
+  /** Esquece o destino pós-login (chamado quando a navegação chega lá). */
+  clearAfterLogin(): void;
   /** Sai: apaga o cookie, limpa o cache e volta para o feed como visitante. */
   logout(): Promise<void>;
 }
