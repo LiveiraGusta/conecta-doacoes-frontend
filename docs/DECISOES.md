@@ -135,3 +135,10 @@ O detalhe técnico está em `backend/docs/DECISOES.md`, na seção "Integração
 | 0.2b-1 | Preferências chegam em `user.preferences` (no `/auth/me`, no login e no cadastro), com rota própria para alterar | Usuário | O `ThemeProvider` aplica o tema no boot sem chamada extra e faz `PATCH /profile/preferences` otimista |
 | 0.2b-1 | Endereço da ONG só aparece para logados quando ela estiver `ATIVO` | Usuário | A página pessoal da ONG pendente ou rejeitada não mostra endereço (exceto para ela mesma) |
 | 0.2b-1 | Endereço é um objeto `address` (ou `null`); o ViaCEP é consultado pelo front | Usuário | O formulário preenche rua e bairro pelo CEP e envia o objeto completo |
+### Sub-fase 0.2b-2 (backend): foto de perfil e banner
+
+| Fase | Decisão | Quem tomou | Consequência |
+| --- | --- | --- | --- |
+| 0.2b-2 | A API corta ao centro e redimensiona (avatar 512×512, banner 1500×500) | Usuário | O editor do front recorta em 1:1 e 3:1 para o usuário escolher o enquadramento. Sem recorte, a API usa o centro |
+| 0.2b-2 | Limite de 5 MB por imagem | Usuário | O `PhotoEditorModal` exporta WEBP bem abaixo disso. Mesmo assim, o front valida antes de enviar |
+| 0.2b-2 | URLs em `user.avatar_url` e `user.ngo_profile.banner_url`; `null` = sem imagem | Claude | O `<Avatar>` usa a foto e cai nas iniciais quando for `null` |
