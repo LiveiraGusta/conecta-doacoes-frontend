@@ -1,4 +1,5 @@
 import ChatRounded from '@mui/icons-material/ChatRounded';
+import CheckCircleRounded from '@mui/icons-material/CheckCircleRounded';
 import FavoriteBorderRounded from '@mui/icons-material/FavoriteBorderRounded';
 import FavoriteRounded from '@mui/icons-material/FavoriteRounded';
 import HourglassTopRounded from '@mui/icons-material/HourglassTopRounded';
@@ -43,10 +44,21 @@ export function InterestButton({
           <Chip icon={<HourglassTopRounded />} label={t('status.inProgress')} color="warning" variant="outlined" />
         </div>
       );
+    case 'donated':
+      return (
+        <div className={className}>
+          <Chip icon={<CheckCircleRounded />} label={t('status.donated')} variant="outlined" />
+        </div>
+      );
     case 'selected':
+    case 'received':
       return (
         <div className={`flex flex-wrap items-center justify-center gap-2 ${className ?? ''}`}>
-          <Chip icon={<VerifiedRounded />} label={t('status.selected')} color="success" />
+          <Chip
+            icon={<VerifiedRounded />}
+            label={t(view === 'received' ? 'status.received' : 'status.selected')}
+            color="success"
+          />
           <Button to={`/chats/${item.id}`} size={size} variant="secondary" icon={<ChatRounded />}>
             {t('status.openChat')}
           </Button>

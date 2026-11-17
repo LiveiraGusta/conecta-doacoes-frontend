@@ -27,6 +27,7 @@ describe('rotas e guards', () => {
     ['/admin/ngos', IDS.donor],
     ['/donations/new', IDS.ngoActive],
     ['/chats', IDS.admin],
+    ['/donations/x/interests', IDS.ngoActive],
   ])('%s com o perfil errado mostra o 403 dentro do shell', async (path, who) => {
     renderApp(path, { loggedAs: who });
     expect(await screen.findByText('Você não tem acesso a esta página')).toBeInTheDocument();
@@ -35,7 +36,7 @@ describe('rotas e guards', () => {
 
   it('doador abre a nova doação; ONG abre conversas', async () => {
     renderApp('/donations/new', { loggedAs: IDS.donor });
-    expect(await screen.findByText('Esta tela chega na fase 4 do plano.')).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Nova doação', level: 2 })).toBeInTheDocument();
   });
 
   it('login já logado: vai para o redirect interno ou, se for externo, para o início', async () => {

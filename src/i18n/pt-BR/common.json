@@ -10,7 +10,8 @@
     "back": "Voltar",
     "goHome": "Ir para o início",
     "copy": "Copiar",
-    "copied": "Copiado"
+    "copied": "Copiado",
+    "loadMore": "Carregar mais"
   },
   "theme": {
     "color": "Cor do tema",

@@ -27,6 +27,8 @@ describe('interestView', () => {
     expect(interestView(item({ has_user_interest: true }), userOf(IDS.ngoActive))).toBe('remove');
     expect(interestView(item({ status: 'EM_PROGRESSO' }), null)).toBe('inProgress');
     expect(interestView(item({ status: 'EM_PROGRESSO', is_selected: true }), userOf(IDS.ngoActive))).toBe('selected');
+    expect(interestView(item({ status: 'DOADO', is_selected: true }), userOf(IDS.ngoActive))).toBe('received');
+    expect(interestView(item({ status: 'DOADO' }), userOf(IDS.ngoActive))).toBe('donated');
   });
 });
 

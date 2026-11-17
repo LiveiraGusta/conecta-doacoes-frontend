@@ -1,6 +1,6 @@
 import LocationOnRounded from '@mui/icons-material/LocationOnRounded';
 import Typography from '@mui/material/Typography';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { HeaderPortal } from '@/components/layout/HeaderSlot';
 import { LocationModal } from '@/components/layout/LocationModal';
@@ -9,6 +9,7 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { LoadingRegion } from '@/components/ui/Skeleton';
 import { useAuth } from '@/core/auth/useAuth';
 import { useFeed } from '@/core/hooks/useFeed';
+import { useInfiniteTrigger } from '@/core/hooks/useInfiniteTrigger';
 import { useIsMobile } from '@/core/hooks/useMediaQuery';
 import { CategoryBarDesktop, CategoryBarMobile } from '@/features/feed/CategoryBar';
 import { ItemCard, ItemCardSkeleton } from '@/features/feed/ItemCard';
@@ -16,21 +17,6 @@ import { SearchBox } from '@/features/feed/SearchBox';
 import { useFeedFilters } from '@/features/feed/useFeedFilters';
 
 const GRID = 'grid gap-6 md:grid-cols-2 xl:grid-cols-3';
-
-/** Pede a próxima página quando o fim da lista aparece (o botão "Carregar mais" fica como reserva). */
-function useInfiniteTrigger(onVisible: () => void, enabled: boolean) {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el || !enabled || typeof IntersectionObserver === 'undefined') return;
-    const observer = new IntersectionObserver((entries) => entries[0]?.isIntersecting && onVisible(), {
-      rootMargin: '400px',
-    });
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [onVisible, enabled]);
-  return ref;
-}
 
 /**
  * Feed (guia, F7): busca no header (desktop) ou no topo (mobile), categorias, "Últimas doações (N)"

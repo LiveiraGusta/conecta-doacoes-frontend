@@ -259,3 +259,25 @@ O detalhe técnico está em `backend/docs/DECISOES.md`, na seção "Integração
 | 3 | Datas: relativa no card desktop ("há 2 h", `Intl.RelativeTimeFormat`), completa no mobile ("01/10/2026, 23:32"), como nos designs | Claude | `core/utils/format.ts` |
 | 3 | Mock: mais um doador (Rio de Janeiro) e mais uma ONG ativa (Casa do Bem); 14 itens em 3 cidades, nas 4 categorias e nos 3 status | Claude | Dá para ver o feed por cidade, o visitante, o selo de negociação e a ONG escolhida |
 | 3 | Testes: 38 novos (contrato dos mocks de itens, páginas, peças do feed e formatação); 184 no total | Claude | Conferido também com screenshots do `dev:mock` (desktop, modal, localização, visitante, mobile) |
+
+## Fase 4 — Doações (publicar, minhas doações, interessadas)
+
+| Fase | Decisão | Quem tomou | Consequência |
+| --- | --- | --- | --- |
+| 4 | Publicar em 3 etapas: Fotos → Dados → Revisar (Stepper do MUI) | Usuário | Um formulário só (React Hook Form); "Próximo" valida só os campos da etapa; erro da API volta para a etapa do campo |
+| 4 | Reordenar fotos arrastando (`@dnd-kit`, também pelo teclado) **e** com setas + "Usar como capa" | Usuário | A 1ª é a capa; mudanças anunciadas para leitor de tela |
+| 4 | Escolher ONG: confirmação → snackbar → navega para `chat_room_url` (a tela de conversa ainda é o placeholder até a fase 5) | Usuário | A fase 5 só troca a página de `/chats/:id` |
+| 4 | "Minhas doações" / "Meus interesses" com abas por status e o número de cada uma; status na URL (`?status=` com `disponivel`, `negociacao` ou `doado`) | Usuário | A API não conta por status: uma consulta `limit=1` por aba lê o `total`. Tudo sob a chave `['myItems']` |
+| 4 | Editor de foto com `react-easy-crop`, 4:3 fixo, zoom 1–3×, girar 90°, espelhar H/V; modal no desktop e tela cheia no celular | Spec (plano) | Espelho só em CSS na prévia; o arquivo final sai do `<canvas>` (`core/utils/image.ts`) |
+| 4 | Foto final: até 1600 px no maior lado, WEBP 0,9 (JPEG se o navegador não gerar WEBP) | Claude | Fica bem abaixo dos 5 MB da API; o original pode ter até 20 MB porque é recomprimido |
+| 4 | O original fica guardado junto da versão editada | Claude | "Editar" de novo parte do original, sem perder qualidade |
+| 4 | A API não tem editar nem apagar item publicado | Spec (openapi) | A fase não tem essas ações; a revisão antes de publicar compensa |
+| 4 | Sair do formulário com algo preenchido pede "Descartar esta doação?" (`useBlocker` + `beforeunload`) | Claude | Não perde fotos editadas por um clique no menu |
+| 4 | Item publicado na cidade do doador (padrão da API), mostrado na revisão | Claude | Sem campo de cidade no formulário |
+| 4 | Interessadas: ONG que não está mais ativa aparece com "ONG indisponível", sem "Escolher"; 403/404 viram "Esta doação não é sua" | Claude | Recusa de 409 (`ITEM_NOT_AVAILABLE`, `NGO_NOT_INTERESTED`, `NGO_NOT_ACTIVE`) mostra a mensagem e recarrega |
+| 4 | "Meus interesses" usa o mesmo botão do feed; selos novos "Recebida pela sua ONG" e "Doado a outra ONG" | Claude | O interesse otimista também atualiza essa lista |
+| 4 | `useInfiniteTrigger` saiu do FeedPage para `core/hooks` | Claude | Feed e listas de doações usam o mesmo scroll infinito |
+| 4 | Mock: cesta básica com 3 interessadas (duas ativas e uma rejeitada); `POST /items` mostra as fotos enviadas de verdade (`blob:`) no `dev:mock` | Claude | Dá para ver a lista ordenada, a ONG indisponível e escolher |
+| 4 | Prévias de arquivo com `useObjectUrl` (URL `blob:` compartilhada e com contagem de uso, liberada depois) | Claude | Corrige a miniatura quebrada no modo Strict (URL liberada no cleanup e reusada na nova montagem); vale também para o documento da ONG no cadastro |
+| 4 | O `AppShell` monta a página uma vez só, num portal para um `div` fixo que a casca desktop ou mobile encaixa no `<main>` | Claude | Redimensionar a janela ou girar o tablet perto de 768 px troca a casca sem perder o que a página tinha (achado nas capturas do Playwright: a doação pela metade sumia) |
+| 4 | Testes: 27 novos (contrato dos mocks de doações, editor de foto e schema, páginas de lista, interessadas e publicar, troca de casca); 211 no total | Claude | Conferido também com capturas do `dev:mock` (lista, interessadas, confirmação, editor, etapas, publicada, mobile e ONG) |
