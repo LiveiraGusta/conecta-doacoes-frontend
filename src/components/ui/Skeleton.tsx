@@ -1,11 +1,22 @@
+import MuiSkeleton from '@mui/material/Skeleton';
+import type { ReactNode } from 'react';
 import { cn } from '@/core/utils/cn';
 
 /**
- * Bloco cinza pulsante no lugar do conteúdo que ainda carrega (mesmo tamanho do final).
- * O shimmer animado entra na fase de animações.
+ * Bloco no lugar do conteúdo que ainda carrega (Skeleton do MUI). O tamanho vem do Tailwind (`className`),
+ * igual ao do conteúdo final.
  */
-export function Skeleton({ className }: { className?: string }) {
-  return <div aria-hidden className={cn('animate-pulse rounded-lg bg-surface-alt', className)} />;
+export function Skeleton({ className, circle = false }: { className?: string; circle?: boolean }) {
+  return (
+    <MuiSkeleton
+      variant={circle ? 'circular' : 'rounded'}
+      animation="wave"
+      aria-hidden
+      className={className}
+      // Sem tamanho fixo do MUI: quem manda é o className.
+      sx={{ width: 'auto', height: 'auto', transform: 'none' }}
+    />
+  );
 }
 
 /** Várias linhas de texto; a última mais curta. */
@@ -13,7 +24,7 @@ export function SkeletonText({ lines = 3, className }: { lines?: number; classNa
   return (
     <div aria-hidden className={cn('flex flex-col gap-2', className)}>
       {Array.from({ length: lines }, (_, i) => (
-        <Skeleton key={i} className={cn('h-3', i === lines - 1 ? 'w-2/3' : 'w-full')} />
+        <MuiSkeleton key={i} variant="text" animation="wave" width={i === lines - 1 ? '66%' : '100%'} />
       ))}
     </div>
   );
@@ -26,7 +37,7 @@ export function LoadingRegion({
   className,
 }: {
   label: string;
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
 }) {
   return (

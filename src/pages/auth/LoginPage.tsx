@@ -1,6 +1,7 @@
+import Link from '@mui/material/Link';
 import { lazy, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, useSearchParams } from 'react-router';
+import { Link as RouterLink, useSearchParams } from 'react-router';
 import { AuthSplitLayout } from '@/components/layout/AuthSplitLayout';
 import { LoginForm } from '@/features/auth/LoginForm';
 
@@ -22,8 +23,9 @@ export default function LoginPage() {
         <>
           {t('login.noAccount')}{' '}
           <Link
+            component={RouterLink}
             to={redirect ? `/register?redirect=${encodeURIComponent(redirect)}` : '/register'}
-            className="font-semibold text-primary-text hover:underline"
+            sx={{ fontWeight: 600 }}
           >
             {t('login.createAccount')}
           </Link>

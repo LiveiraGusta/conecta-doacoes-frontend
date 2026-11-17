@@ -1,10 +1,14 @@
 import CloudUploadRounded from '@mui/icons-material/CloudUploadRounded';
 import DeleteOutlineRounded from '@mui/icons-material/DeleteOutlineRounded';
 import PictureAsPdfRounded from '@mui/icons-material/PictureAsPdfRounded';
+import ButtonBase from '@mui/material/ButtonBase';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { formatBytes } from '@/core/utils/files';
 import { cn } from '@/core/utils/cn';
+import { formatBytes } from '@/core/utils/files';
+import { Button, IconButton } from '../Button';
 import { FieldError } from './Field';
 
 export interface FileDropzoneProps {
@@ -19,8 +23,9 @@ export interface FileDropzoneProps {
 }
 
 /**
- * Área de arrastar-e-soltar (ou clicar) para 1 arquivo: mostra nome, tamanho e miniatura (imagem)
- * ou ícone (PDF), com "Trocar" e "Remover". A validação de tipo e tamanho fica no schema do formulário.
+ * Área de arrastar-e-soltar (ou clicar) para 1 arquivo, com peças do MUI: mostra nome, tamanho e miniatura
+ * (imagem) ou ícone (PDF), com "Trocar" e "Remover". O MUI não tem um componente pronto para isso.
+ * A validação de tipo e tamanho fica no schema do formulário.
  */
 export function FileDropzone({ label, accept, value, onChange, error, hint, name }: FileDropzoneProps) {
   const { t } = useTranslation('auth');
@@ -41,9 +46,9 @@ export function FileDropzone({ label, accept, value, onChange, error, hint, name
 
   return (
     <div className="flex flex-col gap-1.5">
-      <span id={`${id}-rotulo`} className="text-sm font-semibold text-fg">
+      <Typography id={`${id}-rotulo`} variant="subtitle2" component="span">
         {label}
-      </span>
+      </Typography>
       <input
         ref={inputRef}
         id={id}
@@ -60,11 +65,10 @@ export function FileDropzone({ label, accept, value, onChange, error, hint, name
         }}
       />
       {value ? (
-        <div
-          className={cn(
-            'flex items-center gap-3 rounded-xl border bg-surface p-3',
-            error ? 'border-danger' : 'border-border',
-          )}
+        <Paper
+          variant="outlined"
+          className="flex items-center gap-3 p-3"
+          sx={error ? { borderColor: 'error.main' } : undefined}
         >
           {preview ? (
             <img src={preview} alt="" className="size-12 rounded-lg object-cover" />
@@ -77,30 +81,22 @@ export function FileDropzone({ label, accept, value, onChange, error, hint, name
             </span>
           )}
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-semibold" data-testid="arquivo-nome">
+            <Typography variant="body2" sx={{ fontWeight: 600 }} noWrap data-testid="arquivo-nome">
               {value.name}
-            </p>
-            <p className="text-xs text-fg-muted">{formatBytes(value.size)}</p>
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              {formatBytes(value.size)}
+            </Typography>
           </div>
-          <button
-            type="button"
-            className="rounded-lg px-2 py-1 text-sm font-semibold text-primary-text hover:bg-primary-soft"
-            onClick={() => inputRef.current?.click()}
-          >
+          <Button variant="ghost" size="sm" onClick={() => inputRef.current?.click()}>
             {t('file.replace')}
-          </button>
-          <button
-            type="button"
-            aria-label={t('file.remove')}
-            className="flex size-9 items-center justify-center rounded-lg text-xl text-fg-muted hover:bg-surface-alt"
-            onClick={() => onChange(null)}
-          >
-            <DeleteOutlineRounded fontSize="inherit" />
-          </button>
-        </div>
+          </Button>
+          <IconButton label={t('file.remove')} onClick={() => onChange(null)}>
+            <DeleteOutlineRounded />
+          </IconButton>
+        </Paper>
       ) : (
-        <button
-          type="button"
+        <ButtonBase
           onClick={() => inputRef.current?.click()}
           onDragOver={(e) => {
             e.preventDefault();
@@ -122,15 +118,19 @@ export function FileDropzone({ label, accept, value, onChange, error, hint, name
                 : 'border-border hover:bg-surface-alt',
           )}
         >
-          <CloudUploadRounded fontSize="inherit" aria-hidden className="text-3xl text-primary-text" />
-          <span className="text-sm font-semibold">{t('file.drop')}</span>
-          <span className="text-xs text-fg-muted">{t('file.orClick')}</span>
-        </button>
+          <CloudUploadRounded aria-hidden className="text-3xl text-primary-text" fontSize="inherit" />
+          <Typography variant="subtitle2" component="span">
+            {t('file.drop')}
+          </Typography>
+          <Typography variant="caption" color="text.secondary">
+            {t('file.orClick')}
+          </Typography>
+        </ButtonBase>
       )}
       {hint && (
-        <p id={hintId} className="text-xs text-fg-muted">
+        <Typography id={hintId} variant="caption" color="text.secondary">
           {hint}
-        </p>
+        </Typography>
       )}
       <FieldError id={errorId} message={error} />
     </div>

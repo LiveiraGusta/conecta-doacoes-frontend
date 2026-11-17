@@ -1,15 +1,14 @@
-import PersonRounded from '@mui/icons-material/PersonRounded';
+import MuiAvatar from '@mui/material/Avatar';
 import { useState } from 'react';
 import { avatarColor, initials } from '@/core/utils/avatar';
-import { cn } from '@/core/utils/cn';
 
 export type AvatarSize = 'sm' | 'md' | 'lg' | 'xl';
 
-const SIZES: Record<AvatarSize, string> = {
-  sm: 'size-8 text-xs',
-  md: 'size-10 text-sm',
-  lg: 'size-14 text-lg',
-  xl: 'size-24 text-3xl',
+const SIZES: Record<AvatarSize, { box: number; font: string }> = {
+  sm: { box: 32, font: '0.75rem' },
+  md: { box: 40, font: '0.875rem' },
+  lg: { box: 56, font: '1.125rem' },
+  xl: { box: 96, font: '1.875rem' },
 };
 
 export interface AvatarProps {
@@ -22,33 +21,34 @@ export interface AvatarProps {
   className?: string;
 }
 
-/** Foto de perfil; sem foto (ou se ela falhar), iniciais num círculo colorido. */
+/** Foto de perfil (Avatar do MUI); sem foto, ou se ela falhar, iniciais num círculo colorido. */
 export function Avatar({ name, seed, src, size = 'md', className }: AvatarProps) {
   const [broken, setBroken] = useState(false);
-  const base = cn(
-    'inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full',
-    SIZES[size],
-    className,
-  );
+  const { box, font } = SIZES[size];
+  const showImage = Boolean(src) && !broken;
 
-  if (src && !broken) {
-    return <img src={src} alt={name ?? ''} className={cn(base, 'object-cover')} onError={() => setBroken(true)} />;
-  }
-  if (!name) {
-    return (
-      <span className={cn(base, 'bg-surface-alt text-fg-muted')} aria-hidden>
-        <PersonRounded fontSize="inherit" className="text-[1.4em]" />
-      </span>
-    );
+  if (!name && !showImage) {
+    return <MuiAvatar aria-hidden className={className} sx={{ width: box, height: box }} />;
   }
   return (
-    <span
-      role="img"
-      aria-label={name}
-      className={cn(base, 'font-semibold text-white select-none')}
-      style={{ backgroundColor: avatarColor(seed ?? name) }}
+    <MuiAvatar
+      src={showImage ? src! : undefined}
+      alt={name ?? ''}
+      className={className}
+      role={showImage ? undefined : 'img'}
+      aria-label={showImage ? undefined : (name ?? undefined)}
+      slotProps={{ img: { onError: () => setBroken(true) } }}
+      sx={{
+        width: box,
+        height: box,
+        fontSize: font,
+        fontWeight: 600,
+        color: '#fff',
+      }}
+      // Cor por pessoa em estilo inline (fixa e fácil de conferir); o MUI cuida do resto.
+      style={showImage ? undefined : { backgroundColor: avatarColor(seed ?? name ?? '') }}
     >
-      {initials(name)}
-    </span>
+      {name ? initials(name) : null}
+    </MuiAvatar>
   );
 }

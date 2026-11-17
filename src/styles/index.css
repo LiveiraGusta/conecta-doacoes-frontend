@@ -1,3 +1,8 @@
+/*
+ * Ordem das camadas: os estilos do MUI (componentes) ficam na camada `mui`, ANTES das utilities do Tailwind.
+ * Assim `className="mt-4 w-full"` num componente do MUI funciona (Tailwind só no layout; decisão da fase 1c).
+ */
+@layer theme, base, mui, components, utilities;
 @import 'tailwindcss';
 
 /* Modo escuro por classe no <html> (o ThemeProvider e o script anti-flash do index.html a aplicam). */

@@ -209,3 +209,21 @@ O detalhe técnico está em `backend/docs/DECISOES.md`, na seção "Integração
 | 2 | Testes de formulário com upload substituem o serviço (`vi.mock`) e conferem o que o formulário entrega; o multipart em si é testado no ambiente `node` | Claude | Consequência da limitação do jsdom com `FormData` + `File` (fase 1a) |
 | 2 | Tempo dos testes: `findBy` espera até 3 s e cada teste até 15 s | Claude | As páginas lazy e a digitação do user-event passavam do padrão em máquina lenta |
 
+## Fase 1c — Componentes Material (MUI)
+
+| Fase | Decisão | Quem tomou | Consequência |
+| --- | --- | --- | --- |
+| 1c | Usar os componentes do Material Design, como no Angular Material, no lugar dos componentes próprios em Tailwind | Usuário | Revê a decisão "Componentes próprios" do plano |
+| 1c | Biblioteca: MUI (`@mui/material` 9), e não Material Web (`@material/web`) | Usuário | Já estava instalado por causa dos ícones. Material Web (M3) foi descartado: são Web Components, sem Autocomplete, Snackbar nem Skeleton |
+| 1c | MUI nos componentes, Tailwind só no layout (grid, espaçamento, páginas) | Usuário | Os estilos do MUI ficam na camada CSS `mui`, antes das utilities do Tailwind (`StyledEngineProvider enableCssLayer` + `@layer theme, base, mui, components, utilities`). Um `className` de layout num componente do MUI funciona |
+| 1c | Migrar agora tudo o que já existia (fases 1b e 2), antes do feed | Usuário | Branch `feat/material-ui`. O feed já nasce em MUI |
+| 1c | Tema do MUI gerado da mesma escolha de cor e modo (`createAppTheme`), com as paletas em `core/theme/palettes.ts` | Usuário | Configurações muda o MUI e o Tailwind juntos. Um teste garante que as cores do CSS e do MUI não divergem |
+| 1c | As APIs dos componentes do app (`Button`, `Modal`, `Menu`, `Avatar`, `Badge`, `TextField`…) foram mantidas, agora por cima do MUI | Claude | As telas mudaram pouco, e os testes de fluxo passaram sem alteração |
+| 1c | Mapeamento: Dialog / Drawer de baixo (Modal), Menu, Snackbar, Skeleton, Avatar, Chip (Badge), TextField, select nativo, Autocomplete (cidade), Tabs, Drawer permanente (sidebar), AppBar, BottomNavigation, Alert (avisos e erros) | Claude | A área de arrastar-e-soltar do documento continua própria, montada com peças do MUI (o MUI não tem uma pronta) |
+| 1c | Visual do design no tema: botões em pílula, sem sombra, sem caixa alta, DM Sans, cantos de 12 px | Claude | Ajustes em `components` do tema, não em cada tela |
+| 1c | MUI 9 sem *system props*: `fontWeight` e afins vão no `sx` | Claude | Ex.: `<Typography sx={{ fontWeight: 700 }}>` |
+| 1c | Cor do avatar de iniciais em estilo inline | Claude | Fixa por pessoa e fácil de testar |
+| 1c | Testes adaptados ao MUI: snackbar com `role="alert"`, animações de saída (esperar a remoção), foco inicial no painel do Dialog, tooltip ao passar o mouse | Claude | Só 9 dos 138 testes precisaram de ajuste |
+| 1c | Tamanho: o chunk do MUI tem 362 kB (112 kB gzip) | Claude | Custo aceito ao trocar os componentes próprios. O código do app continua em 42 kB |
+| 1c | Uma falha intermitente na primeira rodada com cobertura, logo depois de formatar; não se repetiu em 6 rodadas seguidas | Claude | Provável lentidão do primeiro carregamento das páginas lazy. Fica em observação |
+

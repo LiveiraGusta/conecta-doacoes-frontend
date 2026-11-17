@@ -2,7 +2,10 @@ import CheckCircleRounded from '@mui/icons-material/CheckCircleRounded';
 import CloseRounded from '@mui/icons-material/CloseRounded';
 import ErrorRounded from '@mui/icons-material/ErrorRounded';
 import InfoRounded from '@mui/icons-material/InfoRounded';
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import MuiButton from '@mui/material/Button';
+import MuiIconButton from '@mui/material/IconButton';
+import Snackbar from '@mui/material/Snackbar';
+import { useCallback, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SnackbarContext, type SnackbarApi, type SnackbarOptions } from '@/core/feedback/useSnackbar';
 
@@ -11,10 +14,11 @@ interface Entry extends SnackbarOptions {
 }
 
 const ICONS = { info: InfoRounded, success: CheckCircleRounded, error: ErrorRounded } as const;
+const ICON_COLOR = { info: 'inherit', success: 'success.light', error: 'error.light' } as const;
 
 /**
- * Snackbar no estilo do mat-snackbar: fila, um por vez, some sozinho em 4 s, ação opcional ("Desfazer").
- * Fica na base, centralizado; no mobile, acima da BottomNav. A região `aria-live` anuncia a mensagem.
+ * Snackbar do MUI no estilo mat-snackbar: fila, um por vez, some em 4 s (pausa com o mouse em cima),
+ * ação opcional ("Desfazer"). Na base, centralizado; no mobile, acima da BottomNav.
  */
 export function SnackbarProvider({ children }: { children: ReactNode }) {
   const [queue, setQueue] = useState<Entry[]>([]);
@@ -31,66 +35,61 @@ export function SnackbarProvider({ children }: { children: ReactNode }) {
     setQueue((q) => (id === undefined ? q.slice(1) : q.filter((e) => e.id !== id)));
   }, []);
 
-  const current = queue[0];
-
-  useEffect(() => {
-    if (!current) return;
-    const timer = setTimeout(() => dismiss(current.id), current.duration ?? 4000);
-    return () => clearTimeout(timer);
-  }, [current, dismiss]);
-
   const api = useMemo<SnackbarApi>(() => ({ show, dismiss }), [show, dismiss]);
-  const Icon = current ? ICONS[current.variant ?? 'info'] : null;
+  const current = queue[0];
+  const variant = current?.variant ?? 'info';
+  const Icon = ICONS[variant];
 
   return (
     <SnackbarContext.Provider value={api}>
       {children}
-      <div
-        role="status"
-        aria-live="polite"
-        className="pointer-events-none fixed inset-x-0 bottom-20 z-50 flex justify-center px-4 md:bottom-6"
-      >
-        {current && Icon && (
-          <div
-            key={current.id}
-            data-variant={current.variant ?? 'info'}
-            className="pointer-events-auto flex w-full max-w-md items-center gap-3 rounded-xl bg-fg px-4 py-3 text-sm text-surface shadow-lg"
-          >
-            <Icon
-              fontSize="inherit"
-              aria-hidden
-              className={
-                current.variant === 'error'
-                  ? 'text-lg text-red-300 dark:text-red-700'
-                  : current.variant === 'success'
-                    ? 'text-lg text-green-300 dark:text-green-700'
-                    : 'text-lg opacity-80'
-              }
-            />
-            <span className="flex-1">{current.message}</span>
-            {current.action && (
-              <button
-                type="button"
-                className="rounded-md px-2 py-1 font-semibold text-primary-200 uppercase hover:bg-white/10 dark:text-primary-700 dark:hover:bg-black/10"
-                onClick={() => {
-                  current.action!.onClick();
-                  dismiss(current.id);
-                }}
+      <Snackbar
+        // key: cada mensagem é um snackbar novo (reinicia o tempo e a animação).
+        key={current?.id}
+        open={Boolean(current)}
+        autoHideDuration={current?.duration ?? 4000}
+        onClose={(_e, reason) => {
+          if (reason !== 'clickaway' && current) dismiss(current.id);
+        }}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        sx={{ bottom: { xs: 88, md: 24 } }}
+        slotProps={{ content: { 'data-variant': variant } as object }}
+        message={
+          current && (
+            <span className="flex items-center gap-2">
+              <Icon fontSize="small" sx={{ color: ICON_COLOR[variant] }} aria-hidden />
+              {current.message}
+            </span>
+          )
+        }
+        action={
+          current && (
+            <>
+              {current.action && (
+                <MuiButton
+                  size="small"
+                  color="primary"
+                  sx={{ color: 'primary.light', fontWeight: 700 }}
+                  onClick={() => {
+                    current.action!.onClick();
+                    dismiss(current.id);
+                  }}
+                >
+                  {current.action.label}
+                </MuiButton>
+              )}
+              <MuiIconButton
+                size="small"
+                color="inherit"
+                aria-label={t('actions.close')}
+                onClick={() => dismiss(current.id)}
               >
-                {current.action.label}
-              </button>
-            )}
-            <button
-              type="button"
-              aria-label={t('actions.close')}
-              className="rounded-md p-1 opacity-80 hover:bg-white/10"
-              onClick={() => dismiss(current.id)}
-            >
-              <CloseRounded fontSize="inherit" aria-hidden />
-            </button>
-          </div>
-        )}
-      </div>
+                <CloseRounded fontSize="small" />
+              </MuiIconButton>
+            </>
+          )
+        }
+      />
     </SnackbarContext.Provider>
   );
 }

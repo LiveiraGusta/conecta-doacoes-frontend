@@ -1,12 +1,9 @@
 import { useTranslation } from 'react-i18next';
-import { isRouteErrorResponse, Link, useNavigate, useRouteError } from 'react-router';
+import { isRouteErrorResponse, useNavigate, useRouteError } from 'react-router';
 import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ApiError } from '@/core/api/http';
 import { homeFor, useAuth } from '@/core/auth/useAuth';
-
-const linkButton =
-  'inline-flex h-10 items-center rounded-full bg-primary px-5 text-sm font-semibold text-on-primary hover:bg-primary-hover';
 
 /** 404: rota que não existe, ou ITEM_NOT_FOUND/USER_NOT_FOUND numa página de detalhe. */
 export function NotFoundPage() {
@@ -23,9 +20,7 @@ export function NotFoundPage() {
           <Button variant="secondary" onClick={() => navigate(-1)}>
             {t('actions.back')}
           </Button>
-          <Link to={homeFor(user?.role)} className={linkButton}>
-            {t('actions.goHome')}
-          </Link>
+          <Button to={homeFor(user?.role)}>{t('actions.goHome')}</Button>
         </>
       }
     />
@@ -41,11 +36,7 @@ export function ForbiddenPage() {
       illustration="forbidden"
       title={t('system.forbiddenTitle')}
       description={t('system.forbiddenDescription')}
-      action={
-        <Link to={homeFor(user?.role)} className={linkButton}>
-          {t('actions.goHome')}
-        </Link>
-      }
+      action={<Button to={homeFor(user?.role)}>{t('actions.goHome')}</Button>}
     />
   );
 }
@@ -63,11 +54,7 @@ export function ErrorPage() {
         illustration="notFound"
         title={t('system.notFoundTitle')}
         description={t('system.notFoundDescription')}
-        action={
-          <a href="/" className={linkButton}>
-            {t('actions.goHome')}
-          </a>
-        }
+        action={<Button href="/">{t('actions.goHome')}</Button>}
       />
     );
   }
@@ -90,12 +77,9 @@ export function ErrorPage() {
         action={
           <>
             <Button onClick={() => window.location.reload()}>{t('actions.retry')}</Button>
-            <a
-              href="/"
-              className="inline-flex h-10 items-center rounded-full border border-border px-5 text-sm font-semibold"
-            >
+            <Button href="/" variant="secondary">
               {t('actions.goHome')}
-            </a>
+            </Button>
           </>
         }
       />

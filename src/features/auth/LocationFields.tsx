@@ -71,6 +71,7 @@ export function LocationFields<T extends LocationShape>({
               field.onBlur();
             }}
             options={location.cities}
+            freeSolo={location.isError}
             disabled={!location.state}
             placeholder={location.state ? t('fields.cityPlaceholder') : t('fields.cityFirstState')}
             emptyText={location.isError ? t('fields.cityUnavailable') : t('fields.cityNotFound')}

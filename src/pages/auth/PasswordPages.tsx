@@ -1,3 +1,4 @@
+import MuiLink from '@mui/material/Link';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
@@ -19,8 +20,6 @@ import {
 } from '@/core/schemas/auth';
 import { forgotPassword, resetPassword } from '@/core/services/auth';
 import { applyApiError } from '@/core/utils/apiErrors';
-
-const linkClass = 'font-semibold text-primary-text hover:underline';
 
 /** "Esqueci a senha" (guia, F3): a resposta é sempre a mesma, exista ou não a conta. */
 export function ForgotPasswordPage() {
@@ -45,9 +44,9 @@ export function ForgotPasswordPage() {
       title={sent ? t('forgot.sentTitle') : t('forgot.title')}
       subtitle={sent ? undefined : t('forgot.description')}
       footer={
-        <Link to="/login" className={linkClass}>
+        <MuiLink component={Link} to="/login" sx={{ fontWeight: 600 }}>
           {t('forgot.backToLogin')}
-        </Link>
+        </MuiLink>
       }
     >
       {sent ? (
@@ -123,12 +122,9 @@ export function ResetPasswordPage() {
         title={t('reset.invalidTitle')}
         subtitle={t('reset.invalidDescription')}
       >
-        <Link
-          to="/forgot-password"
-          className="inline-flex h-12 items-center justify-center rounded-full bg-primary px-6 font-semibold text-on-primary hover:bg-primary-hover"
-        >
+        <Button to="/forgot-password" size="lg" fullWidth>
           {t('reset.requestNew')}
-        </Link>
+        </Button>
       </AuthSplitLayout>
     );
   }
