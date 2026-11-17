@@ -11,6 +11,7 @@ import Typography from '@mui/material/Typography';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 import { useAuth } from '@/core/auth/useAuth';
+import { useUnreadCount } from '@/core/hooks/useChats';
 import { usePageTitle } from '@/core/hooks/usePageTitle';
 import { Skeleton } from '../ui/Skeleton';
 import { AccountMenu } from './AccountMenu';
@@ -48,7 +49,8 @@ function BottomItem({ item, unread, ...rest }: { item: NavItem; unread: number; 
  * Mobile (imagem design-mobile-feed): AppBar clara compacta (título + avatar) e BottomNavigation fixa
  * com os 4 ícones. O conteúdo ganha espaço embaixo para a barra não cobrir nada.
  */
-export function AppShellMobile({ content, unread = 0 }: { content: HTMLElement; unread?: number }) {
+export function AppShellMobile({ content }: { content: HTMLElement }) {
+  const unread = useUnreadCount();
   const title = usePageTitle();
   const { user, status } = useAuth();
   const { t } = useTranslation();

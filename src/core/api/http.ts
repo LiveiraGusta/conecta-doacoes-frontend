@@ -48,6 +48,11 @@ export function setUnauthorizedHandler(handler: UnauthorizedHandler | null) {
   onUnauthorized = handler;
 }
 
+/** Avisa a sessão caída vinda de fora do fetch (WebSocket fechado com 4401). */
+export function notifyUnauthorized(source: string) {
+  onUnauthorized?.(source);
+}
+
 export function buildUrl(path: string, query?: Query): string {
   const url = new URL(API_URL + path);
   for (const [k, v] of Object.entries(query ?? {})) {

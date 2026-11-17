@@ -13,6 +13,7 @@ import Tooltip from '@mui/material/Tooltip';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 import { useAuth } from '@/core/auth/useAuth';
+import { useUnreadCount } from '@/core/hooks/useChats';
 import { useLocalStorage } from '@/core/hooks/useLocalStorage';
 import { cn } from '@/core/utils/cn';
 import { CountBadge } from '../ui/Badge';
@@ -70,7 +71,8 @@ function SidebarItem({ item, collapsed, unread }: { item: NavItem; collapsed: bo
  * Sidebar do desktop (Drawer permanente do MUI): 256 px com ícone e texto, ou 72 px só com ícones
  * (o nome vira tooltip e o contador vai para cima do ícone). A escolha fica no localStorage.
  */
-export function Sidebar({ unread = 0 }: { unread?: number }) {
+export function Sidebar() {
+  const unread = useUnreadCount();
   const [collapsed, setCollapsed] = useLocalStorage(SIDEBAR_STORAGE_KEY, false);
   const { user } = useAuth();
   const { t } = useTranslation();

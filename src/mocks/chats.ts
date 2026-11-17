@@ -1,0 +1,70 @@
+import type { Message } from '@/core/types/api';
+import { ITEM_IDS } from './items';
+
+/** Denúncia como fica no "banco" falso (a fila do Admin chega na fase 7). */
+export interface MockReport {
+  id: string;
+  item_id: string;
+  reporter_id: string;
+  reported_id: string;
+  reason: string;
+  status: 'ABERTA' | 'RESOLVIDA';
+  created_at: string;
+}
+
+const MINUTE = 60 * 1000;
+const minutesAgo = (m: number) => new Date(Date.now() - m * MINUTE).toISOString();
+
+let seq = 0;
+const nextId = () => `66666666-6666-4666-8666-${String(++seq).padStart(12, '0')}`;
+
+function msg(itemId: string, from: string, to: string, text: string, ago: number): Message {
+  return {
+    id: nextId(),
+    item_id: itemId,
+    sender_id: from,
+    receiver_id: to,
+    message: text,
+    created_at: minutesAgo(ago),
+  };
+}
+
+/**
+ * Conversas do seed (fase 5):
+ * - bicicleta: Marina ↔ ONG Salvadora, em negociação, 2 mensagens da ONG ainda não lidas pela Marina;
+ * - leite em pó: Marina ↔ Casa do Bem, em negociação, tudo lido;
+ * - roupas de bebê: Marina ↔ ONG Salvadora, doada (só leitura).
+ */
+export function seedChats(ids: { donor: string; ngoActive: string; ngoActive2: string }) {
+  seq = 0;
+  const { donor, ngoActive: ngo, ngoActive2: ngo2 } = ids;
+  const messages: Message[] = [
+    msg(ITEM_IDS.bike, donor, ngo, 'Oi! Que bom que a bicicleta vai para vocês.', 600),
+    msg(ITEM_IDS.bike, ngo, donor, 'Oi, Marina! Muito obrigado. Temos uma criança que vai adorar.', 590),
+    msg(ITEM_IDS.bike, donor, ngo, 'Posso levar até aí no sábado de manhã. Funciona?', 120),
+    msg(ITEM_IDS.bike, ngo, donor, 'Funciona sim! Estamos abertos das 9h às 13h.', 30),
+    msg(ITEM_IDS.bike, ngo, donor, 'O endereço é Av. Paulista, 1000, sala 12.', 29),
+    msg(ITEM_IDS.milk, donor, ngo2, 'Olá! As latas estão separadas.', 2000),
+    msg(ITEM_IDS.milk, ngo2, donor, 'Perfeito, passamos para buscar na quinta.', 1900),
+    msg(ITEM_IDS.babyClothes, donor, ngo, 'As roupas estão lavadas e dobradas.', 4400),
+    msg(ITEM_IDS.babyClothes, ngo, donor, 'Recebemos tudo! Muito obrigado.', 4330),
+  ];
+  // Última leitura de cada um (`${itemId}:${userId}`): a Marina leu a bicicleta antes das 2 últimas.
+  const reads = new Map<string, string>([
+    [`${ITEM_IDS.bike}:${donor}`, minutesAgo(100)],
+    [`${ITEM_IDS.bike}:${ngo}`, minutesAgo(29)],
+    [`${ITEM_IDS.milk}:${donor}`, minutesAgo(1800)],
+    [`${ITEM_IDS.milk}:${ngo2}`, minutesAgo(1900)],
+    [`${ITEM_IDS.babyClothes}:${donor}`, minutesAgo(4300)],
+    [`${ITEM_IDS.babyClothes}:${ngo}`, minutesAgo(4330)],
+  ]);
+  return { messages, reads, reports: new Map<string, MockReport>() };
+}
+
+/** Respostas automáticas da outra parte no `dev:mock` (para ver o tempo real funcionando). */
+export const AUTO_REPLIES = [
+  'Combinado! 👍',
+  'Perfeito, obrigado pelo aviso.',
+  'Pode ser. Te aviso quando estiver saindo.',
+  'Ótimo, até lá!',
+];
