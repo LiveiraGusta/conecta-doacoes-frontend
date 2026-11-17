@@ -192,3 +192,20 @@ O detalhe técnico está em `backend/docs/DECISOES.md`, na seção "Integração
 | 1b | Bibliotecas em chunks próprios (`react`, `router`, `mui`, `vendor`) | Claude | O app tem 38 kB e as bibliotecas ficam em cache entre deploys. Some o aviso de chunk > 500 kB |
 | 1b | Testes: `onlineManager.setOnline(true)` depois de cada teste | Claude | O TanStack Query guarda "offline" num singleton; um teste de offline pausava as queries dos testes seguintes |
 
+## Fase 2 — Autenticação
+
+| Fase | Decisão | Quem tomou | Consequência |
+| --- | --- | --- | --- |
+| 2 | Cidade com UF em lista e sugestões do IBGE; ao sair do campo, a grafia vira a oficial; cidade fora da lista é recusada | Usuário | O feed compara a cidade exata: "Sao paulo" e "São Paulo" seriam cidades diferentes. Só a UF sai para o IBGE |
+| 2 | Sem IBGE (rede ou fora do ar), a cidade digitada é aceita, com aviso | Claude | O cadastro não trava por causa de um serviço externo |
+| 2 | Depois do cadastro, a ONG vê "Cadastro recebido" (`/bem-vindo-ong`) e depois o feed | Usuário | O banner de "em análise" continua no feed |
+| 2 | Senha com mostrar/ocultar e checklist ao vivo (8+ caracteres, letra, número) no cadastro e na senha nova | Usuário | O login não mostra o checklist (a API responde só o erro genérico) |
+| 2 | Documento da ONG em área de arrastar-e-soltar, com nome, tamanho, miniatura e trocar/remover; sem editor de corte | Usuário | Tipo e tamanho validados no cliente; a API confere de novo pelo conteúdo |
+| 2 | CNPJ com máscara enquanto digita e dígitos verificadores conferidos no cliente | Claude | Mesma regra da API. Erros óbvios nem chegam a ela |
+| 2 | Erros da API vão para os campos: `details[].path` (com alias, ex.: `new_password` → senha) e códigos como `EMAIL_TAKEN`, `CNPJ_TAKEN`, `INVALID_DOCUMENT`; o resto vira alerta no formulário | Claude | `applyApiError` em `core/utils`. "E-mail já cadastrado" mostra o link "Entrar com este e-mail" (`/login?email=`) |
+| 2 | Cadastro com abas "Quero doar" / "Sou uma ONG" no `?tipo=` | Claude | Dá para mandar o link direto para ONGs (`/register?tipo=ong`) |
+| 2 | "Entrar como" (5 contas) na tela de login, só com `VITE_USE_MOCKS=true` e por import dinâmico | Usuário (plano) | Os dados falsos não entram no bundle de produção |
+| 2 | Destino pós-login guardado na sessão (`setUser(user, destino)`) e usado também pelo `PublicOnly` | Claude | Corrige um bug real: a ONG caía no `/feed` em vez de "Cadastro recebido". A navegação para a rota lazy roda numa transition do React Router 7, e o usuário gravado renderizava antes, fazendo o `PublicOnly` redirecionar para o início |
+| 2 | Testes de formulário com upload substituem o serviço (`vi.mock`) e conferem o que o formulário entrega; o multipart em si é testado no ambiente `node` | Claude | Consequência da limitação do jsdom com `FormData` + `File` (fase 1a) |
+| 2 | Tempo dos testes: `findBy` espera até 3 s e cada teste até 15 s | Claude | As páginas lazy e a digitação do user-event passavam do padrão em máquina lenta |
+

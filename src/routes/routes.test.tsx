@@ -47,9 +47,9 @@ describe('rotas e guards', () => {
     await waitFor(() => expect(currentUrl(second.router)).toBe('/feed'));
   });
 
-  it('visitante vê o login (placeholder da fase 2) fora do shell', async () => {
+  it('visitante vê o login fora do shell', async () => {
     renderApp('/login');
-    expect(await screen.findByText('Esta tela chega na fase 2 do plano.')).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Entrar', level: 1 })).toBeInTheDocument();
     expect(screen.queryByRole('navigation', { name: 'Navegação principal' })).not.toBeInTheDocument();
   });
 

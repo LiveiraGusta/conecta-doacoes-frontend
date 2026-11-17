@@ -28,7 +28,7 @@ describe('AppShell desktop', () => {
     await user.click(await screen.findByRole('button', { name: 'Conversas' }));
     const dialog = screen.getByRole('dialog', { name: 'Entre para continuar' });
     await user.click(within(dialog).getByRole('button', { name: 'Entrar' }));
-    expect(currentUrl(router)).toBe('/login?redirect=%2Fchats');
+    await waitFor(() => expect(currentUrl(router)).toBe('/login?redirect=%2Fchats'));
   });
 
   it('recolher a sidebar esconde os textos e lembra a escolha', async () => {

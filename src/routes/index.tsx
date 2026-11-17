@@ -22,7 +22,11 @@ const chats = page(async () => ({ default: (await placeholders()).ChatsPlacehold
 const profile = page(async () => ({ default: (await placeholders()).ProfilePlaceholder }));
 const settings = page(async () => ({ default: (await placeholders()).SettingsPlaceholder }));
 const admin = page(async () => ({ default: (await placeholders()).AdminPlaceholder }));
-const auth = page(async () => ({ default: (await placeholders()).AuthPlaceholder }));
+const loginPage = page(() => import('@/pages/auth/LoginPage'));
+const registerPage = page(() => import('@/pages/auth/RegisterPage'));
+const forgotPage = page(async () => ({ default: (await import('@/pages/auth/PasswordPages')).ForgotPasswordPage }));
+const resetPage = page(async () => ({ default: (await import('@/pages/auth/PasswordPages')).ResetPasswordPage }));
+const ngoWelcome = page(() => import('@/pages/auth/NgoWelcomePage'));
 
 /**
  * Rotas do app (plano, "Rotas"). Visitante vê feed, detalhe e página pessoal; o resto exige login,
@@ -37,13 +41,23 @@ export const routes: RouteObject[] = [
       {
         element: <PublicOnly />,
         children: [
-          { path: '/login', handle: title('pages.login'), ...auth },
-          { path: '/register', handle: title('pages.register'), ...auth },
-          { path: '/forgot-password', handle: title('pages.forgotPassword'), ...auth },
+          { path: '/login', handle: title('pages.login'), ...loginPage },
+          { path: '/register', handle: title('pages.register'), ...registerPage },
+          { path: '/forgot-password', handle: title('pages.forgotPassword'), ...forgotPage },
         ],
       },
       // O link do e-mail funciona logado ou não.
-      { path: '/redefinir-senha', handle: title('pages.resetPassword'), ...auth },
+      { path: '/redefinir-senha', handle: title('pages.resetPassword'), ...resetPage },
+      // Logo depois do cadastro da ONG: fora do shell, só para ONG logada.
+      {
+        element: <RequireAuth />,
+        children: [
+          {
+            element: <RequireRole roles={['NGO']} />,
+            children: [{ path: '/bem-vindo-ong', handle: title('pages.ngoWelcome'), ...ngoWelcome }],
+          },
+        ],
+      },
       {
         element: <AppShell />,
         children: [

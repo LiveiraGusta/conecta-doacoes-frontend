@@ -21,10 +21,3 @@ export const ChatsPlaceholder = () => <ComingSoonPage phase={5} />;
 export const ProfilePlaceholder = () => <ComingSoonPage phase={6} />;
 export const SettingsPlaceholder = () => <ComingSoonPage phase={6} />;
 export const AdminPlaceholder = () => <ComingSoonPage phase={7} />;
-
-/** Telas de autenticação (fase 2) ficam fora do AppShell. */
-export const AuthPlaceholder = () => (
-  <main className="flex min-h-dvh items-center justify-center bg-bg">
-    <ComingSoonPage phase={2} />
-  </main>
-);
