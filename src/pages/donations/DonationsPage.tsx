@@ -11,6 +11,7 @@ import { useAuth } from '@/core/auth/useAuth';
 import { useInfiniteTrigger } from '@/core/hooks/useInfiniteTrigger';
 import { MY_ITEMS_TABS, useMyItemCounts, useMyItems } from '@/core/hooks/useMyItems';
 import type { ItemStatus } from '@/core/types/api';
+import { stagger } from '@/core/utils/motion';
 import { MyItemCard, MyItemCardSkeleton } from '@/features/donations/MyItemCard';
 
 /** Status na URL em português curto (como os filtros do feed): `?status=negociacao`. */
@@ -92,8 +93,8 @@ export default function DonationsPage() {
     content = (
       <>
         <ul className="flex flex-col gap-4">
-          {items.map((item) => (
-            <li key={item.id}>
+          {items.map((item, i) => (
+            <li key={item.id} className="animate-fade-up" style={stagger(i % 12)}>
               <MyItemCard item={item} role={role} />
             </li>
           ))}

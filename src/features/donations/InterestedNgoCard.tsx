@@ -30,7 +30,7 @@ export function InterestedNgoCard({ ngo, canChoose, chosen, onChoose }: Interest
     <Card
       component="li"
       variant="outlined"
-      className="flex list-none flex-col gap-3 p-4 sm:flex-row sm:items-center"
+      className="flex animate-fade-up list-none flex-col gap-3 p-4 sm:flex-row sm:items-center"
       sx={{ borderRadius: 3, ...(chosen && { borderColor: 'success.main', borderWidth: 2 }) }}
     >
       <div className="flex min-w-0 flex-1 items-center gap-3">

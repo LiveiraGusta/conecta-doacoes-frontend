@@ -149,7 +149,9 @@ describe('Conversas (ONG)', () => {
     await user.click(screen.getByRole('button', { name: 'Confirmar recebimento' }));
     const dialog = await screen.findByRole('dialog', { name: 'Confirmar que recebeu Bicicleta aro 20?' });
     await user.click(within(dialog).getByRole('button', { name: 'Confirmar recebimento' }));
-    expect(await screen.findByText(/Doação concluída! Obrigado/)).toBeInTheDocument();
+    const celebration = await screen.findByRole('dialog', { name: 'Doação concluída! 🎉' });
+    expect(within(celebration).getByText('Bicicleta aro 20')).toBeInTheDocument();
+    await user.click(within(celebration).getByRole('button', { name: 'Continuar' }));
     expect(
       await screen.findByText('Doação concluída. A conversa fica disponível só para leitura.'),
     ).toBeInTheDocument();

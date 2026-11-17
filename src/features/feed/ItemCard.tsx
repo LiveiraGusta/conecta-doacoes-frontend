@@ -51,7 +51,12 @@ function TitleLink({ item, link }: { item: FeedCardItem; link: ItemLink }) {
 export function ItemCardDesktop({ item }: ItemCardProps) {
   const { link, open, category } = useCard(item);
   return (
-    <Card component="article" elevation={2} className="flex h-full flex-col" sx={{ borderRadius: 1 }}>
+    <Card
+      component="article"
+      elevation={2}
+      className="lift flex h-full flex-col hover:shadow-lg"
+      sx={{ borderRadius: 1 }}
+    >
       <PhotoCarousel photos={item.photos} title={item.title} onOpen={open} className="aspect-[4/3]" />
       <CardContent className="flex flex-1 flex-col gap-3">
         {/* Título e categoria empilhados: com 5 cards por linha, lado a lado o título ficava espremido. */}

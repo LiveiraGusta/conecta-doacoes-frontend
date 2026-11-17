@@ -23,6 +23,7 @@ import { useSnackbar } from '@/core/feedback/useSnackbar';
 import { addMessageToCache, chatKey, markRoomRead, useChatRoom, type ChatRoomView } from '@/core/hooks/useChats';
 import { useRealtime } from '@/core/realtime/realtimeContext';
 import { cancelNegotiation, confirmReceipt, reportChat, sendMessage } from '@/core/services/chats';
+import { CelebrationModal } from './CelebrationModal';
 import { CancelDialog, ReportDialog } from './ChatDialogs';
 import { Composer } from './Composer';
 import { MessageList, type PendingMessage } from './MessageList';
@@ -49,6 +50,7 @@ export function ChatRoom({ itemId, showBack = false }: { itemId: string; showBac
   const [dialog, setDialog] = useState<Dialog>(null);
   const [busy, setBusy] = useState(false);
   const [dialogError, setDialogError] = useState<string | null>(null);
+  const [celebrating, setCelebrating] = useState(false);
 
   // Sala aberta: inscreve no WebSocket e não avisa as mensagens dela.
   const { subscribe, unsubscribe, setActiveRoom } = realtime;
@@ -123,7 +125,7 @@ export function ChatRoom({ itemId, showBack = false }: { itemId: string; showBac
         (r) => r && { ...r, item: { ...r.item, status: 'DOADO' } },
       );
       refreshLists();
-      snackbar.show({ message: t('confirm.done'), variant: 'success' });
+      setCelebrating(true);
     });
 
   const cancel = (reason: string) =>
@@ -313,6 +315,7 @@ export function ChatRoom({ itemId, showBack = false }: { itemId: string; showBac
           setDialog('report');
         }}
       />
+      <CelebrationModal open={celebrating} title={item.title!} onClose={() => setCelebrating(false)} />
       <ReportDialog
         key={`report-${dialog === 'report'}`}
         open={dialog === 'report'}

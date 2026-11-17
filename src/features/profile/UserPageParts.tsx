@@ -112,7 +112,7 @@ export function NgoContactCard({ page }: { page: UserPageView }) {
 function DonationTile({ item }: { item: FeedCardItem }) {
   const { t } = useTranslation('common');
   return (
-    <li>
+    <li className="animate-fade-up">
       <RouterLink
         to={`/items/${item.id}`}
         className="group flex flex-col overflow-hidden rounded-xl border border-border bg-surface transition-shadow hover:shadow-md focus-visible:outline-2 focus-visible:outline-primary-500"

@@ -358,3 +358,16 @@ O detalhe técnico está em `backend/docs/DECISOES.md`, na seção "Integração
 | 8 | Sem chunk único para MUI e bibliotecas (só `react` e `router` separados) e modal de localização carregado só ao abrir | Claude | JS inicial de 378 para 280 KB gzip (−26%); editor de foto, arrastar, tabela e stepper só com a página que usa |
 | 8 | `npm audit` aponta alertas em dependências de desenvolvimento (picomatch via Vite, Vitest e lint-staged) | Claude | Não corrigido agora: a correção automática exige `--force` com mudanças incompatíveis. Revisar quando houver versões novas |
 | 8 | Testes: 17 de acessibilidade + 8 ponta a ponta; 292 unitários e de página no total | Claude | |
+
+## Fase 9 — Animações
+
+| Fase | Decisão | Quem tomou | Consequência |
+| --- | --- | --- | --- |
+| 9 | Animações sutis: 150–250 ms, fade e deslize curtos, sem quique | Usuário | Tokens no `@theme` do Tailwind (`animate-fade-up`, `animate-msg-in-*`, `animate-pop`, `animate-confetti`) e utilitário `.lift` |
+| 9 | Cards do feed entram em cascata (30 ms entre cada, no máximo 8 passos) e sobem 2 px no hover; listas (doações, interessadas, conversas, doações da página pessoal) entram com fade | Usuário | Itens que já estavam na tela não animam de novo |
+| 9 | Troca de página: fade curto do conteúdo quando a seção muda (Feed → Doações…), pela Web Animations API no `div` fixo do AppShell | Usuário | Não remonta a página; dentro da mesma seção (`/chats` → `/chats/:id`) não anima. Sem View Transitions: exigiria `viewTransition` em cada link |
+| 9 | Chat: mensagem que chega com a conversa aberta desliza do seu lado; as minhas já aparecem como pendentes e não deslizam de novo; "Enviando…" pulsa | Usuário | |
+| 9 | Micro-interações: coração do "Tenho interesse" pulsa ao clicar; contador de não lidas dá um pulo quando muda | Usuário | |
+| 9 | Doação concluída: modal com a ilustração "celebration" e confete em CSS (28 pedaços, sem biblioteca), só para a ONG que confirmou | Usuário | Substitui o snackbar dessa ação; o botão do rodapé é "Continuar" (o X do canto já se chama "Fechar") |
+| 9 | Quem pede menos movimento no sistema (`prefers-reduced-motion`) não vê animação nem confete | Spec (plano) | Regra global no `index.css` |
+| 9 | O `div` do conteúdo passou de `display: contents` para `block` | Claude | Precisa ter caixa para a animação de troca de página |

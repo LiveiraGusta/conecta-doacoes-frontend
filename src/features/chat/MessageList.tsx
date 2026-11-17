@@ -21,9 +21,26 @@ export interface PendingMessage {
 /** Perto do fim (em px): mensagem nova rola sozinha; mais acima, aparece "Novas mensagens". */
 const NEAR_BOTTOM = 120;
 
-function Bubble({ mine, children, footer }: { mine: boolean; children: ReactNode; footer: ReactNode }) {
+function Bubble({
+  mine,
+  animate = false,
+  children,
+  footer,
+}: {
+  mine: boolean;
+  /** Mensagem que chegou com a conversa aberta: entra deslizando do seu lado (fase 9). */
+  animate?: boolean;
+  children: ReactNode;
+  footer: ReactNode;
+}) {
   return (
-    <li className={cn('flex', mine ? 'justify-end' : 'justify-start')}>
+    <li
+      className={cn(
+        'flex',
+        mine ? 'justify-end' : 'justify-start',
+        animate && (mine ? 'animate-msg-in-right' : 'animate-msg-in-left'),
+      )}
+    >
       <div
         className={cn(
           'flex max-w-[80%] flex-col gap-0.5 rounded-2xl px-3.5 py-2 shadow-sm',
@@ -65,6 +82,8 @@ export function MessageList({
   const nearBottom = useRef(true);
   const seen = useRef(0);
   const [newBelow, setNewBelow] = useState(false);
+  // O que já estava na tela ao abrir não anima; só o que chega depois.
+  const [initialIds] = useState(() => new Set(messages.map((m) => m.id)));
 
   const total = messages.length + pending.length;
   const lastMine = pending.length > 0 || messages.at(-1)?.sender_id === myId;
@@ -120,6 +139,8 @@ export function MessageList({
                 {m ? (
                   <Bubble
                     mine={m.sender_id === myId}
+                    // As minhas já apareceram como pendentes: não deslizam de novo.
+                    animate={!initialIds.has(m.id) && m.sender_id !== myId}
                     footer={<time dateTime={m.created_at}>{formatTime(m.created_at)}</time>}
                   >
                     {m.message}
@@ -127,10 +148,11 @@ export function MessageList({
                 ) : (
                   <Bubble
                     mine
+                    animate
                     footer={
                       p!.status === 'sending' ? (
                         <>
-                          <ScheduleRounded sx={{ fontSize: 12 }} aria-hidden />
+                          <ScheduleRounded sx={{ fontSize: 12 }} className="animate-pulse" aria-hidden />
                           {t('room.sending')}
                         </>
                       ) : (

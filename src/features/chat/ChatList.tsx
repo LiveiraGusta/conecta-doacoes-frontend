@@ -30,7 +30,7 @@ function ChatRow({ chat, active }: { chat: ChatSummary; active: boolean }) {
   const unread = chat.unread_count > 0;
 
   return (
-    <li>
+    <li className="animate-fade-up">
       <ListItemButton
         component={RouterLink}
         to={`/chats/${chat.item_id}`}
