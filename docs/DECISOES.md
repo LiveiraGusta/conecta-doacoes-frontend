@@ -126,4 +126,12 @@ O detalhe técnico está em `backend/docs/DECISOES.md`, na seção "Integração
 | Fase | Decisão | Quem tomou | Consequência |
 | --- | --- | --- | --- |
 | Plano | No frontend, `main` e `develop` criadas a partir do primeiro commit (`docs/plano-frontend`) | Usuário | As branches das fases do frontend saem da `develop` |
+### Sub-fase 0.2b-1 (backend): preferências e campos de perfil
 
+| Fase | Decisão | Quem tomou | Consequência |
+| --- | --- | --- | --- |
+| 0.2b-1 | Telefone vem só com dígitos e DDD (`11987654321`) | Usuário | O front aplica a máscara `(11) 98765-4321` e monta `https://wa.me/55<phone>` |
+| 0.2b-1 | Instagram vem só como usuário (`ongsalvadora`) | Usuário | O front exibe `@ongsalvadora` e monta `https://instagram.com/<usuário>` |
+| 0.2b-1 | Preferências chegam em `user.preferences` (no `/auth/me`, no login e no cadastro), com rota própria para alterar | Usuário | O `ThemeProvider` aplica o tema no boot sem chamada extra e faz `PATCH /profile/preferences` otimista |
+| 0.2b-1 | Endereço da ONG só aparece para logados quando ela estiver `ATIVO` | Usuário | A página pessoal da ONG pendente ou rejeitada não mostra endereço (exceto para ela mesma) |
+| 0.2b-1 | Endereço é um objeto `address` (ou `null`); o ViaCEP é consultado pelo front | Usuário | O formulário preenche rua e bairro pelo CEP e envia o objeto completo |
