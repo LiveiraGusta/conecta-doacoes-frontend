@@ -55,7 +55,12 @@ export default function MockLoginPanel() {
               <ListItemAvatar>
                 <Avatar name={user.name} seed={user.id} size="sm" />
               </ListItemAvatar>
-              <ListItemText primary={t(`mock.accounts.${key}`)} secondary={user.email} />
+              <ListItemText
+                primary={t(`mock.accounts.${key}`)}
+                secondary={user.email}
+                className="min-w-0"
+                slotProps={{ secondary: { noWrap: true } }}
+              />
             </ListItemButton>
           );
         })}

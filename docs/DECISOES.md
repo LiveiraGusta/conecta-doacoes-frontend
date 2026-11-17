@@ -227,3 +227,15 @@ O detalhe técnico está em `backend/docs/DECISOES.md`, na seção "Integração
 | 1c | Tamanho: o chunk do MUI tem 362 kB (112 kB gzip) | Claude | Custo aceito ao trocar os componentes próprios. O código do app continua em 42 kB |
 | 1c | Uma falha intermitente na primeira rodada com cobertura, logo depois de formatar; não se repetiu em 6 rodadas seguidas | Claude | Provável lentidão do primeiro carregamento das páginas lazy. Fica em observação |
 
+### Revisão da 1c: inputs, ilustrações e animação
+
+| Fase | Decisão | Quem tomou | Consequência |
+| --- | --- | --- | --- |
+| 1c | **Bug corrigido:** campos sem borda, botões sem cor e rótulos sobrepostos no login e no cadastro | Usuário (apontou) / Claude (causa) | O Emotion, com `enableCssLayer`, injeta no topo do `<head>`, antes do CSS do Tailwind: a camada `mui` era declarada primeiro e ficava abaixo do reset do Tailwind. Agora a ordem das camadas é o 1º estilo do Emotion (`<GlobalStyles>` no `ThemeProvider`). Conferido com screenshots (desktop e mobile, Chromium headless) |
+| 1c | As 10 ilustrações baixadas do unDraw entraram no app; `#6c63ff` trocado por `currentColor` e `width`/`height` fixos removidos | Usuário | Seguem a cor do tema e escalam com o layout. "Sem permissão" (403) continua com o placeholder até ter um arquivo próprio |
+| 1c | No painel azul do login/cadastro, o destaque das ilustrações usa o tom 200 da cor do tema | Claude | Azul sobre azul sumia |
+| 1c | Ilustrações flutuam devagar (6 s) com sombra suave; paradas com `prefers-reduced-motion` | Usuário | Classes `animate-float` e `illustration-shadow`. `<Illustration animated={false}>` desliga |
+| 1c | `cn()` passa a usar `tailwind-merge` (com os tokens do tema) | Claude | Classes passadas por quem usa o componente vencem as padrão. Corrigiu a ilustração cortada no mobile (`h-36` perdia para `h-auto`) |
+| 1c | E-mails longos do "Entrar como" com reticências | Claude | Não vazam da caixa no mobile nem no desktop |
+| 1c | Testes: `findBy`/`waitFor` esperam até 5 s | Claude | O teste do cadastro de ONG falhou 2 vezes, sempre na 1ª rodada com cobertura depois de editar arquivos (máquina carregada); não reproduziu em 7 rodadas, nem com o cache limpo. Fica em observação |
+

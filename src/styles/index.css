@@ -15,6 +15,9 @@
 @theme inline {
   --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
 
+  /* Ilustrações flutuando devagar (classe `animate-float`). */
+  --animate-float: float 6s ease-in-out infinite;
+
   --color-primary-50: var(--p-50);
   --color-primary-100: var(--p-100);
   --color-primary-200: var(--p-200);
@@ -161,5 +164,33 @@
 
   :focus-visible {
     @apply outline-2 outline-offset-2 outline-primary-500;
+  }
+}
+
+/* ── Ilustrações: flutuar devagar + sombra suave que acompanha o desenho ── */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@layer utilities {
+  .illustration-shadow {
+    filter: drop-shadow(0 14px 18px rgb(0 0 0 / 0.14));
+  }
+
+  .dark .illustration-shadow {
+    filter: drop-shadow(0 14px 22px rgb(0 0 0 / 0.45));
+  }
+
+  /* Quem pede menos movimento no sistema vê a ilustração parada. */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-float {
+      animation: none;
+    }
   }
 }
