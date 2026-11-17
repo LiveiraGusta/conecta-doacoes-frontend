@@ -58,6 +58,8 @@ export function InterestButton({
             icon={<VerifiedRounded />}
             label={t(view === 'received' ? 'status.received' : 'status.selected')}
             color="success"
+            // Card estreito (5 por linha): o texto quebra em vez de cortar.
+            sx={{ height: 'auto', py: 0.5, '& .MuiChip-label': { whiteSpace: 'normal', textAlign: 'center' } }}
           />
           <Button to={`/chats/${item.id}`} size={size} variant="secondary" icon={<ChatRounded />}>
             {t('status.openChat')}

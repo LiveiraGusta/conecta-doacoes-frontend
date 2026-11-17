@@ -54,7 +54,8 @@ export function ItemCardDesktop({ item }: ItemCardProps) {
     <Card component="article" elevation={2} className="flex h-full flex-col" sx={{ borderRadius: 1 }}>
       <PhotoCarousel photos={item.photos} title={item.title} onOpen={open} className="aspect-[4/3]" />
       <CardContent className="flex flex-1 flex-col gap-3">
-        <div className="flex items-start justify-between gap-2">
+        {/* Título e categoria empilhados: com 5 cards por linha, lado a lado o título ficava espremido. */}
+        <div className="flex flex-col items-start gap-1.5">
           <Typography variant="subtitle1" component="h3" sx={{ fontWeight: 700, lineHeight: 1.3 }}>
             <TitleLink item={item} link={link} />
           </Typography>
@@ -69,7 +70,7 @@ export function ItemCardDesktop({ item }: ItemCardProps) {
         )}
       </CardContent>
       <CardActions className="justify-center pb-5">
-        <InterestButton item={item} size="sm" className="min-w-44" />
+        <InterestButton item={item} size="sm" className="w-full" />
       </CardActions>
     </Card>
   );

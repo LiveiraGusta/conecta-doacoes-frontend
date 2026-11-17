@@ -6,9 +6,9 @@ import MailSent from '@/assets/illustrations/mail-sent.svg?react';
 import Messages from '@/assets/illustrations/messages.svg?react';
 import NotFound from '@/assets/illustrations/not-found.svg?react';
 import Offline from '@/assets/illustrations/offline.svg?react';
-import Placeholder from '@/assets/illustrations/placeholder.svg?react';
 import Register from '@/assets/illustrations/register.svg?react';
 import Waiting from '@/assets/illustrations/waiting.svg?react';
+import Forbidden from '@/assets/illustrations/forbidden.svg?react';
 import { cn } from '@/core/utils/cn';
 
 /**
@@ -22,8 +22,7 @@ const ILLUSTRATIONS = {
   register: Register,
   empty: Empty,
   notFound: NotFound,
-  // Ainda sem arquivo próprio (docs/ilustracoes.md): usa o placeholder.
-  forbidden: Placeholder,
+  forbidden: Forbidden,
   error: ErrorArt,
   offline: Offline,
   waiting: Waiting,

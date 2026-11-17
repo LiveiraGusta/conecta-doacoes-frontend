@@ -318,3 +318,12 @@ O detalhe técnico está em `backend/docs/DECISOES.md`, na seção "Integração
 | 6 | Excluir conta com negociação aberta mostra a mensagem da API com o atalho "Ver conversas" | Spec (guia F12) | |
 | 6 | Mock: perfil completo, imagens, preferências, senha, exclusão, documento, `/users/:id(+donations)`, `/public/users/:id` e ViaCEP; banner gerado para a ONG Salvadora | Claude | |
 | 6 | Testes: 28 novos (contrato dos mocks, máscaras e schemas, página pessoal, perfil, configurações); 261 no total | Claude | Conferido também com capturas do `dev:mock` (visitante, ONG, doadora, edição, CEP, conta, configurações claro/escuro, mobile, ONG rejeitada) |
+
+## Ajustes depois da fase 6
+
+| Fase | Decisão | Quem tomou | Consequência |
+| --- | --- | --- | --- |
+| 6+ | Feed com até 5 cards por linha (1 → 2 → 3 → 4 → 5 conforme a largura); no card do desktop, categoria embaixo do título e botão na largura do card | Usuário | Cards menores; o selo "Escolhida para você" quebra linha em vez de cortar |
+| 6+ | Login e cadastro no celular: faixa da ilustração na cor forte do tema, com a frase do app | Usuário | Antes era o tom claro (`primary-soft`), quase branco |
+| 6+ | No `dev:mock`, CEP fora da lista do mock consulta o ViaCEP de verdade; nos testes continua "não encontrado" | Usuário | Ex.: 09910-470 (Diadema) passa a preencher |
+| 6+ | Ilustração do 403 (`forbidden.svg`, enviada pelo usuário) recolorida com `currentColor`; placeholder removido | Usuário | Todas as ilustrações do plano estão no app |

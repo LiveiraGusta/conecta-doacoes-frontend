@@ -1,6 +1,6 @@
 # Ilustrações (unDraw)
 
-As telas usam ilustrações do [unDraw](https://undraw.co/illustrations), de uso livre e sem atribuição obrigatória. Todas já estão no app, menos `forbidden` (403), que ainda mostra o **placeholder** (`src/assets/illustrations/placeholder.svg`).
+As telas usam ilustrações do [unDraw](https://undraw.co/illustrations), de uso livre e sem atribuição obrigatória. Todas já estão no app, inclusive `forbidden` (403).
 
 ## Como trocar
 

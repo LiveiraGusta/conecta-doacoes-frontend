@@ -62,10 +62,16 @@ export function AuthSplitDesktop(props: AuthSplitLayoutProps) {
 }
 
 export function AuthSplitMobile(props: AuthSplitLayoutProps) {
+  const { t } = useTranslation();
   return (
     <main className="flex min-h-dvh flex-col bg-surface">
-      <div className="flex justify-center bg-primary-soft px-6 pt-6" aria-hidden>
-        <Illustration name={props.illustration} className="h-36 w-auto" />
+      {/* Mesma cor forte do painel do desktop (antes era o tom claro, quase branco). */}
+      <div
+        className="flex flex-col items-center gap-3 rounded-b-3xl bg-primary px-6 pt-6 pb-5 text-on-primary"
+        aria-hidden
+      >
+        <Illustration name={props.illustration} className="h-32 w-auto text-primary-200" />
+        <p className="text-center text-base font-medium">{t('tagline')}</p>
       </div>
       <div className="flex flex-1 flex-col px-5 py-6">
         <FormColumn {...props} />

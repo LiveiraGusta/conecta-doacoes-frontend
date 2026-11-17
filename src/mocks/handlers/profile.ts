@@ -1,4 +1,4 @@
-import { http, HttpResponse } from 'msw';
+import { http, HttpResponse, passthrough } from 'msw';
 import type { Category, PublicUser, User, UserProfile } from '@/core/types/api';
 import { DOCUMENT_TYPES, IMAGE_TYPES, MAX_UPLOAD_BYTES } from '@/core/utils/files';
 import { db } from '../db';
@@ -327,6 +327,8 @@ export const profileHandlers = [
   http.get('https://viacep.com.br/ws/:cep/json/', async ({ params }) => {
     await mockDelay();
     const found = CEPS[String(params.cep)];
-    return HttpResponse.json(found ? { cep: String(params.cep), ...found } : { erro: 'true' });
+    if (found) return HttpResponse.json({ cep: String(params.cep), ...found });
+    // No dev:mock, CEP fora da lista consulta o ViaCEP de verdade; nos testes, nada sai para a internet.
+    return import.meta.env.MODE === 'test' ? HttpResponse.json({ erro: 'true' }) : passthrough();
   }),
 ];
