@@ -120,3 +120,36 @@ describe('AppShell mobile', () => {
     expect(await screen.findByRole('link', { name: 'Entrar' })).toHaveAttribute('href', '/login');
   });
 });
+
+describe('AppShell: troca de desktop para mobile', () => {
+  it('a página não remonta (o que estava preenchido continua) e a busca muda de lugar', async () => {
+    renderApp('/feed', { loggedAs: IDS.donor });
+    const title = await screen.findByRole('heading', { name: 'Últimas doações (8)' });
+    expect(screen.getByRole('navigation', { name: 'Navegação principal' })).toBeInTheDocument();
+
+    // matchMedia que avisa os ouvintes quando a largura "muda".
+    let mobile = false;
+    const listeners = new Set<() => void>();
+    Object.defineProperty(window, 'matchMedia', {
+      configurable: true,
+      writable: true,
+      value: (query: string) => ({
+        get matches() {
+          return query.includes('max-width') ? mobile : false;
+        },
+        media: query,
+        addEventListener: (_: string, fn: () => void) => listeners.add(fn),
+        removeEventListener: (_: string, fn: () => void) => listeners.delete(fn),
+      }),
+    });
+    act(() => {
+      mobile = true;
+      listeners.forEach((fn) => fn());
+    });
+
+    // Casca mobile (barra de baixo), mesma página: o mesmo nó do título continua no documento.
+    expect(await screen.findByRole('searchbox')).toBeInTheDocument();
+    expect(title.isConnected).toBe(true);
+    expect(screen.getByRole('heading', { name: 'Últimas doações (8)' })).toBe(title);
+  });
+});

@@ -9,7 +9,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { useTranslation } from 'react-i18next';
-import { Link, Outlet } from 'react-router';
+import { Link } from 'react-router';
 import { useAuth } from '@/core/auth/useAuth';
 import { usePageTitle } from '@/core/hooks/usePageTitle';
 import { Skeleton } from '../ui/Skeleton';
@@ -17,6 +17,7 @@ import { AccountMenu } from './AccountMenu';
 import { NgoStatusBanner, OfflineBanner } from './Banners';
 import { useNavItem } from './NavEntry';
 import { navItemsFor, type NavItem } from './navItems';
+import { ShellContent } from './ShellContent';
 
 function BottomItem({ item, unread, ...rest }: { item: NavItem; unread: number; value: string }) {
   const { label, active, actionProps } = useNavItem(item);
@@ -47,7 +48,7 @@ function BottomItem({ item, unread, ...rest }: { item: NavItem; unread: number; 
  * Mobile (imagem design-mobile-feed): AppBar clara compacta (título + avatar) e BottomNavigation fixa
  * com os 4 ícones. O conteúdo ganha espaço embaixo para a barra não cobrir nada.
  */
-export function AppShellMobile({ unread = 0 }: { unread?: number }) {
+export function AppShellMobile({ content, unread = 0 }: { content: HTMLElement; unread?: number }) {
   const title = usePageTitle();
   const { user, status } = useAuth();
   const { t } = useTranslation();
@@ -76,9 +77,7 @@ export function AppShellMobile({ unread = 0 }: { unread?: number }) {
         </Toolbar>
       </AppBar>
       <NgoStatusBanner />
-      <main id="conteudo" className="flex-1 pb-24">
-        <Outlet />
-      </main>
+      <ShellContent content={content} className="flex-1 pb-24" />
       <Paper elevation={6} className="fixed inset-x-0 bottom-0 z-20 overflow-hidden rounded-t-3xl">
         <nav aria-label={t('nav.main')}>
           <BottomNavigation showLabels={false} className="h-[72px]">
