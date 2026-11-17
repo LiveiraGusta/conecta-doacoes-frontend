@@ -172,3 +172,23 @@ O detalhe técnico está em `backend/docs/DECISOES.md`, na seção "Integração
 | 1a | `docs/` fora do Prettier | Claude | Ele realinharia as tabelas largas dos documentos a cada edição |
 | 1a | Página provisória `FoundationPage` (sessão + troca de tema) | Claude | Sai na fase 1b, quando entram o `AppShell` e as rotas |
 
+## Fase 1b — Shell, rotas e componentes base
+
+| Fase | Decisão | Quem tomou | Consequência |
+| --- | --- | --- | --- |
+| 1b | Merge local da `feat/fundacao` na `develop` (sem push); a 1b sai da `develop` | Usuário | Mesmo fluxo do backend |
+| 1b | Rotas com `createBrowserRouter`, páginas `lazy` e `errorElement` na raiz; guards como rotas de layout (`RequireAuth`, `RequireRole`, `PublicOnly`) | Usuário | O 403 aparece dentro do shell. O erro inesperado aparece fora dos providers |
+| 1b | Menu do avatar (Minha página, Editar perfil, Configurações, Sair) no header; Sair também no rodapé da sidebar; no mobile, a BottomNav mantém os 4 ícones | Usuário | Fiel ao design |
+| 1b | Avatar de iniciais com uma paleta fixa de 8 cores, escolhida pelo hash do id | Usuário | A mesma pessoa tem sempre a mesma cor, em qualquer tema |
+| 1b | Sair pede confirmação ("Deseja sair?") | Spec (plano) | `useLogoutConfirm`, usado no menu e na sidebar |
+| 1b | Sessão expirada vira snackbar + login com `?redirect=`, e não uma tela própria | Claude | Só quando havia usuário logado. O 401 de visitante não avisa nada |
+| 1b | `?redirect=` só aceita caminho interno (`/…`, sem `//` nem `/\`) | Claude | Evita *open redirect* depois do login |
+| 1b | Contexto e hook do snackbar e do "Entre para continuar" em `core/feedback`; a parte visual em `components/feedback` | Claude | O `AuthProvider` (em `core`) avisa a sessão expirada sem depender de UI |
+| 1b | Componentes de formulário (Input, Select, FieldError) ficam para a fase 2 | Claude | Nascem junto com os primeiros formulários |
+| 1b | Telas das fases seguintes são placeholders ("Esta tela chega na fase N") com rotas e guards funcionando | Claude | Cada fase troca o `lazy` da sua rota pela página real |
+| 1b | Ilustrações: um placeholder SVG com `currentColor` e a lista dos 11 nomes do unDraw em `docs/ilustracoes.md` | Usuário (1a) | Basta salvar o SVG com o nome da lista e trocar o import em `Illustration.tsx` |
+| 1b | `.gitattributes` com LF em todo o repositório; o teste da CSP calcula o hash sobre LF | Claude | No Windows, o checkout em CRLF mudava o hash do script inline |
+| 1b | Raiz do Vite e alias `@` saem do mesmo caminho, com o drive em maiúscula | Claude | Sem isso, no Windows o dev server carregava módulos duas vezes (`/src/…` e `/@fs/c:/…`), e o contexto do `useAuth` quebrava no navegador. O build não era afetado |
+| 1b | Bibliotecas em chunks próprios (`react`, `router`, `mui`, `vendor`) | Claude | O app tem 38 kB e as bibliotecas ficam em cache entre deploys. Some o aviso de chunk > 500 kB |
+| 1b | Testes: `onlineManager.setOnline(true)` depois de cada teste | Claude | O TanStack Query guarda "offline" num singleton; um teste de offline pausava as queries dos testes seguintes |
+
