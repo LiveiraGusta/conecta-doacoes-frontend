@@ -106,6 +106,7 @@ export const donationHandlers = [
       })),
     };
     db.state.items.set(id, item);
+    db.addEvent(id, null, 'DISPONIVEL', user.id);
     return HttpResponse.json(toItem(item), { status: 201 });
   }),
 
@@ -189,6 +190,7 @@ export const donationHandlers = [
     }
     item.status = 'EM_PROGRESSO';
     item.selected_ngo_id = body.ngo_id;
+    db.addEvent(item.id, 'DISPONIVEL', 'EM_PROGRESSO', user.id);
     return HttpResponse.json({
       item_id: item.id,
       status: 'EM_PROGRESSO',

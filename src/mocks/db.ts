@@ -38,6 +38,19 @@ export interface MockState {
   /** Última leitura: `${itemId}:${userId}` → ISO. */
   reads: Map<string, string>;
   reports: Map<string, MockReport>;
+  /** Transições de status dos itens (a tabela item_events da API), para o detalhe da denúncia. */
+  events: MockEvent[];
+  /** Documento enviado pela ONG (URL), por id do usuário; sem entrada, o mock gera um. */
+  documents: Map<string, string>;
+}
+
+export interface MockEvent {
+  item_id: string;
+  from_status: string | null;
+  to_status: string;
+  actor_id: string | null;
+  reason: string | null;
+  created_at: string;
 }
 
 const DEFAULT_PREFS: Preferences = { theme_color: 'AZUL', theme_mode: 'SYSTEM', show_donations: false };
@@ -127,9 +140,56 @@ function seed(): Map<string, MockUser> {
   return new Map(users.map((user) => [user.id, { user, password: MOCK_PASSWORD }]));
 }
 
+/** Histórico dos itens do seed: publicação, escolha da ONG (1 h depois) e conclusão. */
+function seedEvents(items: Map<string, MockItem>): MockEvent[] {
+  const plusHour = (iso: string) => new Date(new Date(iso).getTime() + 3600 * 1000).toISOString();
+  return [...items.values()].flatMap((i) => {
+    const events: MockEvent[] = [
+      {
+        item_id: i.id,
+        from_status: null,
+        to_status: 'DISPONIVEL',
+        actor_id: i.donor_id,
+        reason: null,
+        created_at: i.created_at,
+      },
+    ];
+    if (i.status !== 'DISPONIVEL') {
+      events.push({
+        item_id: i.id,
+        from_status: 'DISPONIVEL',
+        to_status: 'EM_PROGRESSO',
+        actor_id: i.donor_id,
+        reason: null,
+        created_at: plusHour(i.created_at),
+      });
+    }
+    if (i.status === 'DOADO') {
+      events.push({
+        item_id: i.id,
+        from_status: 'EM_PROGRESSO',
+        to_status: 'DOADO',
+        actor_id: i.selected_ngo_id,
+        reason: null,
+        created_at: i.completed_at!,
+      });
+    }
+    return events;
+  });
+}
+
 function fresh(): MockState {
   const { items, interests } = seedItems(IDS);
-  return { users: seed(), sessionUserId: null, items, interests, ...seedChats(IDS) };
+  const chats = seedChats(IDS);
+  return {
+    users: seed(),
+    sessionUserId: null,
+    items,
+    interests,
+    ...chats,
+    events: seedEvents(items),
+    documents: new Map(),
+  };
 }
 
 let state: MockState = fresh();
@@ -159,6 +219,17 @@ export const db = {
   },
   hasInterest(itemId: string, ngoId: string) {
     return state.interests.has(`${itemId}:${ngoId}`);
+  },
+  /** Registra uma transição de status do item (como a API grava em item_events). */
+  addEvent(itemId: string, from: string | null, to: string, actorId: string | null, reason: string | null = null) {
+    state.events.push({
+      item_id: itemId,
+      from_status: from,
+      to_status: to,
+      actor_id: actorId,
+      reason,
+      created_at: new Date().toISOString(),
+    });
   },
   interestsCount(itemId: string) {
     return [...state.interests.keys()].filter((k) => k.startsWith(`${itemId}:`)).length;

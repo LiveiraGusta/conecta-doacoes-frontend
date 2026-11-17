@@ -12,8 +12,6 @@ const page = (load: () => Promise<{ default: React.ComponentType }>): Pick<Route
   lazy: async () => ({ Component: (await load()).default }),
 });
 
-// Placeholders das próximas fases: cada fase troca a sua linha pela página real.
-const placeholders = () => import('@/pages/ComingSoonPage');
 const feed = page(() => import('@/pages/feed/FeedPage'));
 const item = page(() => import('@/pages/feed/ItemPage'));
 const userPage = page(() => import('@/pages/users/UserPage'));
@@ -23,7 +21,9 @@ const interests = page(() => import('@/pages/donations/InterestsPage'));
 const chats = page(() => import('@/pages/chats/ChatsPage'));
 const profile = page(() => import('@/pages/profile/ProfilePage'));
 const settings = page(() => import('@/pages/settings/SettingsPage'));
-const admin = page(async () => ({ default: (await placeholders()).AdminPlaceholder }));
+const adminNgos = page(() => import('@/pages/admin/AdminNgosPage'));
+const adminReports = page(() => import('@/pages/admin/AdminReportsPage'));
+const adminReport = page(() => import('@/pages/admin/AdminReportPage'));
 const loginPage = page(() => import('@/pages/auth/LoginPage'));
 const registerPage = page(() => import('@/pages/auth/RegisterPage'));
 const forgotPage = page(async () => ({ default: (await import('@/pages/auth/PasswordPages')).ForgotPasswordPage }));
@@ -95,9 +95,9 @@ export const routes: RouteObject[] = [
               {
                 element: <RequireRole roles={['ADMIN']} />,
                 children: [
-                  { path: 'admin/ngos', handle: title('pages.adminNgos'), ...admin },
-                  { path: 'admin/reports', handle: title('pages.adminReports'), ...admin },
-                  { path: 'admin/reports/:reportId', handle: title('pages.adminReport'), ...admin },
+                  { path: 'admin/ngos', handle: title('pages.adminNgos'), ...adminNgos },
+                  { path: 'admin/reports', handle: title('pages.adminReports'), ...adminReports },
+                  { path: 'admin/reports/:reportId', handle: title('pages.adminReport'), ...adminReport },
                 ],
               },
             ],

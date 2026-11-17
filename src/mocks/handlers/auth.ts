@@ -96,6 +96,7 @@ export const authHandlers = [
       },
     };
     db.insertUser(user, field('password'));
+    if (typeof URL.createObjectURL === 'function') db.state.documents.set(user.id, URL.createObjectURL(document));
     db.loginAs(user.id);
     return HttpResponse.json({ user }, { status: 201 });
   }),

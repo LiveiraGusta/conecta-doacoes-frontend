@@ -22,6 +22,15 @@ describe('CSP do vercel.json', () => {
     expect(csp, `atualize o script-src do vercel.json com ${hash}`).toContain(hash);
   });
 
+  it('libera a prévia do documento da ONG (moderação) só do próprio site, blob/data e do storage', () => {
+    const vercel = JSON.parse(readFileSync('vercel.json', 'utf8')) as {
+      headers: { headers: { key: string; value: string }[] }[];
+    };
+    const csp = vercel.headers.flatMap((h) => h.headers).find((h) => h.key === 'Content-Security-Policy')!.value;
+    expect(csp).toContain("frame-src 'self' blob: data: https://*.supabase.co");
+    expect(csp).toContain("frame-ancestors 'none'");
+  });
+
   it('o script anti-flash usa a mesma chave do localStorage que o ThemeProvider', async () => {
     const { THEME_STORAGE_KEY } = await import('@/core/theme/theme');
     expect(readFileSync('index.html', 'utf8')).toContain(`localStorage.getItem('${THEME_STORAGE_KEY}')`);

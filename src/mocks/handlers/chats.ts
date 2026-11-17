@@ -189,6 +189,7 @@ export const chatHandlers = [
     }
     item.status = 'DOADO';
     item.completed_at = new Date().toISOString();
+    db.addEvent(item.id, 'EM_PROGRESSO', 'DOADO', user.id);
     realtime.toRoom(item.id, {
       type: 'item.status_changed',
       item_id: item.id,
@@ -219,6 +220,7 @@ export const chatHandlers = [
     const cancelledBy = user.role as 'DONOR' | 'NGO';
     item.status = 'DISPONIVEL';
     item.selected_ngo_id = null;
+    db.addEvent(item.id, 'EM_PROGRESSO', 'DISPONIVEL', user.id, reason || null);
     realtime.toRoom(item.id, {
       type: 'item.status_changed',
       item_id: item.id,

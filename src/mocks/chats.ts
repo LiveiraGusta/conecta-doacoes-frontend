@@ -16,6 +16,12 @@ const MINUTE = 60 * 1000;
 const minutesAgo = (m: number) => new Date(Date.now() - m * MINUTE).toISOString();
 
 let seq = 0;
+/** IDs fixos das denúncias do seed. */
+export const REPORT_IDS = {
+  open: '77777777-7777-4777-8777-000000000001',
+  resolved: '77777777-7777-4777-8777-000000000002',
+} as const;
+
 const nextId = () => `66666666-6666-4666-8666-${String(++seq).padStart(12, '0')}`;
 
 function msg(itemId: string, from: string, to: string, text: string, ago: number): Message {
@@ -46,6 +52,7 @@ export function seedChats(ids: { donor: string; ngoActive: string; ngoActive2: s
     msg(ITEM_IDS.bike, ngo, donor, 'O endereço é Av. Paulista, 1000, sala 12.', 29),
     msg(ITEM_IDS.milk, donor, ngo2, 'Olá! As latas estão separadas.', 2000),
     msg(ITEM_IDS.milk, ngo2, donor, 'Perfeito, passamos para buscar na quinta.', 1900),
+    msg(ITEM_IDS.milk, ngo2, donor, 'Só precisamos de R$ 30 para o combustível, pode mandar por Pix?', 1850),
     msg(ITEM_IDS.babyClothes, donor, ngo, 'As roupas estão lavadas e dobradas.', 4400),
     msg(ITEM_IDS.babyClothes, ngo, donor, 'Recebemos tudo! Muito obrigado.', 4330),
   ];
@@ -58,7 +65,30 @@ export function seedChats(ids: { donor: string; ngoActive: string; ngoActive2: s
     [`${ITEM_IDS.babyClothes}:${donor}`, minutesAgo(4300)],
     [`${ITEM_IDS.babyClothes}:${ngo}`, minutesAgo(4330)],
   ]);
-  return { messages, reads, reports: new Map<string, MockReport>() };
+  // Denúncias para a fila do Admin (fase 7): uma aberta (doadora → Casa do Bem) e uma resolvida.
+  const reports = new Map<string, MockReport>(
+    [
+      {
+        id: '77777777-7777-4777-8777-000000000001',
+        item_id: ITEM_IDS.milk,
+        reporter_id: donor,
+        reported_id: ngo2,
+        reason: 'Pediram dinheiro por Pix para buscar a doação. Achei estranho.',
+        status: 'ABERTA' as const,
+        created_at: minutesAgo(1840),
+      },
+      {
+        id: '77777777-7777-4777-8777-000000000002',
+        item_id: ITEM_IDS.babyClothes,
+        reporter_id: ngo,
+        reported_id: donor,
+        reason: 'Marcou a entrega e não apareceu no primeiro dia combinado.',
+        status: 'RESOLVIDA' as const,
+        created_at: minutesAgo(4350),
+      },
+    ].map((r) => [r.id, r]),
+  );
+  return { messages, reads, reports };
 }
 
 /** Respostas automáticas da outra parte no `dev:mock` (para ver o tempo real funcionando). */

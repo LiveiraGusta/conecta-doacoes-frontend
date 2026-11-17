@@ -105,7 +105,6 @@
   },
   "system": {
     "loading": "Carregando…",
-    "comingSoon": "Esta tela chega na fase {{phase}} do plano.",
     "notFoundTitle": "Página não encontrada",
     "notFoundDescription": "O endereço pode estar errado, ou o conteúdo saiu do ar.",
     "forbiddenTitle": "Você não tem acesso a esta página",
