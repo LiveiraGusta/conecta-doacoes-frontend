@@ -17,5 +17,15 @@
   "website": "Endereço inválido. Use http:// ou https://",
   "documentRequired": "Envie o documento da ONG (cartão CNPJ)",
   "documentType": "Envie um PDF, JPG, PNG ou WEBP",
-  "fileSize": "O arquivo precisa ter até 5 MB"
+  "fileSize": "O arquivo precisa ter até 5 MB",
+  "photos": {
+    "count": "Adicione exatamente 3 fotos",
+    "type": "Use fotos JPG, PNG ou WEBP"
+  },
+  "item": {
+    "title": "Informe um título de 3 a 255 caracteres",
+    "category": "Escolha a categoria",
+    "description": "A descrição pode ter até 2000 caracteres",
+    "notes": "As observações podem ter até 1000 caracteres"
+  }
 }

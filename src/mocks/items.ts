@@ -69,6 +69,7 @@ export const ITEM_IDS = {
   jeans: '55555555-5555-4555-8555-000000000101',
   bike: '55555555-5555-4555-8555-000000000104',
   babyClothes: '55555555-5555-4555-8555-000000000107',
+  basket: '55555555-5555-4555-8555-000000000105',
   milk: '55555555-5555-4555-8555-000000000109',
   stroller: '55555555-5555-4555-8555-000000000110',
   uniforms: '55555555-5555-4555-8555-000000000112',
@@ -80,6 +81,7 @@ export function seedItems(ids: {
   donor3: string;
   ngoActive: string;
   ngoActive2: string;
+  ngoRejected: string;
 }) {
   seq = 200;
   const sp = { city: 'São Paulo', state: 'SP' };
@@ -131,6 +133,7 @@ export function seedItems(ids: {
       hoursAgo: 20,
     }),
     makeItem({
+      id: ITEM_IDS.basket,
       donor_id: ids.donor,
       title: 'Cesta básica fechada',
       description: 'Arroz, feijão, óleo, açúcar e café. Validade até 2027.',
@@ -256,6 +259,10 @@ export function seedItems(ids: {
     [`${ITEM_IDS.bike}:${ids.ngoActive}`, hoursAgo(19)],
     [`${ITEM_IDS.babyClothes}:${ids.ngoActive}`, hoursAgo(71)],
     [`${ITEM_IDS.milk}:${ids.ngoActive2}`, hoursAgo(47)],
+    // Cesta: duas ONGs ativas e uma que deixou de estar ativa depois de curtir (aparece sem "Escolher").
+    [`${ITEM_IDS.basket}:${ids.ngoActive2}`, hoursAgo(20)],
+    [`${ITEM_IDS.basket}:${ids.ngoRejected}`, hoursAgo(10)],
+    [`${ITEM_IDS.basket}:${ids.ngoActive}`, hoursAgo(4)],
   ]);
   return { items: new Map(items.map((i) => [i.id, i])), interests };
 }

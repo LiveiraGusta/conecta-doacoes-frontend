@@ -4,8 +4,9 @@ import PictureAsPdfRounded from '@mui/icons-material/PictureAsPdfRounded';
 import ButtonBase from '@mui/material/ButtonBase';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import { useEffect, useId, useMemo, useRef, useState } from 'react';
+import { useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useObjectUrl } from '@/core/hooks/useObjectUrl';
 import { cn } from '@/core/utils/cn';
 import { formatBytes } from '@/core/utils/files';
 import { Button, IconButton } from '../Button';
@@ -36,8 +37,7 @@ export function FileDropzone({ label, accept, value, onChange, error, hint, name
   const hintId = `${id}-dica`;
 
   // Miniatura só para imagem; a URL temporária é liberada quando o arquivo muda ou o campo sai da tela.
-  const preview = useMemo(() => (value?.type.startsWith('image/') ? URL.createObjectURL(value) : null), [value]);
-  useEffect(() => () => void (preview && URL.revokeObjectURL(preview)), [preview]);
+  const preview = useObjectUrl(value?.type.startsWith('image/') ? value : null);
 
   const pick = (files: FileList | null) => {
     const file = files?.[0];

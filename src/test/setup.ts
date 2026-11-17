@@ -55,3 +55,10 @@ afterEach(() => {
 afterAll(() => server.close());
 
 setMatchMedia(() => false);
+
+// jsdom não tem URL.createObjectURL (prévias de foto): uma URL falsa por arquivo basta.
+if (hasDom && typeof URL.createObjectURL !== 'function') {
+  let seq = 0;
+  URL.createObjectURL = () => `blob:teste-${++seq}`;
+  URL.revokeObjectURL = () => {};
+}

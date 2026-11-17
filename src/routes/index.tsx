@@ -17,7 +17,9 @@ const placeholders = () => import('@/pages/ComingSoonPage');
 const feed = page(() => import('@/pages/feed/FeedPage'));
 const item = page(() => import('@/pages/feed/ItemPage'));
 const userPage = page(async () => ({ default: (await placeholders()).UserPagePlaceholder }));
-const donations = page(async () => ({ default: (await placeholders()).DonationsPlaceholder }));
+const donations = page(() => import('@/pages/donations/DonationsPage'));
+const newItem = page(() => import('@/pages/donations/NewItemPage'));
+const interests = page(() => import('@/pages/donations/InterestsPage'));
 const chats = page(async () => ({ default: (await placeholders()).ChatsPlaceholder }));
 const profile = page(async () => ({ default: (await placeholders()).ProfilePlaceholder }));
 const settings = page(async () => ({ default: (await placeholders()).SettingsPlaceholder }));
@@ -73,7 +75,6 @@ export const routes: RouteObject[] = [
                 element: <RequireRole roles={['DONOR', 'NGO']} />,
                 children: [
                   { path: 'donations', handle: title('pages.donations'), ...donations },
-                  { path: 'donations/:itemId/interests', handle: title('pages.interests'), ...donations },
                   { path: 'chats', handle: title('pages.chats'), ...chats },
                   { path: 'chats/:itemId', handle: title('pages.chat'), ...chats },
                   { path: 'profile', handle: title('pages.profile'), ...profile },
@@ -81,7 +82,10 @@ export const routes: RouteObject[] = [
               },
               {
                 element: <RequireRole roles={['DONOR']} />,
-                children: [{ path: 'donations/new', handle: title('pages.newDonation'), ...donations }],
+                children: [
+                  { path: 'donations/new', handle: title('pages.newDonation'), ...newItem },
+                  { path: 'donations/:itemId/interests', handle: title('pages.interests'), ...interests },
+                ],
               },
               {
                 element: <RequireRole roles={['ADMIN']} />,

@@ -6,26 +6,32 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Outlet } from 'react-router';
 import { useAuth } from '@/core/auth/useAuth';
 import { usePageTitle } from '@/core/hooks/usePageTitle';
 import { Button } from '../ui/Button';
 import { Skeleton } from '../ui/Skeleton';
 import { AccountMenu } from './AccountMenu';
 import { NgoStatusBanner, OfflineBanner } from './Banners';
-import { HeaderSlotContext } from './headerSlotContext';
 import { LocationModal } from './LocationModal';
+import { ShellContent } from './ShellContent';
 import { Sidebar } from './Sidebar';
 
 /**
  * Desktop (imagem design-desktop-feed): sidebar recolhível + AppBar azul alta com título,
  * espaço para a busca da página, localização (clique troca a cidade) e nome + avatar com o menu da conta.
  */
-export function AppShellDesktop() {
+export function AppShellDesktop({
+  content,
+  headerSlotRef,
+}: {
+  /** `div` da página (ver AppShell). */
+  content: HTMLElement;
+  /** Recebe o espaço do header onde a página pode pôr a busca. */
+  headerSlotRef(el: HTMLElement | null): void;
+}) {
   const title = usePageTitle();
   const { user, status } = useAuth();
   const { t } = useTranslation(['common', 'feed']);
-  const [slot, setSlot] = useState<HTMLElement | null>(null);
   const [locationOpen, setLocationOpen] = useState(false);
 
   return (
@@ -39,7 +45,7 @@ export function AppShellDesktop() {
               <Typography variant="h4" component="h1" noWrap sx={{ fontWeight: 500 }}>
                 {title}
               </Typography>
-              <div ref={setSlot} className="max-w-2xl empty:hidden" />
+              <div ref={headerSlotRef} className="max-w-2xl empty:hidden" />
             </div>
             <div className="flex shrink-0 items-center gap-6">
               {status === 'loading' ? (
@@ -83,11 +89,7 @@ export function AppShellDesktop() {
           </Toolbar>
         </AppBar>
         <NgoStatusBanner />
-        <main id="conteudo" className="flex-1">
-          <HeaderSlotContext.Provider value={slot}>
-            <Outlet />
-          </HeaderSlotContext.Provider>
-        </main>
+        <ShellContent content={content} className="flex-1" />
       </div>
       {user && <LocationModal open={locationOpen} onClose={() => setLocationOpen(false)} />}
     </div>

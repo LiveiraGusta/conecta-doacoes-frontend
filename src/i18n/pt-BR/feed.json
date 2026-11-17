@@ -34,6 +34,8 @@
   "status": {
     "inProgress": "Em negociação",
     "selected": "Escolhida para você",
+    "received": "Recebida pela sua ONG",
+    "donated": "Doado a outra ONG",
     "openChat": "Abrir conversa"
   },
   "interest": {

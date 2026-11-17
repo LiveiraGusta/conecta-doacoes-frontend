@@ -27,6 +27,10 @@ const toggle = <T extends Interestable>(item: T, id: string, interested: boolean
           item.interests_count === null ? null : Math.max(0, item.interests_count + (interested ? 1 : -1)),
       };
 
+/** Listas de cards com interesse: o feed logado e "Meus interesses" da ONG (mesmo formato de página). */
+const isCardList = (key: QueryKey) =>
+  (key[0] === 'feed' && key[1] === 'auth') || (key[0] === 'myItems' && key[1] === 'list');
+
 /** Erros em que o servidor sabe mais que a tela: avisa e recarrega o item (guia, F7.3 e §1.3). */
 const STALE_CODES = new Set(['ITEM_NOT_AVAILABLE', 'ALREADY_SELECTED', 'ALREADY_INTERESTED', 'INTEREST_NOT_FOUND']);
 
@@ -46,7 +50,7 @@ export function useInterest() {
     },
 
     onMutate: async ({ id, interested }) => {
-      const feedFilter = { queryKey: ['feed', 'auth'] as QueryKey };
+      const feedFilter = { predicate: (q: { queryKey: QueryKey }) => isCardList(q.queryKey) };
       await queryClient.cancelQueries(feedFilter);
       await queryClient.cancelQueries({ queryKey: itemKey('auth', id) });
 
@@ -76,6 +80,9 @@ export function useInterest() {
         void queryClient.invalidateQueries({ queryKey: itemKey('auth', id) });
       }
     },
+
+    // "Meus interesses" muda de tamanho (e as contagens das abas): busca de novo depois de tudo.
+    onSettled: () => queryClient.invalidateQueries({ queryKey: ['myItems'] }),
 
     onSuccess: (_data, { id, interested, silent }) => {
       if (silent) return;

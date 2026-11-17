@@ -20,6 +20,8 @@ export interface ItemView {
   interests_count: number | null;
   is_selected: boolean;
   donor_id: string | null;
+  /** ONG escolhida (só logado; o doador usa na lista de interessadas). */
+  selected_ngo_id: string | null;
 }
 
 export const itemKey = (mode: 'auth' | 'public', id: string) => ['item', mode, id] as const;
@@ -49,6 +51,7 @@ export function useItem(id: string) {
           interests_count: d.interests_count ?? 0,
           is_selected: d.is_selected ?? false,
           donor_id: d.donor_id,
+          selected_ngo_id: d.selected_ngo_id ?? null,
         };
       }
       const p = await fetchPublicItem(id);
@@ -60,6 +63,7 @@ export function useItem(id: string) {
         interests_count: null,
         is_selected: false,
         donor_id: null,
+        selected_ngo_id: null,
       };
     },
   });

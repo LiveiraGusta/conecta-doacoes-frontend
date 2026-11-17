@@ -1,6 +1,12 @@
 /** Limite da API para fotos e documentos (guia, §1.5). */
 export const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
 
+/**
+ * Foto original antes do editor: pode ser maior, porque sai recortada e comprimida (até 1600 px, WEBP).
+ * O limite só evita travar o celular com arquivos enormes.
+ */
+export const MAX_ORIGINAL_PHOTO_BYTES = 20 * 1024 * 1024;
+
 export const DOCUMENT_TYPES = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'] as const;
 export const IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'] as const;
 
