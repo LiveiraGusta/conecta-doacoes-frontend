@@ -9,7 +9,8 @@ import { describe, expect, it } from 'vitest';
  */
 describe('CSP do vercel.json', () => {
   it('libera o script anti-flash pelo hash certo', () => {
-    const html = readFileSync('index.html', 'utf8');
+    // Em LF, como o arquivo vai para a Vercel (.gitattributes): no Windows o checkout pode ter CRLF.
+    const html = readFileSync('index.html', 'utf8').replace(/\r\n/g, '\n');
     const inline = html.match(/<script>([\s\S]*?)<\/script>/)?.[1];
     expect(inline, 'script inline do index.html').toBeTruthy();
     const hash = `'sha256-${createHash('sha256').update(inline!).digest('base64')}'`;

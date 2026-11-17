@@ -1,0 +1,9 @@
+# Fim de linha LF em todo o repositório (inclusive no Windows): o hash da CSP do script inline
+# do index.html depende dos bytes exatos, e o build da Vercel roda em Linux.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.webp binary
+*.woff binary
+*.woff2 binary

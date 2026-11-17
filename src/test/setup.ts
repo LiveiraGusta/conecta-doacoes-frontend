@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom/vitest';
+import { onlineManager } from '@tanstack/react-query';
 import { cleanup } from '@testing-library/react';
 import { afterAll, afterEach, beforeAll, vi } from 'vitest';
 import '@/i18n';
@@ -38,6 +39,8 @@ beforeAll(() => server.listen({ onUnhandledFrame: 'error' }));
 afterEach(() => {
   server.resetHandlers();
   db.reset();
+  // O TanStack Query guarda "offline" num singleton: um teste de offline pausaria as queries dos seguintes.
+  onlineManager.setOnline(true);
   if (!hasDom) return;
   cleanup();
   localStorage.clear();
