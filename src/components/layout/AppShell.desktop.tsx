@@ -12,7 +12,7 @@ import { Button } from '../ui/Button';
 import { Skeleton } from '../ui/Skeleton';
 import { AccountMenu } from './AccountMenu';
 import { NgoStatusBanner, OfflineBanner } from './Banners';
-import { LocationModal } from './LocationModal';
+import { LazyLocationModal } from './LazyLocationModal';
 import { ShellContent } from './ShellContent';
 import { Sidebar } from './Sidebar';
 
@@ -91,7 +91,7 @@ export function AppShellDesktop({
         <NgoStatusBanner />
         <ShellContent content={content} className="flex-1" />
       </div>
-      {user && <LocationModal open={locationOpen} onClose={() => setLocationOpen(false)} />}
+      {user && <LazyLocationModal open={locationOpen} onClose={() => setLocationOpen(false)} />}
     </div>
   );
 }

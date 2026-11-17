@@ -37,6 +37,7 @@
   },
   "nav": {
     "main": "Navegação principal",
+    "sidebar": "Menu lateral",
     "feed": "Feed",
     "chats": "Conversas",
     "donations": "Doações",

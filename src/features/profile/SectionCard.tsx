@@ -31,7 +31,7 @@ export function SectionCard({
       id={id}
       aria-labelledby={headingId}
       variant="outlined"
-      className={cn('flex scroll-mt-6 flex-col gap-4 p-4 md:p-6', className)}
+      className={cn('flex min-w-0 scroll-mt-6 flex-col gap-4 p-4 md:p-6', className)}
       sx={{ borderRadius: 3, ...(danger && { borderColor: 'error.main' }) }}
     >
       <div className="flex flex-col gap-1">

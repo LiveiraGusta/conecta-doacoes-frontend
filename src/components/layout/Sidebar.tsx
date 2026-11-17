@@ -10,11 +10,13 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Tooltip from '@mui/material/Tooltip';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 import { useAuth } from '@/core/auth/useAuth';
 import { useUnreadCount } from '@/core/hooks/useChats';
 import { useLocalStorage } from '@/core/hooks/useLocalStorage';
+import { useMediaQuery } from '@/core/hooks/useMediaQuery';
 import { cn } from '@/core/utils/cn';
 import { CountBadge } from '../ui/Badge';
 import { IconButton } from '../ui/Button';
@@ -25,6 +27,8 @@ import { useLogoutConfirm } from './useLogoutConfirm';
 
 export const SIDEBAR_STORAGE_KEY = 'cd-sidebar-collapsed';
 const WIDTH = { open: 256, closed: 72 };
+/** Abaixo disto (e acima do celular), a barra começa recolhida. */
+const NARROW_QUERY = '(max-width: 1023px)';
 
 const itemSx = (collapsed: boolean) => ({
   borderRadius: 3,
@@ -73,7 +77,13 @@ function SidebarItem({ item, collapsed, unread }: { item: NavItem; collapsed: bo
  */
 export function Sidebar() {
   const unread = useUnreadCount();
-  const [collapsed, setCollapsed] = useLocalStorage(SIDEBAR_STORAGE_KEY, false);
+  const [stored, setStored] = useLocalStorage(SIDEBAR_STORAGE_KEY, false);
+  // Entre 768 e 1023 px a barra larga apertava o conteúdo (revisão da fase 8): começa recolhida,
+  // e abrir ali vale só até sair da largura (não muda a escolha salva para telas grandes).
+  const narrow = useMediaQuery(NARROW_QUERY);
+  const [openNarrow, setOpenNarrow] = useState(false);
+  const collapsed = narrow ? !openNarrow : stored;
+  const setCollapsed = (next: boolean) => (narrow ? setOpenNarrow(!next) : setStored(next));
   const { user } = useAuth();
   const { t } = useTranslation();
   const { ask, dialog } = useLogoutConfirm();
@@ -96,62 +106,67 @@ export function Sidebar() {
         },
       }}
     >
-      <div
-        className={cn(
-          'flex h-[154px] items-center',
-          collapsed ? 'flex-col justify-center gap-2' : 'justify-between px-6',
-        )}
-      >
-        <Logo compact={collapsed} />
-        <IconButton
-          label={collapsed ? t('nav.expand') : t('nav.collapse')}
-          aria-expanded={!collapsed}
-          onClick={() => setCollapsed(!collapsed)}
+      {/* Tudo da barra (logo, navegação, sair) dentro de um landmark com nome. */}
+      <aside aria-label={t('nav.sidebar')} className="flex h-full flex-col">
+        <div
+          className={cn(
+            'flex h-[154px] items-center',
+            collapsed ? 'flex-col justify-center gap-2' : 'justify-between px-6',
+          )}
         >
-          {collapsed ? <MenuRounded /> : <MenuOpenRounded />}
-        </IconButton>
-      </div>
-      <Divider />
+          <Logo compact={collapsed} />
+          <IconButton
+            label={collapsed ? t('nav.expand') : t('nav.collapse')}
+            aria-expanded={!collapsed}
+            onClick={() => setCollapsed(!collapsed)}
+          >
+            {collapsed ? <MenuRounded /> : <MenuOpenRounded />}
+          </IconButton>
+        </div>
+        <Divider />
 
-      <nav aria-label={t('nav.main')} className="flex-1">
-        <List sx={{ px: 1.5, display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-          {navItemsFor(user).map((item) => (
-            <SidebarItem key={item.to} item={item} collapsed={collapsed} unread={unread} />
-          ))}
+        <nav aria-label={t('nav.main')} className="flex-1">
+          <List sx={{ px: 1.5, display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+            {navItemsFor(user).map((item) => (
+              <li key={item.to}>
+                <SidebarItem item={item} collapsed={collapsed} unread={unread} />
+              </li>
+            ))}
+          </List>
+        </nav>
+
+        <Divider />
+        <List component="div" sx={{ px: 1.5 }}>
+          {user ? (
+            <Tooltip title={collapsed ? t('account.logout') : ''} placement="right">
+              <ListItemButton
+                onClick={ask}
+                sx={{ ...itemSx(collapsed), color: 'text.secondary' }}
+                aria-label={t('account.logout')}
+              >
+                <ListItemIcon sx={{ minWidth: collapsed ? 0 : 48, color: 'inherit' }}>
+                  <LogoutRounded />
+                </ListItemIcon>
+                {!collapsed && (
+                  <ListItemText primary={t('account.logout')} slotProps={{ primary: { sx: { fontWeight: 600 } } }} />
+                )}
+              </ListItemButton>
+            </Tooltip>
+          ) : (
+            <Tooltip title={collapsed ? t('account.login') : ''} placement="right">
+              <ListItemButton component={Link} to="/login" sx={itemSx(collapsed)} aria-label={t('account.login')}>
+                <ListItemIcon sx={{ minWidth: collapsed ? 0 : 48, color: 'inherit' }}>
+                  <LoginRounded />
+                </ListItemIcon>
+                {!collapsed && (
+                  <ListItemText primary={t('account.login')} slotProps={{ primary: { sx: { fontWeight: 600 } } }} />
+                )}
+              </ListItemButton>
+            </Tooltip>
+          )}
         </List>
-      </nav>
-
-      <Divider />
-      <List sx={{ px: 1.5 }}>
-        {user ? (
-          <Tooltip title={collapsed ? t('account.logout') : ''} placement="right">
-            <ListItemButton
-              onClick={ask}
-              sx={{ ...itemSx(collapsed), color: 'text.secondary' }}
-              aria-label={t('account.logout')}
-            >
-              <ListItemIcon sx={{ minWidth: collapsed ? 0 : 48, color: 'inherit' }}>
-                <LogoutRounded />
-              </ListItemIcon>
-              {!collapsed && (
-                <ListItemText primary={t('account.logout')} slotProps={{ primary: { sx: { fontWeight: 600 } } }} />
-              )}
-            </ListItemButton>
-          </Tooltip>
-        ) : (
-          <Tooltip title={collapsed ? t('account.login') : ''} placement="right">
-            <ListItemButton component={Link} to="/login" sx={itemSx(collapsed)} aria-label={t('account.login')}>
-              <ListItemIcon sx={{ minWidth: collapsed ? 0 : 48, color: 'inherit' }}>
-                <LoginRounded />
-              </ListItemIcon>
-              {!collapsed && (
-                <ListItemText primary={t('account.login')} slotProps={{ primary: { sx: { fontWeight: 600 } } }} />
-              )}
-            </ListItemButton>
-          </Tooltip>
-        )}
-      </List>
-      {dialog}
+        {dialog}
+      </aside>
     </Drawer>
   );
 }

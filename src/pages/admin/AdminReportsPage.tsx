@@ -119,7 +119,7 @@ export default function AdminReportsPage() {
         <Table aria-label={t(`reports.status.${status}`)}>
           <TableHead>
             <TableRow>
-              <TableCell>{t('reports.columns.date')}</TableCell>
+              <TableCell className="hidden xl:table-cell">{t('reports.columns.date')}</TableCell>
               <TableCell>{t('reports.columns.reason')}</TableCell>
               <TableCell>{t('reports.columns.item')}</TableCell>
               <TableCell>{t('reports.columns.parties')}</TableCell>
@@ -129,7 +129,9 @@ export default function AdminReportsPage() {
           <TableBody>
             {items.map((r) => (
               <TableRow key={r.id} hover>
-                <TableCell className="whitespace-nowrap">{r.created_at && formatDate(r.created_at)}</TableCell>
+                <TableCell className="hidden whitespace-nowrap xl:table-cell">
+                  {r.created_at && formatDate(r.created_at)}
+                </TableCell>
                 <TableCell className="max-w-sm">
                   <span className="line-clamp-2">{r.reason}</span>
                 </TableCell>

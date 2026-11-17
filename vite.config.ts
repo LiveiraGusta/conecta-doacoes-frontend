@@ -20,13 +20,13 @@ export default defineConfig({
   build: {
     rolldownOptions: {
       output: {
-        // Bibliotecas em chunks próprios: mudam menos que o app, então ficam no cache entre deploys.
+        // React e router em chunks próprios: mudam pouco, então ficam no cache entre deploys.
+        // MUI e as outras bibliotecas NÃO vão para um chunk único (revisão da fase 8): assim o editor de
+        // foto, o arrastar, a tabela e o stepper só carregam com a página que usa.
         advancedChunks: {
           groups: [
             { name: 'react', test: /node_modules[\\/](react|react-dom|scheduler)[\\/]/ },
             { name: 'router', test: /node_modules[\\/]react-router/ },
-            { name: 'mui', test: /node_modules[\\/](@mui|@emotion)[\\/]/ },
-            { name: 'vendor', test: /node_modules[\\/]/ },
           ],
         },
       },
@@ -35,6 +35,8 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: true,
+    // Os testes ponta a ponta (e2e/*.e2e.ts) são do Playwright.
+    include: ['src/**/*.test.{ts,tsx}'],
     setupFiles: ['./src/test/setup.ts'],
     css: false,
     restoreMocks: true,

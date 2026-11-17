@@ -112,53 +112,55 @@ export function MessageList({
     <div className="relative min-h-0 flex-1">
       <div ref={box} onScroll={onScroll} className="h-full overflow-y-auto bg-surface-alt px-3 py-4 md:px-6">
         {total === 0 && empty}
-        <ol role="log" aria-live="polite" aria-label={t('room.messages')} className="flex flex-col gap-1.5">
-          {rows.map(({ key, dayLabel: label, message: m, pending: p }) => (
-            <Fragment key={key}>
-              {separator(label)}
-              {m ? (
-                <Bubble
-                  mine={m.sender_id === myId}
-                  footer={<time dateTime={m.created_at}>{formatTime(m.created_at)}</time>}
-                >
-                  {m.message}
-                </Bubble>
-              ) : (
-                <Bubble
-                  mine
-                  footer={
-                    p!.status === 'sending' ? (
-                      <>
-                        <ScheduleRounded sx={{ fontSize: 12 }} aria-hidden />
-                        {t('room.sending')}
-                      </>
-                    ) : (
-                      <span className="flex flex-wrap items-center gap-1.5">
-                        <ErrorOutlineRounded sx={{ fontSize: 14 }} aria-hidden />
-                        <span>{t('room.failed')}</span>
-                        <Link
-                          component="button"
-                          type="button"
-                          color="inherit"
-                          onClick={() => onRetry(key)}
-                          sx={{ fontWeight: 700 }}
-                        >
-                          {t('room.retry')}
-                        </Link>
-                        ·
-                        <Link component="button" type="button" color="inherit" onClick={() => onDiscard(key)}>
-                          {t('room.discard')}
-                        </Link>
-                      </span>
-                    )
-                  }
-                >
-                  {p!.text}
-                </Bubble>
-              )}
-            </Fragment>
-          ))}
-        </ol>
+        <div role="log" aria-live="polite" aria-label={t('room.messages')}>
+          <ol className="flex flex-col gap-1.5">
+            {rows.map(({ key, dayLabel: label, message: m, pending: p }) => (
+              <Fragment key={key}>
+                {separator(label)}
+                {m ? (
+                  <Bubble
+                    mine={m.sender_id === myId}
+                    footer={<time dateTime={m.created_at}>{formatTime(m.created_at)}</time>}
+                  >
+                    {m.message}
+                  </Bubble>
+                ) : (
+                  <Bubble
+                    mine
+                    footer={
+                      p!.status === 'sending' ? (
+                        <>
+                          <ScheduleRounded sx={{ fontSize: 12 }} aria-hidden />
+                          {t('room.sending')}
+                        </>
+                      ) : (
+                        <span className="flex flex-wrap items-center gap-1.5">
+                          <ErrorOutlineRounded sx={{ fontSize: 14 }} aria-hidden />
+                          <span>{t('room.failed')}</span>
+                          <Link
+                            component="button"
+                            type="button"
+                            color="inherit"
+                            onClick={() => onRetry(key)}
+                            sx={{ fontWeight: 700 }}
+                          >
+                            {t('room.retry')}
+                          </Link>
+                          ·
+                          <Link component="button" type="button" color="inherit" onClick={() => onDiscard(key)}>
+                            {t('room.discard')}
+                          </Link>
+                        </span>
+                      )
+                    }
+                  >
+                    {p!.text}
+                  </Bubble>
+                )}
+              </Fragment>
+            ))}
+          </ol>
+        </div>
       </div>
       {newBelow && (
         <Button

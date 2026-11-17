@@ -124,11 +124,12 @@ export default function SettingsPage() {
             onChange={(_, mode: ThemeMode | null) => mode && prefs.mutate({ theme_mode: mode })}
             aria-labelledby="modo-tema"
             size="small"
+            className="flex-wrap"
           >
             {THEME_MODES.map((mode) => {
               const Icon = MODE_ICONS[mode];
               return (
-                <ToggleButton key={mode} value={mode} className="gap-1.5 px-4">
+                <ToggleButton key={mode} value={mode} className="gap-1.5 px-3 sm:px-4">
                   <Icon fontSize="small" aria-hidden />
                   {t(`common:theme.modes.${mode}`)}
                 </ToggleButton>
@@ -194,10 +195,12 @@ export default function SettingsPage() {
               { to: '/profile', label: t('settings.editProfile') },
               { to: '/profile?aba=conta#senha', label: t('settings.changePassword') },
             ].map((link) => (
-              <ListItemButton key={link.to} component={RouterLink} to={link.to} className="rounded-lg">
-                <ListItemText primary={link.label} />
-                <ChevronRightRounded aria-hidden className="text-fg-muted" />
-              </ListItemButton>
+              <li key={link.to}>
+                <ListItemButton component={RouterLink} to={link.to} className="rounded-lg">
+                  <ListItemText primary={link.label} />
+                  <ChevronRightRounded aria-hidden className="text-fg-muted" />
+                </ListItemButton>
+              </li>
             ))}
           </List>
         </SectionCard>

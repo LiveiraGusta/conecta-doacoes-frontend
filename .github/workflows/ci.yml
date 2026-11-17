@@ -37,3 +37,34 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Orçamento de bundle (JS inicial ≤ 300 KB gzip)
+        run: npm run size
+
+  e2e:
+    # Fluxos principais num navegador de verdade, contra o build em modo mock (decisão da fase 8).
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Chromium do Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Testes ponta a ponta
+        run: npm run e2e
+
+      - name: Relatório (se falhar)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7

@@ -341,3 +341,20 @@ O detalhe técnico está em `backend/docs/DECISOES.md`, na seção "Integração
 | 7 | Mock: eventos dos itens (publicação, escolha, cancelamento, conclusão) registrados pelas rotas, documento gerado (cartão CNPJ em SVG) para as ONGs do seed, 2 denúncias (uma aberta, uma resolvida) | Claude | Documento enviado no cadastro ou no reenvio aparece de verdade no `dev:mock` |
 | 7 | A tela "Em breve" (placeholders) saiu: todas as telas do plano existem | Claude | |
 | 7 | Testes: 14 novos (contrato dos mocks do admin, páginas, CSP); 275 no total | Claude | Conferido também com capturas do `dev:mock` (fila, análise, rejeitar, aprovar, denúncias, detalhe, atalho, celular) |
+
+## Fase 8 — Acabamento (acessibilidade, larguras, modo escuro, desempenho, e2e)
+
+| Fase | Decisão | Quem tomou | Consequência |
+| --- | --- | --- | --- |
+| 8 | Acessibilidade verificada com axe-core em 17 telas (`src/test/a11y.test.tsx`), mais revisão no navegador | Usuário | Contraste fica para o navegador (o jsdom não tem layout) |
+| 8 | Corrigido o que o axe achou: barra lateral inteira num `<aside>` com nome e itens dentro de `<li>`; atalhos das configurações em `<li>`; o `role="log"` da conversa saiu do `<ol>` para uma `div` em volta | Claude | Leitores de tela anunciam a estrutura certa |
+| 8 | Testes ponta a ponta com Playwright (`npm run e2e`): feed e interesse, publicar com o editor, escolher ONG e conversar, confirmar recebimento, moderação, celular | Usuário | Rodam contra o build em modo mock (`vite preview`), não o `dev:mock`: o servidor de desenvolvimento recarrega a página ao reotimizar dependências. Job próprio no CI |
+| 8 | Revisão em 320, 768, 1024 e 1366 px, claro e escuro, com captura e detecção automática de rolagem lateral | Usuário | Corrigido: configurações e denúncia rolavam para os lados no celular |
+| 8 | Entre 768 e 1023 px a barra lateral começa recolhida; abrir ali não muda a escolha salva para telas grandes | Claude | Antes os cards do feed ficavam com ~120 px e a conversa quebrava palavra por palavra |
+| 8 | Grade do feed por container query (largura da área do feed, não da tela) | Claude | Com a barra aberta ou fechada, sempre cards de ~190 px ou mais |
+| 8 | Tabelas do admin escondem uma coluna secundária abaixo de 1280 px (data de cadastro / data da denúncia) | Claude | Em 1024 px o botão "Analisar" ficava cortado |
+| 8 | Modo escuro: primária do MUI no tom 300 com texto escuro nos botões preenchidos | Claude | No escuro, o tom 600 sumia (item ativo da barra, botões de contorno e de texto) |
+| 8 | Orçamento de bundle no CI (`npm run size`): JS inicial ≤ 300 KB, CSS ≤ 12 KB, maior chunk lazy ≤ 60 KB (gzip) | Usuário | Subir um limite é decisão registrada aqui |
+| 8 | Sem chunk único para MUI e bibliotecas (só `react` e `router` separados) e modal de localização carregado só ao abrir | Claude | JS inicial de 378 para 280 KB gzip (−26%); editor de foto, arrastar, tabela e stepper só com a página que usa |
+| 8 | `npm audit` aponta alertas em dependências de desenvolvimento (picomatch via Vite, Vitest e lint-staged) | Claude | Não corrigido agora: a correção automática exige `--force` com mudanças incompatíveis. Revisar quando houver versões novas |
+| 8 | Testes: 17 de acessibilidade + 8 ponta a ponta; 292 unitários e de página no total | Claude | |
