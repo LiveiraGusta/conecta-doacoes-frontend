@@ -142,3 +142,12 @@ O detalhe técnico está em `backend/docs/DECISOES.md`, na seção "Integração
 | 0.2b-2 | A API corta ao centro e redimensiona (avatar 512×512, banner 1500×500) | Usuário | O editor do front recorta em 1:1 e 3:1 para o usuário escolher o enquadramento. Sem recorte, a API usa o centro |
 | 0.2b-2 | Limite de 5 MB por imagem | Usuário | O `PhotoEditorModal` exporta WEBP bem abaixo disso. Mesmo assim, o front valida antes de enviar |
 | 0.2b-2 | URLs em `user.avatar_url` e `user.ngo_profile.banner_url`; `null` = sem imagem | Claude | O `<Avatar>` usa a foto e cai nas iniciais quando for `null` |
+### Sub-fase 0.2b-3 (backend): página pessoal e visitante
+
+| Fase | Decisão | Quem tomou | Consequência |
+| --- | --- | --- | --- |
+| 0.2b-3 | Contato e endereço só de ONG `ATIVO` (a própria ONG sempre vê) | Usuário | A página da ONG pendente mostra descrição, categorias e site, sem contato |
+| 0.2b-3 | Visitante só vê o que está no feed: item `DOADO` e ONG não `ATIVO` dão 404 | Usuário | A tela 404 também cobre links públicos antigos |
+| 0.2b-3 | `avatar_url` no card, no detalhe, nas interessadas e no chat | Usuário | O `<Avatar>` aparece em todo lugar onde há uma pessoa, com fallback de iniciais |
+| 0.2b-3 | Página de Admin ou de conta excluída → `404 USER_NOT_FOUND` | Usuário | O front trata como "não encontrado" |
+| 0.2b-3 | Rotas `/public/*` com rate limit por IP (60/min) | Claude | Visitante que rolar muito o feed pode receber 429. O scroll infinito trata com snackbar e nova tentativa |
