@@ -16,7 +16,8 @@ import { ItemCard, ItemCardSkeleton } from '@/features/feed/ItemCard';
 import { SearchBox } from '@/features/feed/SearchBox';
 import { useFeedFilters } from '@/features/feed/useFeedFilters';
 
-const GRID = 'grid gap-6 md:grid-cols-2 xl:grid-cols-3';
+/** Até 5 cards por linha em telas largas (ajuste pedido depois da fase 6). */
+const GRID = 'grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5';
 
 /**
  * Feed (guia, F7): busca no header (desktop) ou no topo (mobile), categorias, "Últimas doações (N)"
