@@ -1,22 +1,13 @@
-/** Chave do localStorage para desligar o som (a tela de configurações da fase 6 expõe a opção). */
-export const CHAT_SOUND_KEY = 'cd:chat-sound';
+import { CHAT_SOUND_KEY, chatPrefEnabled } from './chatPrefs';
 
 let context: AudioContext | null = null;
-
-function soundEnabled() {
-  try {
-    return localStorage.getItem(CHAT_SOUND_KEY) !== 'off';
-  } catch {
-    return true;
-  }
-}
 
 /**
  * "Plim" curto e baixo de mensagem nova (decisão da fase 5), gerado com Web Audio: sem arquivo de som.
  * Sem suporte, ou com o navegador bloqueando áudio antes de um clique, simplesmente não toca.
  */
 export function playNotificationSound() {
-  if (!soundEnabled()) return;
+  if (!chatPrefEnabled(CHAT_SOUND_KEY)) return;
   try {
     const Ctx =
       window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;

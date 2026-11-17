@@ -22,7 +22,7 @@ describe('AuthProvider', () => {
       ),
     );
     const { router } = renderApp('/settings', { loggedAs: IDS.donor });
-    await screen.findByText('Esta tela chega na fase 6 do plano.');
+    await screen.findByRole('heading', { name: 'Aparência' });
 
     await act(async () => {
       await api('/items/feed').catch(() => {});

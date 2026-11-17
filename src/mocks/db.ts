@@ -1,7 +1,7 @@
 import type { Preferences, User } from '@/core/types/api';
 import type { Message } from '@/core/types/api';
 import { seedChats, type MockReport } from './chats';
-import { seedItems, type MockItem } from './items';
+import { mockBanner, seedItems, type MockItem } from './items';
 
 /**
  * "Banco" em memória dos dados falsos (MSW), com IDs fixos para testes e para o seletor "Entrar como".
@@ -96,6 +96,7 @@ function seed(): Map<string, MockUser> {
       ngo_profile: {
         ...ngoProfile('44444444-4444-4444-8444-444444444441', '11.222.333/0001-81', 'ATIVO'),
         website: 'https://ongsalvadora.org.br',
+        banner_url: mockBanner(),
         phone: '11987654321',
         instagram: 'ongsalvadora',
         accepted_categories: ['ROUPAS', 'BRINQUEDOS', 'LIVROS'],

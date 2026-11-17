@@ -9,6 +9,7 @@ import { useSnackbar } from '../feedback/useSnackbar';
 import { addMessageToCache, chatKey, chatsKey, markRoomRead, UNREAD_KEY, type ChatRoomView } from '../hooks/useChats';
 import { fetchChats } from '../services/chats';
 import type { ChatSummary, Paginated, UnreadSummary } from '../types/api';
+import { CHAT_NOTIFY_KEY, chatPrefEnabled } from '../utils/chatPrefs';
 import { playNotificationSound } from '../utils/sound';
 import { RealtimeContext, type RealtimeContextValue } from './realtimeContext';
 
@@ -115,6 +116,7 @@ export function RealtimeProvider({ children }: { children: ReactNode }) {
           const watching = activeRoom.current === event.item_id && visible();
           if (event.unread_count > before && !watching) {
             playNotificationSound();
+            if (!chatPrefEnabled(CHAT_NOTIFY_KEY)) return;
             // Fora da tela de conversas a lista não está no cache: busca para mostrar o nome de quem mandou.
             void queryClient
               .ensureQueryData({ queryKey: chatsKey('EM_PROGRESSO'), queryFn: () => fetchChats('EM_PROGRESSO') })

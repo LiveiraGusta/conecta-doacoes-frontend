@@ -62,7 +62,7 @@ describe('rotas e guards', () => {
   });
 
   it('página pessoal e detalhe do item ficam abertos ao visitante', async () => {
-    renderApp('/u/qualquer');
-    expect(await screen.findByText('Esta tela chega na fase 6 do plano.')).toBeInTheDocument();
+    renderApp(`/u/${IDS.donor}`);
+    expect(await screen.findByText('Entre para ver o nome, a foto e os contatos.')).toBeInTheDocument();
   });
 });

@@ -44,6 +44,17 @@ export function mockPhoto(title: string, category: Category, n: number): string 
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }
 
+/** Banner falso 1500×500 (SVG em data URL), como as fotos: sem rede nem imagem de terceiros. */
+export function mockBanner(): string {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="500" viewBox="0 0 1500 500">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0057a8"/><stop offset="1" stop-color="#047857"/></linearGradient></defs>
+<rect width="1500" height="500" fill="url(#g)"/>
+<circle cx="1250" cy="120" r="220" fill="#fff" fill-opacity="0.08"/><circle cx="200" cy="460" r="260" fill="#fff" fill-opacity="0.06"/>
+<text x="750" y="290" font-size="120" text-anchor="middle">🤝 📦 💙</text>
+</svg>`;
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+}
+
 const HOUR = 3600 * 1000;
 const hoursAgo = (h: number) => new Date(Date.now() - h * HOUR).toISOString();
 
