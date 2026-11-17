@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Outlet } from 'react-router';
+import { Outlet, useLocation } from 'react-router';
 import { useIsMobile } from '@/core/hooks/useMediaQuery';
 import { AppShellDesktop } from './AppShell.desktop';
 import { AppShellMobile } from './AppShell.mobile';
@@ -18,9 +18,28 @@ export function AppShell() {
   const isMobile = useIsMobile();
   const [content] = useState(() => {
     const el = document.createElement('div');
-    el.style.display = 'contents';
+    // Bloco (e não `contents`): precisa ter caixa para a animação de troca de página.
+    el.style.display = 'block';
     return el;
   });
+
+  // Troca de seção (Feed → Doações…): fade curto do conteúdo (fase 9). Dentro da mesma seção
+  // (/chats → /chats/:id) não anima. Web Animations API: não remonta a página.
+  const section = useLocation().pathname.split('/')[1] ?? '';
+  const lastSection = useRef(section);
+  useEffect(() => {
+    if (lastSection.current === section) return;
+    lastSection.current = section;
+    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    if (reduce || typeof content.animate !== 'function') return;
+    content.animate(
+      [
+        { opacity: 0, transform: 'translateY(6px)' },
+        { opacity: 1, transform: 'none' },
+      ],
+      { duration: 200, easing: 'ease-out' },
+    );
+  }, [section, content]);
   const [slot, setSlot] = useState<HTMLElement | null>(null);
 
   return (

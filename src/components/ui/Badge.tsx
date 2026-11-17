@@ -1,5 +1,6 @@
 import Chip, { type ChipProps } from '@mui/material/Chip';
 import type { ReactNode } from 'react';
+import { cn } from '@/core/utils/cn';
 
 export type BadgeTone = 'accent' | 'primary' | 'neutral' | 'success' | 'warning' | 'danger';
 
@@ -40,11 +41,13 @@ export function CountBadge({ count, label, className }: { count: number; label: 
   if (count <= 0) return null;
   return (
     <Chip
+      // Número mudou: a chave nova remonta e o contador dá um pulo (fase 9).
+      key={count}
       label={count > 99 ? '99+' : count}
       aria-label={label}
       color="error"
       size="small"
-      className={className}
+      className={cn('animate-pop', className)}
       sx={{ height: 20, fontSize: '0.7rem', '& .MuiChip-label': { px: 0.75 } }}
     />
   );

@@ -5,6 +5,7 @@ import FavoriteRounded from '@mui/icons-material/FavoriteRounded';
 import HourglassTopRounded from '@mui/icons-material/HourglassTopRounded';
 import VerifiedRounded from '@mui/icons-material/VerifiedRounded';
 import Chip from '@mui/material/Chip';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { useAuth } from '@/core/auth/useAuth';
@@ -34,6 +35,8 @@ export function InterestButton({
   const loginPrompt = useLoginPrompt();
   const interest = useInterest();
   const view = interestView(item, user);
+  // Clique no interesse: o coração pulsa uma vez (fase 9). A chave nova remonta o ícone e repete a animação.
+  const [pops, setPops] = useState(0);
 
   switch (view) {
     case 'none':
@@ -85,9 +88,18 @@ export function InterestButton({
           size={size}
           className={className}
           variant={adding ? 'primary' : 'secondary'}
-          icon={adding ? <FavoriteBorderRounded /> : <FavoriteRounded />}
+          icon={
+            adding ? (
+              <FavoriteBorderRounded key={pops} className={pops ? 'animate-pop' : undefined} />
+            ) : (
+              <FavoriteRounded key={pops} className={pops ? 'animate-pop' : undefined} />
+            )
+          }
           loading={interest.isPending}
-          onClick={() => interest.mutate({ id: item.id, interested: adding })}
+          onClick={() => {
+            setPops((n) => n + 1);
+            interest.mutate({ id: item.id, interested: adding });
+          }}
         >
           {adding ? (confirmLabel ? t('interest.addMobile') : t('interest.add')) : t('interest.remove')}
         </Button>

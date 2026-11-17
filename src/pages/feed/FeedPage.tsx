@@ -11,6 +11,8 @@ import { useAuth } from '@/core/auth/useAuth';
 import { useFeed } from '@/core/hooks/useFeed';
 import { useInfiniteTrigger } from '@/core/hooks/useInfiniteTrigger';
 import { useIsMobile } from '@/core/hooks/useMediaQuery';
+import { FEED_PAGE_SIZE } from '@/core/services/items';
+import { stagger } from '@/core/utils/motion';
 import { CategoryBarDesktop, CategoryBarMobile } from '@/features/feed/CategoryBar';
 import { ItemCard, ItemCardSkeleton } from '@/features/feed/ItemCard';
 import { SearchBox } from '@/features/feed/SearchBox';
@@ -94,8 +96,10 @@ export function FeedView({ source }: { source?: string }) {
     content = (
       <>
         <div className={GRID}>
-          {items.map((item) => (
-            <ItemCard key={item.id} item={item} />
+          {items.map((item, i) => (
+            <div key={item.id} className="animate-fade-up" style={stagger(i % FEED_PAGE_SIZE)}>
+              <ItemCard item={item} />
+            </div>
           ))}
           {isFetchingNextPage && Array.from({ length: 3 }, (_, i) => <ItemCardSkeleton key={`more-${i}`} />)}
         </div>

@@ -18,6 +18,13 @@
   /* Ilustrações flutuando devagar (classe `animate-float`). */
   --animate-float: float 6s ease-in-out infinite;
 
+  /* Fase 9: animações sutis (150–250 ms, sem quique). */
+  --animate-fade-up: fade-up 220ms ease-out both;
+  --animate-msg-in-left: msg-in-left 180ms ease-out both;
+  --animate-msg-in-right: msg-in-right 180ms ease-out both;
+  --animate-pop: pop 260ms ease-out;
+  --animate-confetti: confetti-fall 2.4s ease-in forwards;
+
   --color-primary-50: var(--p-50);
   --color-primary-100: var(--p-100);
   --color-primary-200: var(--p-200);
@@ -192,5 +199,92 @@
     .animate-float {
       animation: none;
     }
+  }
+}
+
+/* ── Fase 9: entrada de cards e listas, mensagens do chat, micro-interações e confete ── */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes msg-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes msg-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.25);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes confetti-fall {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, -10vh, 0) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--confetti-drift, 0), 70vh, 0) rotate(var(--confetti-spin, 540deg));
+  }
+}
+
+@layer utilities {
+  /* Cards que sobem um pouco no hover e voltam ao pressionar. */
+  .lift {
+    transition:
+      transform 180ms ease-out,
+      box-shadow 180ms ease-out;
+  }
+  .lift:hover {
+    transform: translateY(-2px);
+  }
+  .lift:active {
+    transform: translateY(0);
+  }
+}
+
+/* Quem pede menos movimento no sistema não vê nenhuma animação (só as mudanças de estado). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .confetti {
+    display: none;
   }
 }
