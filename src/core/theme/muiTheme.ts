@@ -14,7 +14,10 @@ export function createAppTheme(color: ThemeColor, dark: boolean): Theme {
   return createTheme({
     palette: {
       mode: dark ? 'dark' : 'light',
-      primary: { main: p[600], light: p[400], dark: p[800], contrastText: '#ffffff' },
+      // No escuro, o tom 600 some sobre o fundo (revisão da fase 8): tom claro com texto escuro, como no Material.
+      primary: dark
+        ? { main: p[300], light: p[200], dark: p[400], contrastText: p[900] }
+        : { main: p[600], light: p[400], dark: p[800], contrastText: '#ffffff' },
       secondary: { main: ACCENT, contrastText: '#ffffff' },
       error: { main: s.danger },
       success: { main: s.success },

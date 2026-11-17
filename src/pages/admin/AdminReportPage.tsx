@@ -33,7 +33,7 @@ function Box({ title, children, className }: { title: string; children: ReactNod
       variant="outlined"
       component="section"
       aria-labelledby={id}
-      className={cn('flex flex-col gap-3 p-4', className)}
+      className={cn('flex min-w-0 flex-col gap-3 p-4', className)}
       sx={{ borderRadius: 3 }}
     >
       <Typography id={id} variant="subtitle1" component="h3" sx={{ fontWeight: 700 }}>

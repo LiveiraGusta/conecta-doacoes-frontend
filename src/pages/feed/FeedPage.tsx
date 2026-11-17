@@ -3,7 +3,7 @@ import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { HeaderPortal } from '@/components/layout/HeaderSlot';
-import { LocationModal } from '@/components/layout/LocationModal';
+import { LazyLocationModal } from '@/components/layout/LazyLocationModal';
 import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { LoadingRegion } from '@/components/ui/Skeleton';
@@ -16,8 +16,11 @@ import { ItemCard, ItemCardSkeleton } from '@/features/feed/ItemCard';
 import { SearchBox } from '@/features/feed/SearchBox';
 import { useFeedFilters } from '@/features/feed/useFeedFilters';
 
-/** Até 5 cards por linha em telas largas (ajuste pedido depois da fase 6). */
-const GRID = 'grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5';
+/**
+ * Até 5 cards por linha (ajuste pedido depois da fase 6), pela largura da área do feed e não da tela
+ * (container queries): com a barra lateral aberta, a tela larga não significa espaço largo.
+ */
+const GRID = 'grid gap-4 @sm:grid-cols-2 @2xl:grid-cols-3 @3xl:grid-cols-4 @[60rem]:grid-cols-5';
 
 /**
  * Feed (guia, F7): busca no header (desktop) ou no topo (mobile), categorias, "Últimas doações (N)"
@@ -137,13 +140,13 @@ export function FeedView({ source }: { source?: string }) {
           <CategoryBarDesktop {...categoryProps} />
         </>
       )}
-      <section className="px-4 py-6 md:px-14 md:py-8" aria-labelledby="feed-title">
+      <section className="@container px-4 py-6 md:px-8 md:py-8 lg:px-14" aria-labelledby="feed-title">
         <Typography id="feed-title" variant={isMobile ? 'h6' : 'h4'} component="h2" className="mb-6">
           {t(feed.mode === 'auth' ? 'list.title' : 'list.titleVisitor', { count: total })}
         </Typography>
         {content}
       </section>
-      {showLocation && <LocationModal open={locationOpen} onClose={() => setLocationOpen(false)} />}
+      {showLocation && <LazyLocationModal open={locationOpen} onClose={() => setLocationOpen(false)} />}
     </>
   );
 }

@@ -75,7 +75,9 @@ describe('ONGs interessadas', () => {
     const { user, router } = renderApp(`/donations/${ITEM_IDS.basket}/interests`, { loggedAs: IDS.donor });
     expect(await screen.findByRole('heading', { name: /ONGs interessadas: Cesta básica/ })).toBeInTheDocument();
     expect(await screen.findByText('3 ONGs interessadas')).toBeInTheDocument();
-    const names = screen.getAllByRole('listitem').map((li) => within(li).getAllByRole('link')[0]!.textContent);
+    const names = within(screen.getByRole('main'))
+      .getAllByRole('listitem')
+      .map((li) => within(li).getAllByRole('link')[0]!.textContent);
     expect(names).toEqual(['Casa do Bem', 'ONG Salvadora', 'Casa Esperança']);
     expect(screen.getByText('ONG indisponível')).toBeInTheDocument();
     expect(screen.getAllByRole('button', { name: /^Escolher / })).toHaveLength(2);

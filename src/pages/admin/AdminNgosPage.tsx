@@ -136,7 +136,7 @@ export default function AdminNgosPage() {
               <TableCell>{t('ngos.columns.ngo')}</TableCell>
               <TableCell>{t('ngos.columns.city')}</TableCell>
               <TableCell>{t('ngos.columns.cnpj')}</TableCell>
-              <TableCell>{t('ngos.columns.since')}</TableCell>
+              <TableCell className="hidden xl:table-cell">{t('ngos.columns.since')}</TableCell>
               <TableCell align="right">{t('ngos.columns.actions')}</TableCell>
             </TableRow>
           </TableHead>
@@ -149,11 +149,11 @@ export default function AdminNgosPage() {
                     {ngo.email}
                   </Typography>
                 </TableCell>
-                <TableCell>
+                <TableCell className="whitespace-nowrap">
                   {ngo.city} - {ngo.state}
                 </TableCell>
                 <TableCell className="font-mono whitespace-nowrap">{ngo.cnpj}</TableCell>
-                <TableCell>{ngo.created_at && formatDate(ngo.created_at)}</TableCell>
+                <TableCell className="hidden xl:table-cell">{ngo.created_at && formatDate(ngo.created_at)}</TableCell>
                 <TableCell align="right">{reviewButton(ngo)}</TableCell>
               </TableRow>
             ))}

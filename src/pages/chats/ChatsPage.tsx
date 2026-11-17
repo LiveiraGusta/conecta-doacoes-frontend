@@ -29,7 +29,7 @@ export default function ChatsPage() {
   }
 
   return (
-    <div ref={fill} className="grid grid-cols-[minmax(280px,360px)_1fr]">
+    <div ref={fill} className="grid grid-cols-[240px_1fr] lg:grid-cols-[minmax(280px,360px)_1fr]">
       <ChatList activeId={itemId} compact className="flex min-h-0 flex-col border-r border-border bg-surface" />
       <div className="min-h-0">
         {itemId ? (
