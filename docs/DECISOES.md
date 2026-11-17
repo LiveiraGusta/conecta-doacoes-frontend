@@ -151,3 +151,24 @@ O detalhe técnico está em `backend/docs/DECISOES.md`, na seção "Integração
 | 0.2b-3 | `avatar_url` no card, no detalhe, nas interessadas e no chat | Usuário | O `<Avatar>` aparece em todo lugar onde há uma pessoa, com fallback de iniciais |
 | 0.2b-3 | Página de Admin ou de conta excluída → `404 USER_NOT_FOUND` | Usuário | O front trata como "não encontrado" |
 | 0.2b-3 | Rotas `/public/*` com rate limit por IP (60/min) | Claude | Visitante que rolar muito o feed pode receber 429. O scroll infinito trata com snackbar e nova tentativa |
+
+## Fase 1a — Fundação
+
+| Fase | Decisão | Quem tomou | Consequência |
+| --- | --- | --- | --- |
+| 1a | React 19 + React Router 7 (modo biblioteca) | Usuário | A spec dizia "React 18+". O Router 8 já existe, mas ficou a 7 por escolha |
+| 1a | Dados falsos da 1a: infraestrutura completa (db em memória, MSW no navegador e no Node, WebSocket falso) e só os handlers de `/auth` | Usuário | Cada fase seguinte acrescenta os handlers do seu domínio |
+| 1a | Ilustrações do unDraw: placeholders agora, SVGs baixados pelo usuário depois | Usuário | A lista com os nomes sugeridos entra na fase 1b, junto com o `EmptyState` |
+| 1a | TypeScript 6.0 (e não a 7) | Claude | O `typescript-eslint` ainda não suporta a 7. O backend também usa a 6.0 |
+| 1a | `openapi-typescript` fora do `package.json`: o `gen:api` roda via `npx` com TypeScript 5 isolado | Claude | Ele exige TypeScript 5. Como o gerador só roda na máquina de quem desenvolve, não precisa entrar nas dependências |
+| 1a | MSW 3: `setupWorker`/`setupServer` clássicos, com `public/mockServiceWorker.js`; a opção de requisição sem handler virou `onUnhandledFrame` | Claude | Funciona igual no `dev:mock` e nos previews da Vercel. O plugin novo `msw/vite` não foi usado |
+| 1a | Sessão nos mocks: uma só, em memória (`db.loginAs`), no lugar do cookie | Claude | O mock imita o comportamento do cookie (login abre, logout fecha, `/auth/me` responde 401 sem sessão) e cobra o header anti-CSRF como a API |
+| 1a | Testes de rede com upload rodam no ambiente `node` do Vitest (`// @vitest-environment node`) | Claude | No jsdom, um `FormData` com `File` chega quebrado ao `fetch` do Node interceptado pelo MSW ("content-length mismatch"). Componentes de upload (fases 2 e 4) vão conferir o `FormData` enviado sem depender disso |
+| 1a | Vitest iniciado por `scripts/vitest.mjs` (letra do drive em maiúscula) | Claude | Mesma correção do backend para o Windows. Sem ela, o Vitest carrega duas cópias de si mesmo |
+| 1a | Tokens de tema em CSS variables com `@theme inline`; botão sempre no tom 600 com texto branco | Claude | As 5 cores passam no contraste AA nos dois modos. No escuro, links e textos da cor usam o tom 300 |
+| 1a | `useTheme` em arquivo próprio, separado do `ThemeProvider` | Claude | O hot reload do Vite só funciona em arquivo que exporta apenas componentes |
+| 1a | Script anti-flash inline no `index.html`, liberado na CSP pelo hash; um teste confere o hash e a chave do `localStorage` | Claude | Se o script mudar (até pelo Prettier), o teste mostra o hash novo para o `vercel.json` |
+| 1a | CSP com `connect-src https: wss:` por enquanto | Claude | O domínio da API ainda não existe. Trocar pelo `api.<domínio>` quando ele for definido |
+| 1a | `docs/` fora do Prettier | Claude | Ele realinharia as tabelas largas dos documentos a cada edição |
+| 1a | Página provisória `FoundationPage` (sessão + troca de tema) | Claude | Sai na fase 1b, quando entram o `AppShell` e as rotas |
+

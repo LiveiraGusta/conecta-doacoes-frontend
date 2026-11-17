@@ -1,0 +1,160 @@
+@import 'tailwindcss';
+
+/* Modo escuro por classe no <html> (o ThemeProvider e o script anti-flash do index.html a aplicam). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Tokens semânticos (plano, "Temas"): os componentes usam só estas cores, nunca uma cor fixa.
+ * A escala --p-* muda com a cor escolhida (data-theme-color no <html>) e as superfícies, com o modo.
+ */
+@theme inline {
+  --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+
+  --color-primary-50: var(--p-50);
+  --color-primary-100: var(--p-100);
+  --color-primary-200: var(--p-200);
+  --color-primary-300: var(--p-300);
+  --color-primary-400: var(--p-400);
+  --color-primary-500: var(--p-500);
+  --color-primary-600: var(--p-600);
+  --color-primary-700: var(--p-700);
+  --color-primary-800: var(--p-800);
+  --color-primary-900: var(--p-900);
+
+  /* Botão/destaque: sempre o 600, com texto branco (contraste AA nas 5 cores). */
+  --color-primary: var(--p-600);
+  --color-primary-hover: var(--p-700);
+  --color-on-primary: #ffffff;
+  /* Texto e links da cor do tema sobre a superfície. */
+  --color-primary-text: var(--primary-text);
+  /* Fundo suave (item ativo do menu, chip selecionado). */
+  --color-primary-soft: var(--primary-soft);
+
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-alt: var(--surface-alt);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-border: var(--border);
+  /* Badge de categoria (roxo do design), igual em todos os temas. */
+  --color-accent: #6d28d9;
+  --color-on-accent: #ffffff;
+  --color-danger: var(--danger);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+}
+
+/* ── Cores do tema (padrão: azul do design) ── */
+:root,
+[data-theme-color='azul'] {
+  --p-50: #eef5fc;
+  --p-100: #d8e8f8;
+  --p-200: #b4d1f0;
+  --p-300: #82b2e4;
+  --p-400: #4a8cd3;
+  --p-500: #1f6dbf;
+  --p-600: #0057a8;
+  --p-700: #00478a;
+  --p-800: #003a70;
+  --p-900: #002f5c;
+}
+
+[data-theme-color='verde'] {
+  --p-50: #ecfdf5;
+  --p-100: #d1fae5;
+  --p-200: #a7f3d0;
+  --p-300: #6ee7b7;
+  --p-400: #34d399;
+  --p-500: #059669;
+  --p-600: #047857;
+  --p-700: #065f46;
+  --p-800: #064e3b;
+  --p-900: #022c22;
+}
+
+[data-theme-color='roxo'] {
+  --p-50: #f5f3ff;
+  --p-100: #ede9fe;
+  --p-200: #ddd6fe;
+  --p-300: #c4b5fd;
+  --p-400: #a78bfa;
+  --p-500: #7c3aed;
+  --p-600: #6d28d9;
+  --p-700: #5b21b6;
+  --p-800: #4c1d95;
+  --p-900: #2e1065;
+}
+
+[data-theme-color='laranja'] {
+  --p-50: #fff7ed;
+  --p-100: #ffedd5;
+  --p-200: #fed7aa;
+  --p-300: #fdba74;
+  --p-400: #fb923c;
+  --p-500: #ea580c;
+  --p-600: #c2410c;
+  --p-700: #9a3412;
+  --p-800: #7c2d12;
+  --p-900: #431407;
+}
+
+[data-theme-color='rosa'] {
+  --p-50: #fdf2f8;
+  --p-100: #fce7f3;
+  --p-200: #fbcfe8;
+  --p-300: #f9a8d4;
+  --p-400: #f472b6;
+  --p-500: #db2777;
+  --p-600: #be185d;
+  --p-700: #9d174d;
+  --p-800: #831843;
+  --p-900: #500724;
+}
+
+/* ── Superfícies: claro ── */
+:root {
+  color-scheme: light;
+  --bg: #e9eaee;
+  --surface: #ffffff;
+  --surface-alt: #f4f5f7;
+  --fg: #1a1c23;
+  --fg-muted: #5b6070;
+  --border: #d6d8de;
+  --primary-text: var(--p-700);
+  --primary-soft: var(--p-50);
+  --danger: #b91c1c;
+  --success: #15803d;
+  --warning: #b45309;
+}
+
+/* ── Superfícies: escuro ── */
+:root.dark {
+  color-scheme: dark;
+  --bg: #0f1115;
+  --surface: #1a1d24;
+  --surface-alt: #232731;
+  --fg: #e8eaef;
+  --fg-muted: #a3a9b6;
+  --border: #2e333d;
+  --primary-text: var(--p-300);
+  --primary-soft: color-mix(in srgb, var(--p-600) 22%, transparent);
+  --danger: #f87171;
+  --success: #4ade80;
+  --warning: #fbbf24;
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+
+  body {
+    @apply bg-bg font-sans text-fg antialiased;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-primary-500;
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "appName": "Conecta Doações",
+  "tagline": "Conectando quem doa a quem precisa",
+  "actions": {
+    "retry": "Tentar de novo",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "save": "Salvar",
+    "close": "Fechar",
+    "back": "Voltar"
+  },
+  "theme": {
+    "color": "Cor do tema",
+    "mode": "Aparência",
+    "colors": {
+      "AZUL": "Azul",
+      "VERDE": "Verde",
+      "ROXO": "Roxo",
+      "LARANJA": "Laranja",
+      "ROSA": "Rosa"
+    },
+    "modes": {
+      "LIGHT": "Claro",
+      "DARK": "Escuro",
+      "SYSTEM": "Sistema"
+    }
+  },
+  "categories": {
+    "ROUPAS": "Roupas",
+    "BRINQUEDOS": "Brinquedos",
+    "ALIMENTOS": "Comida",
+    "LIVROS": "Livros"
+  },
+  "errors": {
+    "unexpected": "Algo deu errado.",
+    "requestId": "Código para o suporte: {{id}}"
+  },
+  "foundation": {
+    "title": "Fundação do frontend",
+    "subtitle": "Tema, i18n, cliente HTTP e mocks prontos. As telas chegam nas próximas fases.",
+    "session": "Sessão",
+    "sessionVisitor": "Visitante (sem login)",
+    "sessionUser": "Logado como {{name}}",
+    "sessionLoading": "Verificando sessão…",
+    "mockMode": "Modo de dados falsos (MSW)"
+  }
+}

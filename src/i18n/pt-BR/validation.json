@@ -1,0 +1,14 @@
+{
+  "required": "Campo obrigatório",
+  "email": "E-mail inválido",
+  "minLength": "Mínimo de {{count}} caracteres",
+  "maxLength": "Máximo de {{count}} caracteres",
+  "password": {
+    "min": "A senha precisa de ao menos 8 caracteres",
+    "max": "A senha pode ter no máximo 72 caracteres",
+    "letterAndNumber": "A senha precisa de ao menos 1 letra e 1 número",
+    "mismatch": "As senhas não conferem"
+  },
+  "uf": "Escolha a UF",
+  "city": "Informe a cidade"
+}
