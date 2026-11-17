@@ -47,7 +47,7 @@ export function NgoStatusBanner() {
     <Alert severity="error" sx={{ borderRadius: 0 }}>
       <AlertTitle>{t('ngoBanner.rejectedTitle')}</AlertTitle>
       {user.ngo_profile?.rejection_reason}{' '}
-      <Link component={RouterLink} to="/profile" sx={{ fontWeight: 600 }}>
+      <Link component={RouterLink} to="/profile?aba=conta" sx={{ fontWeight: 600 }}>
         {t('ngoBanner.resubmit')}
       </Link>
     </Alert>

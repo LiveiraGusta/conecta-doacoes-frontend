@@ -300,3 +300,21 @@ O detalhe técnico está em `backend/docs/DECISOES.md`, na seção "Integração
 | 5 | Lista de conversas sem paginação (uma página de 50) | Claude | Uma pessoa raramente tem tantas negociações abertas; a API aceita mais páginas se precisar |
 | 5 | Mock: WebSocket falso com inscrições e eventos (o `RealtimeBus` em memória), 3 conversas no seed (uma com 2 não lidas, uma doada) e resposta automática da outra parte em 2 s no `dev:mock` | Claude | Os testes de página usam o mesmo WebSocket falso (MSW `ws.link`) |
 | 5 | Testes: 22 novos (cliente WebSocket, contrato dos mocks do chat, páginas desktop/mobile, datas); 233 no total | Claude | Conferido também com capturas do `dev:mock` (lista, sala, resposta, menu, cancelar, aviso fora da sala, confirmar, doada, mobile) |
+
+## Fase 6 — Perfil, página pessoal e configurações
+
+| Fase | Decisão | Quem tomou | Consequência |
+| --- | --- | --- | --- |
+| 6 | `/profile` em duas abas: "Minha página" (foto, banner, sobre, contato, categorias, endereço) e "Conta" (dados, situação da ONG, senha, excluir); aba na URL (`?aba=conta`) | Usuário | O banner da ONG rejeitada leva direto ao reenvio do documento |
+| 6 | Cada seção tem o seu "Salvar", habilitado só quando algo mudou; foto e banner salvam ao aplicar o editor | Usuário | Um formulário (React Hook Form) por seção; erro da API no campo da seção |
+| 6 | Doações na página pessoal em grade de miniaturas (capa, título, categoria), com "Ver mais" | Usuário | Visitante vê só o número; doador que ocultou mostra o aviso para os outros e a dica para ele mesmo |
+| 6 | Configurações: cor e modo (salvos na conta), mostrar doações (doador), som e aviso de mensagem (só neste navegador) e atalhos | Usuário | Cor e modo mudam na hora e voltam se a API recusar |
+| 6 | Editor de foto reaproveitado: 1:1 redondo para a foto de perfil, 3:1 para o banner | Spec (plano) | `PhotoEditorModal` ganhou `aspect`, `round`, `title` e `hint` |
+| 6 | Endereço pelo CEP com ViaCEP (só o CEP sai do app); CEP não encontrado deixa preencher à mão; CEP de outra cidade avisa | Spec (plano) | A CSP já liberava `viacep.com.br`; mock do ViaCEP no MSW |
+| 6 | Máscaras de telefone e CEP; Instagram aceita usuário, @ ou link e envia só o usuário | Claude | Mesmas regras do PATCH /profile da API |
+| 6 | Contato da ONG: "Abrir no mapa" (busca no Google Maps por texto), "Ligar" e "WhatsApp" (`wa.me`) | Claude | Sem chave de API nem mapa embutido |
+| 6 | Página pessoal: no celular avatar e texto empilhados; no desktop, só o avatar sobe para o banner | Claude | Achado nas capturas: no celular o nome quebrava letra a letra |
+| 6 | Sair: marca que está saindo, deixa a página fechada antes, chama a API e só então limpa a sessão | Claude | Corrige dois problemas achados nos testes: excluir a conta (ou sair) numa página fechada mandava para o login, e um 401 em andamento virava "sessão expirada" |
+| 6 | Excluir conta com negociação aberta mostra a mensagem da API com o atalho "Ver conversas" | Spec (guia F12) | |
+| 6 | Mock: perfil completo, imagens, preferências, senha, exclusão, documento, `/users/:id(+donations)`, `/public/users/:id` e ViaCEP; banner gerado para a ONG Salvadora | Claude | |
+| 6 | Testes: 28 novos (contrato dos mocks, máscaras e schemas, página pessoal, perfil, configurações); 261 no total | Claude | Conferido também com capturas do `dev:mock` (visitante, ONG, doadora, edição, CEP, conta, configurações claro/escuro, mobile, ONG rejeitada) |

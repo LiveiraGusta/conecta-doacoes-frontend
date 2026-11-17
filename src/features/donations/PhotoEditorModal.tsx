@@ -39,14 +39,30 @@ export interface PhotoEditorModalProps {
   file: File | null;
   onCancel(): void;
   onApply(edited: File): void;
+  /** Proporção do corte (padrão 4:3, a das fotos do item). */
+  aspect?: number;
+  /** Corte redondo (foto de perfil). */
+  round?: boolean;
+  /** Título e dica do editor (padrão: os das fotos do item). */
+  title?: string;
+  hint?: string;
 }
 
 /**
  * Editor de foto (plano, fase 4): arrastar para posicionar, zoom (slider, pinça ou roda do mouse),
- * girar 90°, espelhar na horizontal e na vertical, sempre em 4:3. Modal no desktop, tela cheia no celular.
+ * girar 90°, espelhar na horizontal e na vertical, na proporção pedida (4:3 nas fotos do item, 1:1 na foto
+ * de perfil, 3:1 no banner). Modal no desktop, tela cheia no celular.
  * O espelho é só CSS na prévia; o arquivo final sai do <canvas> (`renderCroppedImage`).
  */
-export function PhotoEditorModal({ file, onCancel, onApply }: PhotoEditorModalProps) {
+export function PhotoEditorModal({
+  file,
+  onCancel,
+  onApply,
+  aspect = PHOTO_ASPECT,
+  round = false,
+  title,
+  hint,
+}: PhotoEditorModalProps) {
   const { t } = useTranslation(['donations', 'common']);
   const isMobile = useIsMobile();
   const titleId = useId();
@@ -91,10 +107,10 @@ export function PhotoEditorModal({ file, onCancel, onApply }: PhotoEditorModalPr
       fullWidth
       aria-labelledby={titleId}
     >
-      <DialogTitle id={titleId}>{t('editor.title')}</DialogTitle>
+      <DialogTitle id={titleId}>{title ?? t('editor.title')}</DialogTitle>
       <DialogContent className="flex flex-col gap-4">
         <Typography variant="body2" color="text.secondary">
-          {t('editor.hint')}
+          {hint ?? t('editor.hint')}
         </Typography>
         <div
           className="relative w-full overflow-hidden rounded-xl bg-neutral-900"
@@ -107,7 +123,8 @@ export function PhotoEditorModal({ file, onCancel, onApply }: PhotoEditorModalPr
               crop={crop}
               zoom={zoom}
               rotation={rotation}
-              aspect={PHOTO_ASPECT}
+              aspect={aspect}
+              cropShape={round ? 'round' : 'rect'}
               minZoom={MIN_ZOOM}
               maxZoom={MAX_ZOOM}
               onCropChange={(c) => set({ crop: c })}

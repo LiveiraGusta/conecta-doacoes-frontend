@@ -12,7 +12,7 @@ export const loginSchema = z.object({
 });
 export type LoginValues = z.infer<typeof loginSchema>;
 
-const nameSchema = z.string().trim().min(2, 'validation:name').max(255, 'validation:name');
+export const nameSchema = z.string().trim().min(2, 'validation:name').max(255, 'validation:name');
 
 export const donorRegisterSchema = z.object({
   name: nameSchema,
@@ -23,7 +23,7 @@ export const donorRegisterSchema = z.object({
 });
 export type DonorRegisterValues = z.infer<typeof donorRegisterSchema>;
 
-const websiteSchema = z
+export const websiteSchema = z
   .string()
   .trim()
   .max(255, 'validation:website')

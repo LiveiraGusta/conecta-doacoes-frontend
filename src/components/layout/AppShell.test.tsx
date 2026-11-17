@@ -85,7 +85,7 @@ describe('AppShell desktop', () => {
 
     renderApp('/feed', { loggedAs: IDS.ngoRejected });
     expect(await screen.findByText(/O documento enviado está ilegível/)).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Reenviar documento' })).toHaveAttribute('href', '/profile');
+    expect(screen.getByRole('link', { name: 'Reenviar documento' })).toHaveAttribute('href', '/profile?aba=conta');
   });
 
   it('sem internet aparece a faixa "Você está offline"', async () => {

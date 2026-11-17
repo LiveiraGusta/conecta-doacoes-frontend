@@ -13,7 +13,4 @@ export function ComingSoonPage({ phase }: { phase: number }) {
 }
 
 // Um componente por rota (o `lazy` do router não passa props).
-export const UserPagePlaceholder = () => <ComingSoonPage phase={6} />;
-export const ProfilePlaceholder = () => <ComingSoonPage phase={6} />;
-export const SettingsPlaceholder = () => <ComingSoonPage phase={6} />;
 export const AdminPlaceholder = () => <ComingSoonPage phase={7} />;

@@ -16,13 +16,13 @@ const page = (load: () => Promise<{ default: React.ComponentType }>): Pick<Route
 const placeholders = () => import('@/pages/ComingSoonPage');
 const feed = page(() => import('@/pages/feed/FeedPage'));
 const item = page(() => import('@/pages/feed/ItemPage'));
-const userPage = page(async () => ({ default: (await placeholders()).UserPagePlaceholder }));
+const userPage = page(() => import('@/pages/users/UserPage'));
 const donations = page(() => import('@/pages/donations/DonationsPage'));
 const newItem = page(() => import('@/pages/donations/NewItemPage'));
 const interests = page(() => import('@/pages/donations/InterestsPage'));
 const chats = page(() => import('@/pages/chats/ChatsPage'));
-const profile = page(async () => ({ default: (await placeholders()).ProfilePlaceholder }));
-const settings = page(async () => ({ default: (await placeholders()).SettingsPlaceholder }));
+const profile = page(() => import('@/pages/profile/ProfilePage'));
+const settings = page(() => import('@/pages/settings/SettingsPage'));
 const admin = page(async () => ({ default: (await placeholders()).AdminPlaceholder }));
 const loginPage = page(() => import('@/pages/auth/LoginPage'));
 const registerPage = page(() => import('@/pages/auth/RegisterPage'));
