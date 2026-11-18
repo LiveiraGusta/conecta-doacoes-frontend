@@ -1,18 +1,18 @@
 # Conecta Doações — estado atual e próximos passos
 
-> Documento de passagem para continuar o trabalho em outra conversa. Atualizado em 17/11/2026.
+> Documento de passagem para continuar o trabalho em outra conversa. Atualizado em 18/11/2026.
 > Cole este arquivo (ou o caminho dele) no início do novo chat.
 
 ## 1. Resumo
 
 | Parte | Estado |
 | --- | --- |
-| **Frontend** (`C:\Workspace\connectDoacoes\frontend`) | As 9 fases do plano estão prontas e na `develop` (já no GitHub). Lint, tipos, build, 292 testes (Vitest + MSW), 8 testes ponta a ponta (Playwright) e orçamento de bundle passando. |
-| **Backend** (`C:\Workspace\connectDoacoes\backend`) | Fase 0 (integração com o front) pronta e na `develop` (já no GitHub). Typecheck e 126 testes unitários passando em 17/11/2026. Testes de integração não rodados nesse dia. |
-| **Integração real** | **Nunca testada.** O frontend só rodou contra os mocks do MSW, escritos a partir do `openapi.yaml`. |
-| **Deploy** | Não feito. `main` atrás da `develop` nos dois repositórios (front: 30 commits; back: 11). |
+| **Frontend** (`C:\Workspace\connectDoacoes\frontend`) | As 9 fases prontas, mais a variante e2e contra a API real e a preparação para produção, na `develop` **local** (sem push). Lint, tipos, 300 testes (Vitest), 8 e2e mock, 5 e2e contra a API real e orçamento de bundle passando em 18/11/2026. |
+| **Backend** (`C:\Workspace\connectDoacoes\backend`) | Fase 0, log em arquivo, validação de produção e CI na `develop` **local** (sem push). Lint, tipos, 138 unitários e 174 de integração passando em 18/11/2026. |
+| **Integração real** | **Testada em 17–18/11/2026, sem divergência do `openapi.yaml`.** Sessão por cookie, CSRF, uploads multipart (ordem da capa), interesse, escolha de ONG, chat por REST e WebSocket (4401/4403), não lidas, cancelamento, doação concluída, denúncia, admin e rotas públicas. |
+| **Deploy** | Não feito. O código está pronto; falta a infraestrutura que depende do dono (domínio, contas, segredos). |
 
-**Resposta curta para "agora é só deploy?": não.** Falta testar front + back juntos (seção 4, passo 1) e preparar a produção (passo 3).
+**Resposta curta para "agora é só deploy?": sim, do lado do código.** Falta o Passo 3 (infraestrutura) e o Passo 4 (publicar).
 
 ## 2. Onde está cada coisa
 
@@ -53,6 +53,7 @@ npm run dev           # contra a API real em http://localhost:3333/api/v1 (VITE_
 npm run test:run      # Vitest (unitários e de página)
 npm run test:coverage # com cobertura (≥ 80% em src/core, ≥ 60% geral)
 npm run e2e           # Playwright, contra o build em modo mock (sobe sozinho na porta 4174)
+npm run e2e:real      # Playwright contra a API real (precisa da API e do npm run dev rodando; só leitura)
 npm run build && npm run size   # build + orçamento de bundle (JS inicial ≤ 300 KB gzip)
 npm run lint && npm run typecheck && npm run format:check
 ```
@@ -79,46 +80,41 @@ Doadora (Marina Souza), ONG aprovada (ONG Salvadora), ONG em análise (Instituto
 
 ## 4. O que falta (em ordem)
 
-### Passo 1 — Integração front + back (o mais importante)
+### ✅ Passo 1 — Integração front + back (feito em 17–18/11/2026)
 
-1. Subir o backend local (seção 3) e o front com `npm run dev` (sem mock).
-2. Percorrer os fluxos com as contas do seed. Pontos de maior risco, porque o mock pode ter divergido da API:
-   - **Sessão por cookie** (`cd_session`, httpOnly, `SameSite=Lax`) e header anti-CSRF `X-Requested-With` em toda escrita.
-   - **WebSocket** (`ws://localhost:3333/api/v1/chats/ws`): `ready`, `subscribe`, `message.created`, `unread.updated`, `item.status_changed`; fechar com 4401/4403.
-   - **Uploads multipart**: 3 fotos do item (ordem = capa primeiro), documento da ONG, avatar e banner.
-   - Não lidas, marcar como lida, `?after=` no polling.
-   - Códigos de erro (`ALREADY_INTERESTED`, `ITEM_NOT_AVAILABLE`, `CHAT_CLOSED`, `HAS_ACTIVE_NEGOTIATIONS`…) e `details[].path` nos formulários.
-   - Página pessoal / rotas `/public/*` sem dados sensíveis para visitante.
-   - Admin: `document_url` assinada (expira em 10 min) aparecendo no `<iframe>` da análise.
-3. Corrigir o lado que estiver errado (o `openapi.yaml` é o contrato). Se o contrato mudar: `npm run gen:api` no front.
-4. Opcional e recomendado: uma variante dos testes Playwright contra a API real (hoje eles entram pelo painel "Entrar como", que só existe no mock).
-5. Rodar `npm run test:int` no backend.
+- Fluxos percorridos pela API, pelo WebSocket e pelo navegador contra o backend local com o seed: **nenhuma divergência** do `openapi.yaml`.
+- `npm run e2e:real` no front (5 testes, só leitura) e `npm run test:int` no backend (174) passando.
+- Não verificado: entrega real do e-mail de recuperação (Resend) e a `document_url` assinada no `<iframe>` do admin. Conferir no teste de fumaça da produção.
+- Comportamento confirmado e mantido: o logout só apaga o cookie; o JWT continua válido até expirar (7 dias), como descreve o ADR-13.
 
-### Passo 2 — Pendência local no backend
+### ✅ Passo 2 — Log em arquivo (feito)
 
-Há mudanças **sem commit** no backend que não foram feitas nas conversas do plano: log em arquivo com rotação (`src/core/logger.ts` novo, `pino-roll`, alterações em `src/app.ts`, `src/core/env.ts`, `.env.example`, `README.md`, `docs/DECISOES.md`, `.vscode/`). Decidir: commitar numa branch própria (ex.: `feat/log-arquivo`) ou descartar.
+Commitado em `feat/log-arquivo` e mesclado; o aviso de depreciação do Fastify foi corrigido em `fix/log-logcontroller` (`logController`).
 
 ### Passo 3 — Produção
 
-**Pré-requisito: domínio próprio** com `app.<domínio>` (front) e `api.<domínio>` (API). Sem isso o cookie de sessão e o WebSocket não funcionam entre sites: `*.vercel.app` está na Public Suffix List (ADR-13).
+**Pré-requisito: domínio próprio** com `app.<domínio>` (front) e `api.<domínio>` (API). Sem isso o cookie de sessão não funciona entre sites: `*.vercel.app` e `*.onrender.com` estão na Public Suffix List (ADR-13).
 
-Backend (Render — `render.yaml` existe):
-- [ ] Postgres de produção (pooler do Supabase, porta 6543) em `DATABASE_URL`.
-- [ ] Supabase Storage: buckets `items` e `ngo-docs`; `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY`.
-- [ ] `JWT_SECRET` (≥ 32 caracteres: `openssl rand -base64 48`).
-- [ ] `CORS_ORIGIN=https://app.<domínio>`, `APP_URL=https://app.<domínio>`.
-- [ ] Resend: `RESEND_API_KEY` e `EMAIL_FROM` com domínio verificado.
-- [ ] ⚠️ **Acrescentar ao `render.yaml`**: `COOKIE_SECURE=true` e `COOKIE_DOMAIN=.<domínio>` (hoje não estão lá). O comentário do `CORS_ORIGIN` ainda sugere `*.vercel.app`, o que contradiz o ADR-13.
-- [ ] Rodar o seed só com o Admin (`npm run seed:prod`, sem `SEED_DEMO`).
+Já feito no código (18/11/2026):
+- [x] `render.yaml` com `COOKIE_SECURE=true` (sem ele a API não subia) e `COOKIE_DOMAIN` (opcional); comentário do `CORS_ORIGIN` corrigido.
+- [x] Em produção a API **recusa subir** com config que quebraria o login: origem sem https, em `*.vercel.app`/`*.onrender.com`, com barra final, fora do `COOKIE_DOMAIN`, ou `APP_URL` fora do `CORS_ORIGIN`.
+- [x] CSP de conexões gerada no build a partir do `VITE_API_URL` (não precisa editar o `vercel.json`).
+- [x] Build de Production da Vercel falha sem `VITE_API_URL` válida (https, não localhost) ou com mocks ligados.
+- [x] CI do backend (lint, tipos, unitários, integração com Postgres, build).
+- [x] Boot de produção simulado a partir do `dist/`: cookie com `Secure`, CORS só na origem configurada, Swagger desligado.
 
-Frontend (Vercel — `vercel.json` existe):
-- [ ] Variável `VITE_API_URL=https://api.<domínio>/api/v1` (o WebSocket é derivado dela: `wss://…/chats/ws`).
-- [ ] **CSP no `vercel.json`**: trocar o `connect-src 'self' https: wss: …` pelo domínio real da API (`https://api.<domínio> wss://api.<domínio> https://viacep.com.br https://servicodados.ibge.gov.br`). Conferir `img-src` e `frame-src` com o domínio do Supabase do projeto.
-- [ ] Previews da Vercel (`*.vercel.app`) não terão login real: usar `VITE_USE_MOCKS=true` no ambiente Preview.
+Falta (depende do dono — passo a passo nos READMEs, seção "Deploy"):
+- [ ] Registrar o domínio.
+- [ ] Supabase de produção: Postgres (pooler, porta 6543), buckets `items` e `ngo-docs` (`npm run storage:check`).
+- [ ] Resend: verificar o domínio para o `EMAIL_FROM` e criar a `RESEND_API_KEY`.
+- [ ] Render: criar pelo Blueprint e preencher `DATABASE_URL`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `JWT_SECRET` (`openssl rand -base64 48`), `CORS_ORIGIN` e `APP_URL` (`https://app.<domínio>`), `RESEND_API_KEY`, `EMAIL_FROM`; domínio `api.<domínio>` + DNS.
+- [ ] Admin: `ADMIN_EMAIL=... ADMIN_PASSWORD=... npm run seed:prod` no Shell do Render (sem `SEED_DEMO`).
+- [ ] Vercel: `VITE_API_URL=https://api.<domínio>/api/v1` em Production; `VITE_USE_MOCKS=true` em Preview; domínio `app.<domínio>` + DNS.
 
 ### Passo 4 — Publicar
 
-- [ ] PR `develop → main` nos dois repositórios; CI verde (o do front tem os jobs `verificar` e `e2e`).
+- [ ] `git push` da `develop` nos dois repositórios (hoje só local).
+- [ ] PR `develop → main` nos dois repositórios; CI verde (front: `verificar` e `e2e`; back: `verificar`, novo).
 - [ ] Deploy e teste de fumaça em produção: cadastro de ONG, aprovação pelo Admin, publicar item, interesse, escolher ONG, conversa em tempo real, confirmar recebimento, recuperar senha por e-mail.
 
 ### Depois (não bloqueia o lançamento)

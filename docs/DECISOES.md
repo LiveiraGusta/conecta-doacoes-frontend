@@ -378,3 +378,11 @@ O detalhe técnico está em `backend/docs/DECISOES.md`, na seção "Integração
 | 10 | Variante dos testes Playwright contra a API real (`npm run e2e:real`), em `e2e-real/`, com config própria (`playwright.real.config.ts`) | Usuário (aprovado) | Não entra no `npm run e2e` (que segue no mock) e não sobe servidor: exige o front em `npm run dev` e a API rodando |
 | 10 | Testes da API real são só de leitura, com login pelo formulário e um worker | Claude | Não sujam o seed de demo; a API limita o login a 10 por minuto, então paralelismo daria 429 |
 | 10 | Feed liberado para ONG em análise, como manda o spec (`GET /items/feed`: "Acesso DONOR e NGO"). Só demonstrar interesse exige ONG ATIVO | Spec (openapi) | O teste da variante real confirma isso, não a restrição de feed que eu tinha assumido |
+
+### Preparação para produção
+| Fase | Decisão | Quem decidiu | Consequência |
+| --- | --- | --- | --- |
+| 11 | CSP de conexões gerada no build a partir do `VITE_API_URL` (meta tag, `config/csp.ts`), em vez de fixar o domínio da API no `vercel.json` | Usuário (aprovado: "faça tudo que você possa") | O domínio fica só na variável da Vercel. O header continua amplo como teto; a meta restringe à API, ao WebSocket, ao ViaCEP e ao IBGE (interseção das duas políticas). Sem meta no modo mock |
+| 11 | O build de Production da Vercel (`VERCEL_ENV=production`) falha sem `VITE_API_URL`, sem https, com `localhost` ou com `VITE_USE_MOCKS=true` | Claude | Antes, sem a variável o site iria ao ar chamando `http://localhost:3333`. Local, CI e previews não são afetados |
+| 11 | `tsconfig.node.json` passa a incluir `playwright.real.config.ts`, `e2e-real/` e `config/` | Claude | Esses arquivos estavam fora do typecheck |
+| 11 | Import do `config/csp.ts` com extensão no `vite.config.ts` | Claude | Compatível com o carregador nativo de config que o Vite vai adotar |
