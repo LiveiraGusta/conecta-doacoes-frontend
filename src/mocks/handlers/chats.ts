@@ -258,7 +258,7 @@ export const chatHandlers = [
       return validationError([{ path: 'reason', message: 'Escreva de 10 a 1000 caracteres' }]);
     }
     const open = [...db.state.reports.values()].some(
-      (r) => r.item_id === item.id && r.reporter_id === user.id && r.status === 'ABERTA',
+      (r) => r.item_id === item.id && r.reporter_id === user.id && r.kind === 'CHAT' && r.status === 'ABERTA',
     );
     if (open) {
       return apiError(409, 'ALREADY_REPORTED', 'Você já denunciou esta negociação. A equipe está analisando.');
@@ -268,8 +268,11 @@ export const chatHandlers = [
       item_id: item.id,
       reporter_id: user.id,
       reported_id: counterpartId(item, user.id),
+      kind: 'CHAT' as const,
+      category: null,
       reason,
       status: 'ABERTA' as const,
+      resolution: null,
       created_at: new Date().toISOString(),
     };
     db.state.reports.set(report.id, report);

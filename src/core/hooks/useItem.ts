@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '../auth/useAuth';
 import { fetchItem, fetchPublicItem } from '../services/items';
-import type { Category, ItemStatus } from '../types/api';
+import type { Category, ItemStatus, ModerationStatus } from '../types/api';
 
 /** Detalhe do item, igual para logado e visitante (o visitante não vê doador, observações nem contagem). */
 export interface ItemView {
@@ -22,6 +22,10 @@ export interface ItemView {
   donor_id: string | null;
   /** ONG escolhida (só logado; o doador usa na lista de interessadas). */
   selected_ngo_id: string | null;
+  /** Fora de VISIVEL, só o doador, a ONG escolhida e o Admin chegam a ver o item. */
+  moderation_status: ModerationStatus;
+  /** Motivo da remoção pela moderação (só o doador recebe). */
+  moderation_reason: string | null;
 }
 
 export const itemKey = (mode: 'auth' | 'public', id: string) => ['item', mode, id] as const;
@@ -52,6 +56,8 @@ export function useItem(id: string) {
           is_selected: d.is_selected ?? false,
           donor_id: d.donor_id,
           selected_ngo_id: d.selected_ngo_id ?? null,
+          moderation_status: d.moderation_status,
+          moderation_reason: d.moderation_reason ?? null,
         };
       }
       const p = await fetchPublicItem(id);
@@ -64,6 +70,9 @@ export function useItem(id: string) {
         is_selected: false,
         donor_id: null,
         selected_ngo_id: null,
+        // O visitante só recebe anúncios no ar.
+        moderation_status: 'VISIVEL',
+        moderation_reason: null,
       };
     },
   });

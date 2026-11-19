@@ -27,6 +27,9 @@ const pages: [string, string, { loggedAs?: string; viewport?: 'mobile' }, RegExp
   ['configurações', '/settings', { loggedAs: IDS.donor }, /Aparência/],
   ['moderação', '/admin/ngos', { loggedAs: IDS.admin }, /Instituto Novo Começo/],
   ['denúncia', `/admin/reports/${REPORT_IDS.open}`, { loggedAs: IDS.admin }, /Linha do tempo/],
+  ['fila de denúncias', '/admin/reports', { loggedAs: IDS.admin }, /Revistas antigas/],
+  ['denúncia de anúncio', `/admin/reports/${REPORT_IDS.itemOpen}`, { loggedAs: IDS.admin }, /Conteúdo do anúncio/],
+  ['anúncio em análise (doador)', `/items/${ITEM_IDS.magazines}`, { loggedAs: IDS.donor2 }, /fora do ar/],
   ['404', '/nao-existe', {}, /Página não encontrada/],
 ];
 

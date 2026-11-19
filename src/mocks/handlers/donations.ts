@@ -4,7 +4,7 @@ import { IMAGE_TYPES, MAX_UPLOAD_BYTES } from '@/core/utils/files';
 import { db } from '../db';
 import { mockPhoto, type MockItem } from '../items';
 import { apiError, apiUrl, csrfError, mockDelay, unauthorized, validationError } from '../utils';
-import { toFeedItem } from './items';
+import { isVisible, toFeedItem } from './items';
 
 /** Handlers da fase 4 (publicar, minhas doações/interesses, interessadas, escolher ONG), como no openapi.yaml. */
 
@@ -39,6 +39,8 @@ const toItem = (i: MockItem): Item => ({
   photos: i.photos,
   created_at: i.created_at,
   completed_at: i.completed_at,
+  moderation_status: i.moderation_status,
+  moderation_reason: i.moderation_reason,
 });
 
 /** Mesmas regras do POST /items da API (VALIDATION_ERROR com `details` por campo). */
@@ -100,6 +102,8 @@ export const donationHandlers = [
       selected_ngo_id: null,
       created_at: new Date().toISOString(),
       completed_at: null,
+      moderation_status: 'VISIVEL',
+      moderation_reason: null,
       photos: photos.map((p, i) => ({
         id: `${id}-foto-${i + 1}`,
         photo_url: photoUrl(p, fields.title, fields.category, i + 1),
@@ -123,7 +127,12 @@ export const donationHandlers = [
     const limit = Number(url.searchParams.get('limit') ?? 30);
     const offset = Number(url.searchParams.get('offset') ?? 0);
     const mine = [...db.state.items.values()]
-      .filter((i) => (user.role === 'DONOR' ? i.donor_id === user.id : db.hasInterest(i.id, user.id)))
+      .filter((i) =>
+        user.role === 'DONOR'
+          ? i.donor_id === user.id
+          : // A ONG deixa de ver o anúncio fora do ar, salvo se for a escolhida.
+            db.hasInterest(i.id, user.id) && (isVisible(i) || i.selected_ngo_id === user.id),
+      )
       .filter((i) => !status || i.status === status)
       .sort((a, b) => b.created_at.localeCompare(a.created_at));
     return HttpResponse.json({
@@ -179,6 +188,12 @@ export const donationHandlers = [
     const item = db.state.items.get(String(params.itemId));
     if (!item) return itemNotFound();
     if (item.donor_id !== user.id) return forbidden();
+    if (item.moderation_status === 'OCULTO') {
+      return apiError(409, 'ITEM_UNDER_REVIEW', 'Este anúncio está em análise pela moderação.');
+    }
+    if (item.moderation_status === 'REMOVIDO') {
+      return apiError(409, 'ITEM_REMOVED', 'Este anúncio foi removido pela moderação.');
+    }
     if (item.status !== 'DISPONIVEL') {
       return apiError(409, 'ITEM_NOT_AVAILABLE', 'Este item já está em negociação ou foi doado.');
     }

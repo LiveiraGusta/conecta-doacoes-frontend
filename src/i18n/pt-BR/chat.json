@@ -85,6 +85,7 @@
     "newMessageGeneric": "Você recebeu uma nova mensagem",
     "open": "Abrir",
     "cancelled": "A negociação de \"{{title}}\" foi cancelada pela outra parte.",
+    "removedByModeration": "O anúncio \"{{title}}\" foi removido pela moderação e a negociação foi encerrada.",
     "donated": "\"{{title}}\": a ONG confirmou o recebimento. Doação concluída!",
     "itemFallback": "um item"
   }

@@ -1,4 +1,4 @@
-import type { Category, ItemStatus } from '@/core/types/api';
+import type { Category, ItemStatus, ModerationStatus } from '@/core/types/api';
 
 /** Item como fica no "banco" falso (as rotas montam FeedItem, ItemDetail e PublicItem a partir dele). */
 export interface MockItem {
@@ -15,6 +15,10 @@ export interface MockItem {
   created_at: string;
   completed_at: string | null;
   photos: { id: string; photo_url: string }[];
+  /** Moderação do anúncio (denúncias de conteúdo); fora de VISIVEL o item some do feed. */
+  moderation_status: ModerationStatus;
+  /** Motivo da remoção pelo Admin (só o doador vê). */
+  moderation_reason: string | null;
 }
 
 const CATEGORY_COLORS: Record<Category, [string, string, string]> = {
@@ -62,11 +66,14 @@ let seq = 0;
 const nextId = () => `55555555-5555-4555-8555-${String(++seq).padStart(12, '0')}`;
 
 export function makeItem(
-  input: Omit<MockItem, 'id' | 'photos' | 'completed_at' | 'created_at'> & { hoursAgo: number; id?: string },
+  input: Omit<MockItem, 'id' | 'photos' | 'completed_at' | 'created_at' | 'moderation_status' | 'moderation_reason'> &
+    Partial<Pick<MockItem, 'moderation_status' | 'moderation_reason'>> & { hoursAgo: number; id?: string },
 ): MockItem {
   const id = input.id ?? nextId();
   const { hoursAgo: h, ...rest } = input;
   return {
+    moderation_status: 'VISIVEL',
+    moderation_reason: null,
     ...rest,
     id,
     created_at: hoursAgo(h),
@@ -84,6 +91,8 @@ export const ITEM_IDS = {
   milk: '55555555-5555-4555-8555-000000000109',
   stroller: '55555555-5555-4555-8555-000000000110',
   uniforms: '55555555-5555-4555-8555-000000000112',
+  /** Anúncio do Carlos que saiu do ar sozinho com 3 denúncias (aguarda o Admin). */
+  magazines: '55555555-5555-4555-8555-000000000113',
 } as const;
 
 export function seedItems(ids: {
@@ -213,6 +222,20 @@ export function seedItems(ids: {
       status: 'DISPONIVEL',
       selected_ngo_id: null,
       hoursAgo: 3,
+    }),
+    makeItem({
+      id: ITEM_IDS.magazines,
+      donor_id: ids.donor2,
+      title: 'Revistas antigas',
+      description: 'Caixa com revistas dos anos 90.',
+      notes: null,
+      category: 'LIVROS',
+      city: 'Campinas',
+      state: 'SP',
+      status: 'DISPONIVEL',
+      selected_ngo_id: null,
+      hoursAgo: 8,
+      moderation_status: 'OCULTO',
     }),
     makeItem({
       donor_id: ids.donor2,

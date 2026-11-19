@@ -72,7 +72,7 @@ npm run test:int              # integração (usa o Postgres de testes)
 ### Contas
 
 **Mock do frontend (`dev:mock`)**: botões "Entrar como" na tela de login. Senha de todas: `Demo1234`.
-Doadora (Marina Souza), ONG aprovada (ONG Salvadora), ONG em análise (Instituto Novo Começo), ONG rejeitada (Casa Esperança), Admin. Há também Carlos (Campinas), Paula (Rio) e Casa do Bem (ONG ativa). A Cesta básica tem 3 ONGs interessadas; a Bicicleta tem conversa com 2 não lidas; há 1 denúncia aberta.
+Doadora (Marina Souza), ONG aprovada (ONG Salvadora), ONG em análise (Instituto Novo Começo), ONG rejeitada (Casa Esperança), Admin. Há também Carlos (Campinas), Paula (Rio) e Casa do Bem (ONG ativa). A Cesta básica tem 3 ONGs interessadas; a Bicicleta tem conversa com 2 não lidas; há 1 denúncia de negociação aberta e as "Revistas antigas" do Carlos estão ocultas com 3 denúncias de anúncio.
 
 **Seed real do backend (`SEED_DEMO=true`)**: senha `Demo1234`.
 `doadora@demo.conectadoacoes.local`, `ong.ativa@demo.conectadoacoes.local`, `ong.pendente@demo.conectadoacoes.local`. Admin: `ADMIN_EMAIL` / `ADMIN_PASSWORD` do `.env`.

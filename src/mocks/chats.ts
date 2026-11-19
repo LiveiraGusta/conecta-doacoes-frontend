@@ -1,4 +1,4 @@
-import type { Message } from '@/core/types/api';
+import type { Message, ReportCategory, ReportKind, ReportResolution } from '@/core/types/api';
 import { ITEM_IDS } from './items';
 
 /** Denúncia como fica no "banco" falso (a fila do Admin chega na fase 7). */
@@ -7,8 +7,12 @@ export interface MockReport {
   item_id: string;
   reporter_id: string;
   reported_id: string;
-  reason: string;
+  /** CHAT: a outra parte da negociação. ITEM: o conteúdo do anúncio. */
+  kind: ReportKind;
+  category: ReportCategory | null;
+  reason: string | null;
   status: 'ABERTA' | 'RESOLVIDA';
+  resolution: ReportResolution;
   created_at: string;
 }
 
@@ -20,6 +24,8 @@ let seq = 0;
 export const REPORT_IDS = {
   open: '77777777-7777-4777-8777-000000000001',
   resolved: '77777777-7777-4777-8777-000000000002',
+  /** Primeira das 3 denúncias de anúncio das "Revistas antigas". */
+  itemOpen: '77777777-7777-4777-8777-000000000003',
 } as const;
 
 const nextId = () => `66666666-6666-4666-8666-${String(++seq).padStart(12, '0')}`;
@@ -41,9 +47,9 @@ function msg(itemId: string, from: string, to: string, text: string, ago: number
  * - leite em pó: Marina ↔ Casa do Bem, em negociação, tudo lido;
  * - roupas de bebê: Marina ↔ ONG Salvadora, doada (só leitura).
  */
-export function seedChats(ids: { donor: string; ngoActive: string; ngoActive2: string }) {
+export function seedChats(ids: { donor: string; donor2: string; ngoActive: string; ngoActive2: string }) {
   seq = 0;
-  const { donor, ngoActive: ngo, ngoActive2: ngo2 } = ids;
+  const { donor, donor2, ngoActive: ngo, ngoActive2: ngo2 } = ids;
   const messages: Message[] = [
     msg(ITEM_IDS.bike, donor, ngo, 'Oi! Que bom que a bicicleta vai para vocês.', 600),
     msg(ITEM_IDS.bike, ngo, donor, 'Oi, Marina! Muito obrigado. Temos uma criança que vai adorar.', 590),
@@ -65,15 +71,33 @@ export function seedChats(ids: { donor: string; ngoActive: string; ngoActive2: s
     [`${ITEM_IDS.babyClothes}:${donor}`, minutesAgo(4300)],
     [`${ITEM_IDS.babyClothes}:${ngo}`, minutesAgo(4330)],
   ]);
-  // Denúncias para a fila do Admin (fase 7): uma aberta (doadora → Casa do Bem) e uma resolvida.
+  // Denúncias para a fila do Admin: de negociação, uma aberta (doadora → Casa do Bem) e uma resolvida;
+  // de anúncio, 3 abertas contra as "Revistas antigas" do Carlos (por isso o anúncio está OCULTO).
+  const chat = { kind: 'CHAT' as const, category: null, resolution: null };
+  const itemReport = (n: number, reporter: string, category: ReportCategory, reason: string | null, ago: number) => ({
+    id: `77777777-7777-4777-8777-00000000000${n}`,
+    item_id: ITEM_IDS.magazines,
+    reporter_id: reporter,
+    reported_id: donor2,
+    kind: 'ITEM' as const,
+    category,
+    reason,
+    status: 'ABERTA' as const,
+    resolution: null,
+    created_at: minutesAgo(ago),
+  });
   const reports = new Map<string, MockReport>(
     [
+      itemReport(3, ngo, 'NUDEZ', 'A terceira foto mostra uma capa com nudez.', 300),
+      itemReport(4, donor, 'NUDEZ', null, 200),
+      itemReport(5, ngo2, 'OUTRO', 'Parece propaganda de uma loja, não uma doação.', 100),
       {
         id: '77777777-7777-4777-8777-000000000001',
         item_id: ITEM_IDS.milk,
         reporter_id: donor,
         reported_id: ngo2,
         reason: 'Pediram dinheiro por Pix para buscar a doação. Achei estranho.',
+        ...chat,
         status: 'ABERTA' as const,
         created_at: minutesAgo(1840),
       },
@@ -83,6 +107,7 @@ export function seedChats(ids: { donor: string; ngoActive: string; ngoActive2: s
         reporter_id: ngo,
         reported_id: donor,
         reason: 'Marcou a entrega e não apareceu no primeiro dia combinado.',
+        ...chat,
         status: 'RESOLVIDA' as const,
         created_at: minutesAgo(4350),
       },

@@ -143,8 +143,14 @@ export function RealtimeProvider({ children }: { children: ReactNode }) {
             void queryClient.invalidateQueries({ queryKey: key });
           }
           if (event.changed_by !== role) {
+            const key =
+              event.status === 'DOADO'
+                ? 'notify.donated'
+                : event.changed_by === 'ADMIN'
+                  ? 'notify.removedByModeration'
+                  : 'notify.cancelled';
             snackbar.show({
-              message: t(event.status === 'DOADO' ? 'notify.donated' : 'notify.cancelled', { title }),
+              message: t(key, { title }),
               variant: event.status === 'DOADO' ? 'success' : 'info',
             });
           }

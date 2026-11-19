@@ -19,7 +19,7 @@ describe('mocks do admin', () => {
   it('só o Admin entra', async () => {
     db.loginAs(IDS.donor);
     expect(await fail(fetchAdminNgos('PENDENTE_APROVACAO', 0))).toMatchObject({ status: 403 });
-    expect(await fail(fetchReports('ABERTA', 0))).toMatchObject({ status: 403 });
+    expect(await fail(fetchReports('ABERTA', 'CHAT', 0))).toMatchObject({ status: 403 });
   });
 
   it('fila de ONGs por status, com documento e data de cadastro', async () => {
@@ -50,7 +50,7 @@ describe('mocks do admin', () => {
 
   it('denúncias: fila por status, detalhe com partes, eventos e mensagens; resolver é idempotente', async () => {
     db.loginAs(IDS.admin);
-    const open = await fetchReports('ABERTA', 0);
+    const open = await fetchReports('ABERTA', 'CHAT', 0);
     expect(open.data.map((r) => r.id)).toEqual([REPORT_IDS.open]);
     expect(open.data[0]).toMatchObject({
       item: { id: ITEM_IDS.milk },
@@ -66,7 +66,7 @@ describe('mocks do admin', () => {
 
     expect(await resolveReport(REPORT_IDS.open)).toMatchObject({ status: 'RESOLVIDA' });
     expect(await resolveReport(REPORT_IDS.open)).toMatchObject({ status: 'RESOLVIDA' });
-    expect((await fetchReports('ABERTA', 0)).total).toBe(0);
+    expect((await fetchReports('ABERTA', 'CHAT', 0)).total).toBe(0);
     expect(await fail(fetchReport('00000000-0000-4000-8000-000000000000'))).toMatchObject({
       code: 'REPORT_NOT_FOUND',
     });

@@ -1,6 +1,8 @@
 import ChatRounded from '@mui/icons-material/ChatRounded';
+import FlagRounded from '@mui/icons-material/FlagRounded';
 import GroupsRounded from '@mui/icons-material/GroupsRounded';
 import ImageNotSupportedRounded from '@mui/icons-material/ImageNotSupportedRounded';
+import Alert from '@mui/material/Alert';
 import Card from '@mui/material/Card';
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
@@ -24,6 +26,8 @@ const STATUS_TONE: Record<ItemStatus, BadgeTone> = {
 /** Ação do doador em cada status: ver interessadas enquanto está disponível; depois, a conversa. */
 function DonorActions({ item }: { item: FeedCardItem }) {
   const { t } = useTranslation('donations');
+  // Removido pela moderação: não há mais o que fazer com o anúncio disponível.
+  if (item.moderation_status === 'REMOVIDO' && item.status === 'DISPONIVEL') return null;
   if (item.status === 'DISPONIVEL') {
     const count = item.interests_count ?? 0;
     return (
@@ -66,6 +70,14 @@ export function MyItemCard({ item, role }: { item: FeedCardItem; role: 'DONOR' |
         <div className="flex flex-wrap items-center gap-2">
           <Badge tone={STATUS_TONE[item.status]}>{t(`mine.badge.${item.status}`)}</Badge>
           <Badge tone="accent">{t(`common:categories.${item.category}`)}</Badge>
+          {item.moderation_status !== 'VISIVEL' && (
+            <Badge tone={item.moderation_status === 'REMOVIDO' ? 'danger' : 'warning'}>
+              <span className="inline-flex items-center gap-1">
+                <FlagRounded sx={{ fontSize: 16 }} aria-hidden />
+                {t(item.moderation_status === 'REMOVIDO' ? 'feed:moderation.removed' : 'feed:moderation.hidden')}
+              </span>
+            </Badge>
+          )}
         </div>
         <Typography variant="subtitle1" component="h3" sx={{ fontWeight: 700, lineHeight: 1.3 }}>
           <Link
@@ -86,6 +98,15 @@ export function MyItemCard({ item, role }: { item: FeedCardItem; role: 'DONOR' |
           </Typography>
         )}
         <CityLine city={item.city} state={item.state} />
+        {role === 'DONOR' && item.moderation_status !== 'VISIVEL' && (
+          <Alert severity={item.moderation_status === 'REMOVIDO' ? 'error' : 'warning'} sx={{ py: 0 }}>
+            {item.moderation_status === 'REMOVIDO'
+              ? item.moderation_reason
+                ? t('feed:moderation.reason', { reason: item.moderation_reason })
+                : t('feed:moderation.removedDetail')
+              : t('mine.underReview')}
+          </Alert>
+        )}
         <div className="mt-auto flex flex-wrap justify-end gap-2 pt-2">
           {role === 'DONOR' ? <DonorActions item={item} /> : <InterestButton item={item} size="sm" />}
         </div>

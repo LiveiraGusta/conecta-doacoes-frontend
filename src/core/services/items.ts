@@ -9,6 +9,8 @@ import type {
   ItemStatus,
   Paginated,
   PublicItem,
+  Report,
+  ReportCategory,
   Selection,
 } from '../types/api';
 
@@ -42,6 +44,10 @@ export const fetchPublicItem = (id: string) => api<PublicItem>(`/public/items/${
 export const addInterest = (id: string) => api<Interest>(`/items/${id}/interest`, { method: 'POST' });
 /** Desfazer: 204; ALREADY_SELECTED se a ONG já foi escolhida. */
 export const removeInterest = (id: string) => api<void>(`/items/${id}/interest`, { method: 'DELETE' });
+
+/** Denunciar o conteúdo do anúncio (guia, F11b). `reason` é obrigatório (10+) só na categoria OUTRO. */
+export const reportItem = (id: string, category: ReportCategory, reason?: string) =>
+  api<Report>(`/items/${id}/report`, { method: 'POST', json: reason ? { category, reason } : { category } });
 
 // ── Doações (fase 4) ──
 

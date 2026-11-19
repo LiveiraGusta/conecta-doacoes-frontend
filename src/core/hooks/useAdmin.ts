@@ -1,6 +1,6 @@
 import { useInfiniteQuery, useQuery, type InfiniteData } from '@tanstack/react-query';
 import { ADMIN_PAGE_SIZE, fetchAdminNgos, fetchReport, fetchReports, type ReportStatus } from '../services/admin';
-import type { AdminNgo, NgoStatus, Paginated, ReportSummary } from '../types/api';
+import type { AdminNgo, NgoStatus, Paginated, ReportKind, ReportSummary } from '../types/api';
 
 export const NGO_STATUSES: NgoStatus[] = ['PENDENTE_APROVACAO', 'ATIVO', 'REJEITADO'];
 
@@ -48,12 +48,12 @@ export function useAdminNgoLookup(ngoProfileId: string | null) {
   });
 }
 
-/** Fila de denúncias por status (guia, F11). */
-export function useReports(status: ReportStatus) {
+/** Fila de denúncias por status e tipo (guia, F11 e F11b); sem tipo, as duas. */
+export function useReports(status: ReportStatus, kind?: ReportKind) {
   return useInfiniteQuery({
-    queryKey: ['admin', 'reports', status],
+    queryKey: ['admin', 'reports', status, kind ?? 'ALL'],
     initialPageParam: 0,
-    queryFn: ({ pageParam }) => fetchReports(status, pageParam),
+    queryFn: ({ pageParam }) => fetchReports(status, kind, pageParam),
     getNextPageParam: nextOffset<ReportSummary>,
     select: infinite<ReportSummary>,
   });

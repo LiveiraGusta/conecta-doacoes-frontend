@@ -2,6 +2,7 @@ import { screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { REPORT_IDS } from '@/mocks/chats';
 import { db, IDS } from '@/mocks/db';
+import { ITEM_IDS } from '@/mocks/items';
 import { currentUrl, renderApp } from '@/test/render';
 
 const pending = () => db.state.users.get(IDS.ngoPending)!.user.ngo_profile!;
@@ -99,5 +100,68 @@ describe('Denúncias', () => {
   it('denúncia que não existe', async () => {
     renderApp('/admin/reports/00000000-0000-4000-8000-000000000000', { loggedAs: IDS.admin });
     expect(await screen.findByRole('heading', { name: 'Denúncia não encontrada' })).toBeInTheDocument();
+  });
+});
+
+describe('Denúncias de anúncio', () => {
+  const magazines = () => db.state.items.get(ITEM_IDS.magazines)!;
+  const openItemReports = () =>
+    [...db.state.reports.values()].filter((r) => r.kind === 'ITEM' && r.status === 'ABERTA');
+
+  it('filtro por tipo na URL; a linha mostra a categoria e o selo "Oculto"', async () => {
+    const { user, router } = renderApp('/admin/reports', { loggedAs: IDS.admin });
+    await screen.findByRole('link', { name: 'Ver denúncia sobre Leite em pó (6 latas)' });
+    await user.click(screen.getByRole('button', { name: 'Anúncio' }));
+    await waitFor(() => expect(currentUrl(router)).toBe('/admin/reports?tipo=anuncio'));
+    await waitFor(() =>
+      expect(screen.queryByRole('link', { name: 'Ver denúncia sobre Leite em pó (6 latas)' })).not.toBeInTheDocument(),
+    );
+    const rows = screen.getAllByRole('link', { name: 'Ver denúncia sobre Revistas antigas' });
+    expect(rows).toHaveLength(3);
+    const row = rows[0]!.closest('tr')!;
+    expect(within(row).getByText('Nudez ou conteúdo sexual')).toBeInTheDocument();
+    expect(within(row).getByText('Oculto')).toBeInTheDocument();
+  });
+
+  it('detalhe: fotos, descrição, todas as denúncias do anúncio e nada da conversa', async () => {
+    renderApp(`/admin/reports/${REPORT_IDS.itemOpen}`, { loggedAs: IDS.admin });
+    expect(await screen.findByRole('heading', { name: /Denúncia sobre Revistas antigas/ })).toBeInTheDocument();
+    expect(screen.getByText(/saiu do ar sozinho porque 3 pessoas/)).toBeInTheDocument();
+    const content = screen.getByRole('region', { name: 'Conteúdo do anúncio' });
+    expect(within(content).getAllByRole('link', { name: /Abrir a foto/ })).toHaveLength(3);
+    expect(within(content).getByText('Caixa com revistas dos anos 90.')).toBeInTheDocument();
+    const list = screen.getByRole('region', { name: 'Denúncias deste anúncio (3)' });
+    expect(within(list).getByText('“Parece propaganda de uma loja, não uma doação.”')).toBeInTheDocument();
+    expect(screen.queryByRole('region', { name: 'Conversa' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Marcar como resolvida' })).not.toBeInTheDocument();
+  });
+
+  it('remover: motivo obrigatório; resolve as 3 denúncias e o anúncio fica removido', async () => {
+    const { user } = renderApp(`/admin/reports/${REPORT_IDS.itemOpen}`, { loggedAs: IDS.admin });
+    await user.click(await screen.findByRole('button', { name: 'Remover anúncio' }));
+    const dialog = await screen.findByRole('dialog', { name: 'Remover anúncio' });
+    const reason = within(dialog).getByLabelText(/Motivo/);
+    await user.type(reason, 'curto');
+    await user.click(within(dialog).getByRole('button', { name: 'Remover anúncio' }));
+    expect(within(dialog).getByText('Escreva ao menos 10 caracteres')).toBeInTheDocument();
+    expect(magazines().moderation_status).toBe('OCULTO');
+
+    await user.type(reason, ': capa com nudez explícita.');
+    await user.click(within(dialog).getByRole('button', { name: 'Remover anúncio' }));
+    expect(await screen.findByText('Anúncio removido.')).toBeInTheDocument();
+    expect(magazines()).toMatchObject({
+      moderation_status: 'REMOVIDO',
+      moderation_reason: 'curto: capa com nudez explícita.',
+    });
+    expect(openItemReports()).toHaveLength(0);
+    expect(await screen.findByRole('button', { name: 'Republicar anúncio' })).toBeInTheDocument();
+  });
+
+  it('manter: o anúncio volta ao ar e as denúncias são descartadas', async () => {
+    const { user } = renderApp(`/admin/reports/${REPORT_IDS.itemOpen}`, { loggedAs: IDS.admin });
+    await user.click(await screen.findByRole('button', { name: 'Manter anúncio' }));
+    expect(await screen.findByText('Anúncio mantido no ar. As denúncias foram descartadas.')).toBeInTheDocument();
+    expect(magazines().moderation_status).toBe('VISIVEL');
+    expect(await screen.findByText('Denúncia descartada: o anúncio foi mantido.')).toBeInTheDocument();
   });
 });

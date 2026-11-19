@@ -69,6 +69,17 @@
   "reports": {
     "title": "Denúncias",
     "tabs": "Filtrar denúncias",
+    "kindFilter": "Filtrar por tipo",
+    "kindAll": "Todas",
+    "kind": {
+      "CHAT": "Negociação",
+      "ITEM": "Anúncio"
+    },
+    "moderation": {
+      "OCULTO": "Oculto",
+      "REMOVIDO": "Removido"
+    },
+    "noDescription": "Sem descrição",
     "status": {
       "ABERTA": "Abertas",
       "RESOLVIDA": "Resolvidas"
@@ -128,6 +139,32 @@
     "resolve": "Marcar como resolvida",
     "resolved": "Denúncia resolvida.",
     "alreadyResolved": "Esta denúncia já foi resolvida.",
-    "notFoundTitle": "Denúncia não encontrada"
+    "notFoundTitle": "Denúncia não encontrada",
+    "advertiser": "Quem anunciou",
+    "content": "Conteúdo do anúncio",
+    "photo": "Abrir a foto {{n}} em tamanho real",
+    "noItemDescription": "O anúncio não tem descrição.",
+    "itemReports_one": "Denúncias deste anúncio ({{count}})",
+    "itemReports_other": "Denúncias deste anúncio ({{count}})"
+  },
+  "moderation": {
+    "keep": "Manter anúncio",
+    "remove": "Remover anúncio",
+    "republish": "Republicar anúncio",
+    "isRemoved": "Anúncio removido.",
+    "wasKept": "Denúncia descartada: o anúncio foi mantido.",
+    "hiddenNotice": "Este anúncio saiu do ar sozinho porque 3 pessoas o denunciaram. Ele volta ao feed se você o mantiver.",
+    "removeTitle": "Remover anúncio",
+    "removeText": "\"{{title}}\" sai do ar de vez e todas as denúncias abertas dele são resolvidas. O doador verá o motivo em \"Minhas doações\".",
+    "removeInProgress": "Este item está em negociação: a remoção encerra a conversa e avisa as duas partes.",
+    "reasonLabel": "Motivo (o doador vai ler)",
+    "reasonHint": "De 10 a 500 caracteres",
+    "reasonTooShort": "Escreva ao menos 10 caracteres",
+    "reasonTooLong": "Use até 500 caracteres",
+    "back": "Voltar",
+    "removeConfirm": "Remover anúncio",
+    "removed": "Anúncio removido.",
+    "removedCancelled": "Anúncio removido e negociação encerrada.",
+    "restored": "Anúncio mantido no ar. As denúncias foram descartadas."
   }
 }
