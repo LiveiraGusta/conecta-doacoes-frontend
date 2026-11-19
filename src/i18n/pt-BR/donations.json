@@ -71,6 +71,7 @@
     "error": "Não foi possível editar esta foto. Tente outra."
   },
   "mine": {
+    "underReview": "Recebeu denúncias e saiu do feed enquanto a moderação analisa. Você será avisado aqui se ele for removido.",
     "titleDonor": "Minhas doações",
     "titleNgo": "Meus interesses",
     "tabs": "Filtrar por status",

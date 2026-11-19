@@ -1,4 +1,5 @@
 import ArrowBackRounded from '@mui/icons-material/ArrowBackRounded';
+import Alert from '@mui/material/Alert';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { useTranslation } from 'react-i18next';
@@ -14,6 +15,20 @@ import { formatDateTime } from '@/core/utils/format';
 import { InterestButton } from './InterestButton';
 import { CityLine, DonorLine } from './itemParts';
 import { PhotoCarousel } from './PhotoCarousel';
+import { ReportItemLink } from './ReportItem';
+
+/** Aviso para quem ainda vê um anúncio fora do ar (o doador, a ONG escolhida ou o Admin). */
+function ModerationNotice({ item }: { item: ItemView }) {
+  const { t } = useTranslation('feed');
+  if (item.moderation_status === 'VISIVEL') return null;
+  const removed = item.moderation_status === 'REMOVIDO';
+  return (
+    <Alert severity={removed ? 'error' : 'warning'}>
+      {removed ? t('moderation.removedDetail') : t('moderation.hiddenDetail')}
+      {removed && item.moderation_reason && <> {t('moderation.reason', { reason: item.moderation_reason })}</>}
+    </Alert>
+  );
+}
 
 /** Conteúdo do detalhe (design-desktop-feed-item e design-mobile-feed): igual no modal e na página. */
 export function ItemDetailContent({ item, mobile = false }: { item: ItemView; mobile?: boolean }) {
@@ -23,6 +38,7 @@ export function ItemDetailContent({ item, mobile = false }: { item: ItemView; mo
 
   return (
     <article className="flex flex-col gap-4">
+      <ModerationNotice item={item} />
       {mobile && <DonorLine donor={item.donor} createdAt={item.created_at} time={formatDateTime(item.created_at)} />}
       <PhotoCarousel
         photos={item.photos}
@@ -69,6 +85,7 @@ export function ItemDetailContent({ item, mobile = false }: { item: ItemView; mo
         </Typography>
       )}
       <InterestButton item={item} size="lg" confirmLabel={mobile} className="mt-2 w-full max-w-sm self-center" />
+      <ReportItemLink item={item} />
     </article>
   );
 }

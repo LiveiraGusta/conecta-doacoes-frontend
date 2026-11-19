@@ -57,6 +57,46 @@
     "notFoundDescription": "Ele pode ter sido doado, removido ou o link está errado.",
     "loading": "Carregando item…"
   },
+  "reportItem": {
+    "link": "Denunciar anúncio",
+    "title": "Denunciar anúncio",
+    "text": "Por que \"{{title}}\" não deveria estar no Conecta Doações? Sua denúncia é anônima para quem anunciou.",
+    "categoryLabel": "Motivo",
+    "chooseCategory": "Escolha um motivo",
+    "categories": {
+      "NUDEZ": { "label": "Nudez ou conteúdo sexual", "hint": "Fotos ou textos com nudez ou conotação sexual." },
+      "ODIO": {
+        "label": "Discurso de ódio ou discriminação",
+        "hint": "Ofensas por raça, religião, gênero, orientação, origem…"
+      },
+      "VIOLENCIA": {
+        "label": "Violência ou conteúdo chocante",
+        "hint": "Ameaças, sangue, crueldade com pessoas ou animais."
+      },
+      "GOLPE": { "label": "Golpe ou fraude", "hint": "Pede dinheiro, dados pessoais ou parece enganoso." },
+      "PROIBIDO": { "label": "Item proibido", "hint": "Armas, drogas, medicamentos, animais." },
+      "SPAM": { "label": "Não é doação ou é propaganda", "hint": "Venda, divulgação de loja ou anúncio repetido." },
+      "OUTRO": { "label": "Outro motivo", "hint": "Descreva o problema no campo abaixo." }
+    },
+    "reasonLabel": "Quer contar mais? (opcional)",
+    "reasonRequiredLabel": "Descreva o problema",
+    "reasonHint": "Ajuda a moderação a decidir mais rápido",
+    "reasonRequired": "Descreva o problema em ao menos 10 caracteres",
+    "tooLong": "Use até 1000 caracteres",
+    "cancel": "Voltar",
+    "submit": "Enviar denúncia",
+    "done": "Denúncia enviada. Obrigado por ajudar a manter o Conecta Doações seguro.",
+    "already": "Você já denunciou este anúncio. Nossa equipe vai analisar.",
+    "sent": "Você denunciou este anúncio",
+    "error": "Não foi possível enviar a denúncia. Tente de novo."
+  },
+  "moderation": {
+    "hidden": "Em análise",
+    "removed": "Removido pela moderação",
+    "hiddenDetail": "Este anúncio recebeu denúncias e está fora do ar enquanto a moderação analisa. Só você e a ONG da negociação conseguem vê-lo.",
+    "removedDetail": "Este anúncio foi removido pela moderação e não aparece mais para ninguém.",
+    "reason": "Motivo: {{reason}}"
+  },
   "location": {
     "change": "Trocar localização",
     "title": "Sua localização",

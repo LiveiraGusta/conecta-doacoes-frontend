@@ -116,7 +116,10 @@ function applyPatch(user: User, body: Body): { path: string; message: string }[]
 const isListed = (u: User) => u.role === 'DONOR' || u.role === 'NGO';
 const donatedBy = (u: User) =>
   [...db.state.items.values()].filter(
-    (i) => i.status === 'DOADO' && (u.role === 'DONOR' ? i.donor_id === u.id : i.selected_ngo_id === u.id),
+    (i) =>
+      i.status === 'DOADO' &&
+      i.moderation_status === 'VISIVEL' &&
+      (u.role === 'DONOR' ? i.donor_id === u.id : i.selected_ngo_id === u.id),
   );
 
 /** Registro de quando a conta foi criada (o seed não tem: um mês atrás). */

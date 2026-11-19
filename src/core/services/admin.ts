@@ -1,5 +1,14 @@
 import { api } from '../api/http';
-import type { AdminNgo, NgoStatus, Paginated, Report, ReportDetail, ReportSummary } from '../types/api';
+import type {
+  AdminNgo,
+  ModerationResult,
+  NgoStatus,
+  Paginated,
+  Report,
+  ReportDetail,
+  ReportKind,
+  ReportSummary,
+} from '../types/api';
 
 export type ReportStatus = 'ABERTA' | 'RESOLVIDA';
 
@@ -17,13 +26,26 @@ export const setNgoStatus = (ngoProfileId: string, status: 'ATIVO' | 'REJEITADO'
     { method: 'PATCH', json: status === 'REJEITADO' ? { status, rejection_reason: reason } : { status } },
   );
 
-/** Fila de denúncias por status, mais antigas primeiro. */
-export const fetchReports = (status: ReportStatus, offset: number) =>
-  api<Paginated<ReportSummary>>('/admin/reports', { query: { status, limit: ADMIN_PAGE_SIZE, offset } });
+/** Fila de denúncias por status (e tipo, opcional), mais antigas primeiro. */
+export const fetchReports = (status: ReportStatus, kind: ReportKind | undefined, offset: number) =>
+  api<Paginated<ReportSummary>>('/admin/reports', {
+    query: kind ? { status, kind, limit: ADMIN_PAGE_SIZE, offset } : { status, limit: ADMIN_PAGE_SIZE, offset },
+  });
 
 /** Denúncia com as partes, os eventos do item e todas as mensagens. */
 export const fetchReport = (id: string) => api<ReportDetail>(`/admin/reports/${id}`);
 
-/** Idempotente: resolver de novo devolve a denúncia como está. */
+/**
+ * Tira o anúncio do ar de vez (motivo de 10 a 500, mostrado ao doador). Cancela a negociação em andamento
+ * e resolve todas as denúncias de anúncio abertas do item. Idempotente.
+ */
+export const removeItem = (itemId: string, reason: string) =>
+  api<ModerationResult>(`/admin/items/${itemId}/remove`, { method: 'POST', json: { reason } });
+
+/** Mantém (ou republica) o anúncio e descarta as denúncias de anúncio abertas como improcedentes. */
+export const restoreItem = (itemId: string) =>
+  api<ModerationResult>(`/admin/items/${itemId}/restore`, { method: 'POST' });
+
+/** Idempotente: resolver de novo devolve a denúncia como está. Denúncia de anúncio aberta dá 409. */
 export const resolveReport = (id: string) =>
   api<Report>(`/admin/reports/${id}`, { method: 'PATCH', json: { status: 'RESOLVIDA' } });

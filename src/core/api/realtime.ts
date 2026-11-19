@@ -13,7 +13,8 @@ export type ServerEvent =
       item_id: string;
       previous_status: string;
       status: 'DOADO' | 'DISPONIVEL';
-      changed_by: 'DONOR' | 'NGO';
+      /** ADMIN: a moderação removeu o anúncio e desfez a negociação. */
+      changed_by: 'DONOR' | 'NGO' | 'ADMIN';
       reason: string | null;
       completed_at: string | null;
     }

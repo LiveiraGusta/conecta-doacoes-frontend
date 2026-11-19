@@ -1,10 +1,15 @@
 import { http, HttpResponse } from 'msw';
-import type { AdminNgo, NgoStatus, ReportDetail, ReportSummary, User } from '@/core/types/api';
+import type { AdminNgo, ModerationResult, NgoStatus, ReportDetail, ReportSummary, User } from '@/core/types/api';
 import { db } from '../db';
 import type { MockReport } from '../chats';
+import type { MockItem } from '../items';
+import { realtime } from '../realtime';
 import { apiError, apiUrl, csrfError, mockDelay, unauthorized, validationError } from '../utils';
 
-/** Moderação (fase 7): fila de ONGs, aprovar/rejeitar, fila de denúncias, detalhe e resolver — como no openapi.yaml. */
+/**
+ * Moderação (fase 7): fila de ONGs, aprovar/rejeitar, fila de denúncias, detalhe e resolver — como no openapi.yaml.
+ * Denúncia de anúncio: filtro `kind`, detalhe com fotos e as ações remover/manter sobre o item.
+ */
 
 const STATUSES: NgoStatus[] = ['PENDENTE_APROVACAO', 'ATIVO', 'REJEITADO'];
 const DAY = 24 * 3600 * 1000;
@@ -80,14 +85,43 @@ function toSummary(r: MockReport): ReportSummary {
   const { email: _b, ...reported } = party(r.reported_id);
   return {
     id: r.id,
+    kind: r.kind,
+    category: r.category,
     status: r.status,
+    resolution: r.resolution,
     reason: r.reason,
     created_at: r.created_at,
-    item: { id: r.item_id, title: item?.title ?? 'Item removido', status: item?.status ?? 'DISPONIVEL' },
+    item: {
+      id: r.item_id,
+      title: item?.title ?? 'Item removido',
+      status: item?.status ?? 'DISPONIVEL',
+      moderation_status: item?.moderation_status ?? 'VISIVEL',
+    },
     reporter,
     reported,
   };
 }
+
+/** Resolve de uma vez as denúncias de anúncio abertas do item, com o desfecho (como a API). */
+function resolveItemReports(itemId: string, resolution: 'ITEM_REMOVIDO' | 'IMPROCEDENTE') {
+  const open = [...db.state.reports.values()].filter(
+    (r) => r.item_id === itemId && r.kind === 'ITEM' && r.status === 'ABERTA',
+  );
+  for (const r of open) {
+    r.status = 'RESOLVIDA';
+    r.resolution = resolution;
+  }
+  return open.length;
+}
+
+const toModerationResult = (item: MockItem, cancelled: boolean, resolved: number): ModerationResult => ({
+  item_id: item.id,
+  status: item.status,
+  moderation_status: item.moderation_status,
+  moderation_reason: item.moderation_reason,
+  cancelled_negotiation: cancelled,
+  resolved_reports: resolved,
+});
 
 const page = <T>(rows: T[], url: URL) => {
   const limit = Number(url.searchParams.get('limit') ?? 30);
@@ -141,8 +175,12 @@ export const adminHandlers = [
     if (status !== 'ABERTA' && status !== 'RESOLVIDA') {
       return validationError([{ path: 'status', message: 'Status inválido' }]);
     }
+    const kind = url.searchParams.get('kind');
+    if (kind && kind !== 'CHAT' && kind !== 'ITEM') {
+      return validationError([{ path: 'kind', message: 'Tipo inválido' }]);
+    }
     const rows = [...db.state.reports.values()]
-      .filter((r) => r.status === status)
+      .filter((r) => r.status === status && (!kind || r.kind === kind))
       .sort((a, b) => a.created_at.localeCompare(b.created_at))
       .map(toSummary);
     return HttpResponse.json(page(rows, url));
@@ -157,26 +195,55 @@ export const adminHandlers = [
     const item = db.state.items.get(report.item_id);
     const reported = party(report.reported_id);
     const body: ReportDetail = {
-      report: { id: report.id, status: report.status, reason: report.reason, created_at: report.created_at },
+      report: {
+        id: report.id,
+        kind: report.kind,
+        category: report.category,
+        status: report.status,
+        resolution: report.resolution,
+        reason: report.reason,
+        created_at: report.created_at,
+      },
       item: {
         id: report.item_id,
         title: item?.title ?? 'Item removido',
+        description: item?.description ?? null,
         status: item?.status ?? 'DISPONIVEL',
         donor_id: item?.donor_id ?? '',
         selected_ngo_id: item?.selected_ngo_id ?? null,
+        photos: item?.photos.map((p) => p.photo_url) ?? [],
+        moderation_status: item?.moderation_status ?? 'VISIVEL',
+        moderation_reason: item?.moderation_reason ?? null,
       },
       reporter: party(report.reporter_id),
       reported: {
         ...reported,
         ngo_profile_id: db.state.users.get(report.reported_id)?.user.ngo_profile?.id ?? null,
       },
+      item_reports: [...db.state.reports.values()]
+        .filter((r) => r.item_id === report.item_id && r.kind === 'ITEM')
+        .sort((a, b) => a.created_at.localeCompare(b.created_at))
+        .map((r) => {
+          const { email: _e, ...reporter } = party(r.reporter_id);
+          return {
+            id: r.id,
+            category: r.category!,
+            reason: r.reason,
+            status: r.status,
+            created_at: r.created_at,
+            reporter,
+          };
+        }),
       events: db.state.events
         .filter((e) => e.item_id === report.item_id)
         .sort((a, b) => a.created_at.localeCompare(b.created_at)),
-      // Todas as mensagens do item (inclusive de negociações anteriores), em ordem.
-      messages: db.state.messages
-        .filter((m) => m.item_id === report.item_id)
-        .sort((a, b) => a.created_at.localeCompare(b.created_at)),
+      // Todas as mensagens do item (inclusive de negociações anteriores), em ordem; só na denúncia de negociação.
+      messages:
+        report.kind === 'CHAT'
+          ? db.state.messages
+              .filter((m) => m.item_id === report.item_id)
+              .sort((a, b) => a.created_at.localeCompare(b.created_at))
+          : [],
     };
     return HttpResponse.json(body);
   }),
@@ -189,7 +256,58 @@ export const adminHandlers = [
     if (!report) return reportNotFound();
     const body = (await request.json().catch(() => ({}))) as { status?: string };
     if (body.status !== 'RESOLVIDA') return validationError([{ path: 'status', message: 'Use RESOLVIDA' }]);
+    if (report.kind === 'ITEM' && report.status === 'ABERTA') {
+      return apiError(409, 'CONFLICT', 'Denúncia de anúncio: remova ou mantenha o anúncio.');
+    }
     report.status = 'RESOLVIDA';
     return HttpResponse.json(report);
+  }),
+
+  http.post(apiUrl('/admin/items/:itemId/remove'), async ({ request, params }) => {
+    await mockDelay();
+    const { error, user } = admin(request, { write: true });
+    if (error) return error;
+    const item = db.state.items.get(String(params.itemId));
+    if (!item) return apiError(404, 'ITEM_NOT_FOUND', 'Item não encontrado.');
+    const body = (await request.json().catch(() => ({}))) as { reason?: unknown };
+    const reason = typeof body.reason === 'string' ? body.reason.trim() : '';
+    if (reason.length < 10 || reason.length > 500) {
+      return validationError([{ path: 'reason', message: 'Explique o motivo (de 10 a 500 caracteres)' }]);
+    }
+    let cancelled = false;
+    if (item.moderation_status !== 'REMOVIDO') {
+      item.moderation_status = 'REMOVIDO';
+      item.moderation_reason = reason;
+      if (item.status === 'EM_PROGRESSO') {
+        cancelled = true;
+        const why = `Anúncio removido pela moderação: ${reason}`;
+        item.status = 'DISPONIVEL';
+        item.selected_ngo_id = null;
+        db.addEvent(item.id, 'EM_PROGRESSO', 'CANCELADO', user.id, why);
+        db.addEvent(item.id, 'CANCELADO', 'DISPONIVEL', user.id, why);
+        realtime.toRoom(item.id, {
+          type: 'item.status_changed',
+          item_id: item.id,
+          previous_status: 'EM_PROGRESSO',
+          status: 'DISPONIVEL',
+          changed_by: 'ADMIN',
+          reason: 'Anúncio removido pela moderação.',
+          completed_at: null,
+        });
+        realtime.closeRoom(item.id);
+      }
+    }
+    return HttpResponse.json(toModerationResult(item, cancelled, resolveItemReports(item.id, 'ITEM_REMOVIDO')));
+  }),
+
+  http.post(apiUrl('/admin/items/:itemId/restore'), async ({ request, params }) => {
+    await mockDelay();
+    const { error } = admin(request, { write: true });
+    if (error) return error;
+    const item = db.state.items.get(String(params.itemId));
+    if (!item) return apiError(404, 'ITEM_NOT_FOUND', 'Item não encontrado.');
+    item.moderation_status = 'VISIVEL';
+    item.moderation_reason = null;
+    return HttpResponse.json(toModerationResult(item, false, resolveItemReports(item.id, 'IMPROCEDENTE')));
   }),
 ];

@@ -20,3 +20,17 @@ test('ONG demonstra interesse, desfaz pelo snackbar e filtra por categoria', asy
   await expect(page).toHaveURL(/categoria=livros/);
   await expect(page.getByRole('article')).toHaveCount(2);
 });
+
+test('ONG denuncia um anúncio pelo detalhe, escolhendo o motivo', async ({ page }) => {
+  await loginAs(page, 'ONG aprovada');
+  await page
+    .getByRole('link', { name: /Ver detalhes de Calças jeans/ })
+    .first()
+    .click();
+  await page.getByRole('button', { name: 'Denunciar anúncio' }).click();
+  const dialog = page.getByRole('dialog', { name: 'Denunciar anúncio' });
+  await dialog.getByRole('radio', { name: /Nudez ou conteúdo sexual/ }).check();
+  await dialog.getByRole('button', { name: 'Enviar denúncia' }).click();
+  await expect(page.getByText(/Denúncia enviada\. Obrigado/)).toBeVisible();
+  await expect(page.getByText('Você denunciou este anúncio')).toBeVisible();
+});

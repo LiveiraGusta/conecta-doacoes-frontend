@@ -386,3 +386,21 @@ O detalhe técnico está em `backend/docs/DECISOES.md`, na seção "Integração
 | 11 | O build de Production da Vercel (`VERCEL_ENV=production`) falha sem `VITE_API_URL`, sem https, com `localhost` ou com `VITE_USE_MOCKS=true` | Claude | Antes, sem a variável o site iria ao ar chamando `http://localhost:3333`. Local, CI e previews não são afetados |
 | 11 | `tsconfig.node.json` passa a incluir `playwright.real.config.ts`, `e2e-real/` e `config/` | Claude | Esses arquivos estavam fora do typecheck |
 | 11 | Import do `config/csp.ts` com extensão no `vite.config.ts` | Claude | Compatível com o carregador nativo de config que o Vite vai adotar |
+
+## Denúncia de anúncio (conteúdo impróprio)
+
+Backend correspondente: `backend/docs/DECISOES.md`, seção "Denúncia de anúncio" (rota `POST /items/:id/report`, ocultação automática com 3 pessoas, `POST /admin/items/:id/remove` e `/restore`).
+
+| Fase | Decisão | Quem decidiu | Consequência |
+| --- | --- | --- | --- |
+| Denúncia | Qualquer doador ou ONG logado denuncia o anúncio; o visitante vê o link e recebe o convite para entrar; o dono e o Admin não veem o link | Usuário | Mesmo padrão do "Tenho interesse" para o visitante (`useLoginPrompt`) |
+| Denúncia | "Denunciar anúncio" é um link discreto (ícone de bandeira) no rodapé do detalhe, abaixo do "Tenho interesse" | Usuário | Fácil de achar sem competir com a ação principal |
+| Denúncia | Diálogo com 7 motivos em botões de opção, cada um com uma linha de exemplo; texto opcional, obrigatório (10+) só em "Outro motivo" | Claude | Categorias iguais às da API (`NUDEZ`, `ODIO`, `VIOLENCIA`, `GOLPE`, `PROIBIDO`, `SPAM`, `OUTRO`) |
+| Denúncia | `409 ITEM_ALREADY_REPORTED` vira aviso ("Você já denunciou este anúncio"), não erro; depois de enviar, o link vira "Você denunciou este anúncio" | Claude | Para quem denuncia, o resultado é o mesmo |
+| Denúncia | O doador vê o selo "Em análise" / "Removido pela moderação" com o motivo em "Minhas doações" e um aviso no detalhe; sem e-mail | Usuário | Removido e disponível: o card perde a ação de interessadas |
+| Denúncia | `FeedCardItem` e `ItemView` ganharam `moderation_status` e `moderation_reason`; o visitante sempre recebe `VISIVEL` | Claude | Tipos gerados de novo (`npm run gen:api`) a partir da `develop` do backend |
+| Denúncia | Remoção pelo Admin com negociação em andamento: o tempo real traz `changed_by: "ADMIN"` e o aviso diz "removido pela moderação", não "cancelada pela outra parte" | Claude | A sala fecha como num cancelamento comum |
+| Admin | Denúncias de anúncio na mesma fila, com filtro "Todas / Negociação / Anúncio" (`?tipo=anuncio`), selo do tipo, categoria e selo "Oculto"/"Removido" no item | Usuário | Uma tela só; o filtro convive com as abas Abertas/Resolvidas na URL |
+| Admin | Detalhe da denúncia de anúncio: fotos, descrição, todas as denúncias do anúncio e as ações "Manter anúncio" e "Remover anúncio" (motivo de 10 a 500, que o doador lê); sem a conversa | Usuário + Claude | "Marcar como resolvida" some nas denúncias de anúncio. Anúncio removido mostra "Republicar anúncio" |
+| Mock | "Revistas antigas" (Carlos, Campinas) já começa oculta com 3 denúncias abertas (2 de nudez, 1 "Outro") | Claude | O `dev:mock` mostra a fila e as ações sem preparar nada. A fila de abertas passa de 1 para 4 |
+| Testes | 6 de mocks, 7 de tela (quem denuncia e doador), 4 do admin, 3 telas novas no axe e 2 e2e; 317 no total | Claude | Conferido também com capturas do `dev:mock` (detalhe, diálogo, fila, detalhe do admin) |

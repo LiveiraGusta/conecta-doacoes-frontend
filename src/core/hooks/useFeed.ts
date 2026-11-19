@@ -1,7 +1,7 @@
 import { useInfiniteQuery, type InfiniteData } from '@tanstack/react-query';
 import { useAuth } from '../auth/useAuth';
 import { fetchFeed, fetchPublicFeed, FEED_PAGE_SIZE, type FeedFilters } from '../services/items';
-import type { Category, FeedItem, ItemStatus, Paginated, PublicItem } from '../types/api';
+import type { Category, FeedItem, ItemStatus, ModerationStatus, Paginated, PublicItem } from '../types/api';
 
 /**
  * O que o card precisa, igual para logado e visitante. No visitante não há doador nem contexto
@@ -21,6 +21,10 @@ export interface FeedCardItem {
   has_user_interest: boolean;
   interests_count: number | null;
   is_selected: boolean;
+  /** Moderação do anúncio: o feed só traz VISIVEL; "Minhas doações" mostra o selo dos outros. */
+  moderation_status: ModerationStatus;
+  /** Motivo da remoção (só para o doador). */
+  moderation_reason: string | null;
 }
 
 export const fromFeedItem = (i: FeedItem): FeedCardItem => ({
@@ -37,6 +41,8 @@ export const fromFeedItem = (i: FeedItem): FeedCardItem => ({
   has_user_interest: i.has_user_interest ?? false,
   interests_count: i.interests_count ?? 0,
   is_selected: i.is_selected ?? false,
+  moderation_status: i.moderation_status ?? 'VISIVEL',
+  moderation_reason: i.moderation_reason ?? null,
 });
 
 export const fromPublicItem = (i: PublicItem): FeedCardItem => ({
@@ -45,6 +51,8 @@ export const fromPublicItem = (i: PublicItem): FeedCardItem => ({
   has_user_interest: false,
   interests_count: null,
   is_selected: false,
+  moderation_status: 'VISIVEL',
+  moderation_reason: null,
 });
 
 export type FeedMode = 'auth' | 'public';

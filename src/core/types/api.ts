@@ -9,6 +9,10 @@ export type Role = Schemas['Role'];
 export type NgoStatus = Schemas['NgoStatus'];
 export type Category = Schemas['Category'];
 export type ItemStatus = Schemas['ItemStatus'];
+export type ModerationStatus = Schemas['ModerationStatus'];
+export type ReportKind = Schemas['ReportKind'];
+export type ReportCategory = Schemas['ReportCategory'];
+export type ReportResolution = Schemas['ReportResolution'];
 export type UF = Schemas['UF'];
 export type ThemeColor = Schemas['ThemeColor'];
 export type ThemeMode = Schemas['ThemeMode'];
@@ -45,6 +49,7 @@ export type UnreadSummary = Schemas['UnreadSummary'];
 export type Report = Schemas['Report'];
 export type ReportSummary = Schemas['ReportSummary'];
 export type ReportDetail = Schemas['ReportDetail'];
+export type ModerationResult = Schemas['ModerationResult'];
 export type AdminNgo = Schemas['AdminNgo'];
 
 // ── Página pessoal e visitante ──
