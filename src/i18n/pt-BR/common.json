@@ -1,0 +1,117 @@
+{
+  "appName": "Conecta Doações",
+  "tagline": "Conectando quem doa a quem precisa",
+  "actions": {
+    "retry": "Tentar de novo",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "save": "Salvar",
+    "close": "Fechar",
+    "back": "Voltar",
+    "goHome": "Ir para o início",
+    "copy": "Copiar",
+    "copied": "Copiado",
+    "loadMore": "Carregar mais"
+  },
+  "theme": {
+    "color": "Cor do tema",
+    "mode": "Aparência",
+    "colors": {
+      "AZUL": "Azul",
+      "VERDE": "Verde",
+      "ROXO": "Roxo",
+      "LARANJA": "Laranja",
+      "ROSA": "Rosa"
+    },
+    "modes": {
+      "LIGHT": "Claro",
+      "DARK": "Escuro",
+      "SYSTEM": "Sistema"
+    }
+  },
+  "categories": {
+    "ROUPAS": "Roupas",
+    "BRINQUEDOS": "Brinquedos",
+    "ALIMENTOS": "Comida",
+    "LIVROS": "Livros"
+  },
+  "nav": {
+    "main": "Navegação principal",
+    "sidebar": "Menu lateral",
+    "feed": "Feed",
+    "chats": "Conversas",
+    "donations": "Doações",
+    "profile": "Perfil",
+    "ngos": "ONGs",
+    "reports": "Denúncias",
+    "settings": "Configurações",
+    "collapse": "Recolher menu",
+    "expand": "Expandir menu",
+    "unread_one": "{{count}} mensagem não lida",
+    "unread_other": "{{count}} mensagens não lidas"
+  },
+  "header": {
+    "location": "Localização"
+  },
+  "account": {
+    "menu": "Conta de {{name}}",
+    "myPage": "Minha página",
+    "editProfile": "Editar perfil",
+    "login": "Entrar",
+    "register": "Criar conta",
+    "logout": "Sair",
+    "logoutTitle": "Deseja sair?",
+    "logoutDescription": "Você vai precisar entrar de novo para conversar com as ONGs e acompanhar suas doações."
+  },
+  "session": {
+    "expired": "Sua sessão expirou. Entre de novo para continuar."
+  },
+  "loginPrompt": {
+    "title": "Entre para continuar",
+    "description": "Para demonstrar interesse, conversar e acompanhar doações, entre na sua conta ou crie uma. É rápido.",
+    "login": "Entrar",
+    "register": "Criar conta"
+  },
+  "ngoBanner": {
+    "pendingTitle": "Seu cadastro está em análise.",
+    "pendingDescription": "Você já pode ver o feed. O botão de interesse aparece assim que a ONG for aprovada.",
+    "rejectedTitle": "Cadastro não aprovado:",
+    "resubmit": "Reenviar documento"
+  },
+  "offline": {
+    "banner": "Você está offline. Algumas informações podem estar desatualizadas."
+  },
+  "pages": {
+    "feed": "Feed de Doações",
+    "item": "Item",
+    "userPage": "Página pessoal",
+    "donations": "Doações",
+    "newDonation": "Nova doação",
+    "interests": "ONGs interessadas",
+    "chats": "Conversas",
+    "chat": "Conversa",
+    "profile": "Perfil",
+    "settings": "Configurações",
+    "adminNgos": "Moderação de ONGs",
+    "adminReports": "Denúncias",
+    "adminReport": "Denúncia",
+    "login": "Entrar",
+    "register": "Criar conta",
+    "forgotPassword": "Esqueci a senha",
+    "resetPassword": "Nova senha",
+    "ngoWelcome": "Cadastro recebido",
+    "notFound": "Página não encontrada",
+    "forbidden": "Sem permissão",
+    "error": "Algo deu errado"
+  },
+  "system": {
+    "loading": "Carregando…",
+    "notFoundTitle": "Página não encontrada",
+    "notFoundDescription": "O endereço pode estar errado, ou o conteúdo saiu do ar.",
+    "forbiddenTitle": "Você não tem acesso a esta página",
+    "forbiddenDescription": "Esta área é de outro tipo de conta.",
+    "errorTitle": "Algo deu errado",
+    "errorDescription": "Tente de novo. Se continuar, fale com o suporte e informe o código abaixo.",
+    "requestId": "Código para o suporte: {{id}}"
+  }
+}

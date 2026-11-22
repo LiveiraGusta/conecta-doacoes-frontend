@@ -1,0 +1,171 @@
+{
+  "ngos": {
+    "title": "Moderação de ONGs",
+    "tabs": "Filtrar ONGs por situação",
+    "status": {
+      "PENDENTE_APROVACAO": "Em análise",
+      "ATIVO": "Aprovadas",
+      "REJEITADO": "Rejeitadas"
+    },
+    "badge": {
+      "PENDENTE_APROVACAO": "Em análise",
+      "ATIVO": "Aprovada",
+      "REJEITADO": "Rejeitada"
+    },
+    "columns": {
+      "ngo": "ONG",
+      "city": "Cidade",
+      "cnpj": "CNPJ",
+      "since": "Cadastro",
+      "actions": "Ações"
+    },
+    "review": "Analisar",
+    "reviewNgo": "Analisar {{name}}",
+    "loading": "Carregando ONGs…",
+    "emptyTitle": "Nada por aqui",
+    "emptyPending": "Nenhuma ONG esperando análise.",
+    "emptyOther": "Nenhuma ONG nesta situação.",
+    "errorTitle": "Não deu para carregar a fila",
+    "loadMore": "Carregar mais",
+    "notFound": "ONG não encontrada."
+  },
+  "review": {
+    "title": "Analisar {{name}}",
+    "document": "Documento enviado",
+    "documentFrame": "Documento de {{name}}",
+    "openTab": "Abrir em nova aba",
+    "reload": "Recarregar documento",
+    "expiredHint": "O link do documento vale 10 minutos. Se não abrir, recarregue.",
+    "data": "Dados da ONG",
+    "email": "E-mail",
+    "city": "Cidade",
+    "cnpj": "CNPJ",
+    "website": "Site",
+    "noWebsite": "Não informado",
+    "since": "Cadastro em",
+    "currentStatus": "Situação",
+    "rejectionReason": "Motivo da rejeição",
+    "approve": "Aprovar",
+    "reject": "Rejeitar",
+    "approveTitle": "Aprovar {{name}}?",
+    "approveText": "A ONG passa a poder demonstrar interesse nas doações da cidade dela. Não dá para desfazer pelo app.",
+    "approved": "{{name}} aprovada.",
+    "rejectTitle": "Rejeitar {{name}}",
+    "rejectText": "A ONG vê o motivo e pode reenviar o documento.",
+    "presets": "Motivos comuns",
+    "presetList": [
+      "O documento está ilegível. Envie uma cópia mais nítida do cartão CNPJ.",
+      "O CNPJ do documento não confere com o informado no cadastro.",
+      "O documento é de outra entidade. Envie o cartão CNPJ da própria ONG.",
+      "O documento está vencido ou incompleto. Envie a versão atual e completa."
+    ],
+    "presetLabels": ["Ilegível", "CNPJ não confere", "Outra entidade", "Vencido ou incompleto"],
+    "reason": "Motivo",
+    "reasonHint": "De 10 a 1000 caracteres. A ONG vê este texto.",
+    "reasonShort": "Escreva ao menos 10 caracteres",
+    "rejected": "{{name}} rejeitada. A ONG vai ver o motivo.",
+    "confirmReject": "Rejeitar ONG"
+  },
+  "reports": {
+    "title": "Denúncias",
+    "tabs": "Filtrar denúncias",
+    "kindFilter": "Filtrar por tipo",
+    "kindAll": "Todas",
+    "reportedLabel": "Denunciada:",
+    "kind": {
+      "CHAT": "Negociação",
+      "ITEM": "Anúncio"
+    },
+    "moderation": {
+      "OCULTO": "Oculto",
+      "REMOVIDO": "Removido"
+    },
+    "noDescription": "Sem descrição",
+    "status": {
+      "ABERTA": "Abertas",
+      "RESOLVIDA": "Resolvidas"
+    },
+    "badge": {
+      "ABERTA": "Aberta",
+      "RESOLVIDA": "Resolvida"
+    },
+    "columns": {
+      "date": "Data",
+      "reason": "Motivo",
+      "item": "Item",
+      "parties": "Quem denunciou e quem foi denunciada",
+      "actions": "Ações"
+    },
+    "open": "Ver",
+    "openReport": "Ver denúncia sobre {{title}}",
+    "loading": "Carregando denúncias…",
+    "emptyOpen": "Nenhuma denúncia aberta.",
+    "emptyResolved": "Nenhuma denúncia resolvida ainda.",
+    "errorTitle": "Não deu para carregar as denúncias",
+    "loadMore": "Carregar mais"
+  },
+  "report": {
+    "back": "Voltar para as denúncias",
+    "loading": "Carregando denúncia…",
+    "title": "Denúncia sobre {{title}}",
+    "createdAt": "Aberta em {{date}}",
+    "reason": "Motivo",
+    "reporter": "Quem denunciou",
+    "reported": "Denunciada",
+    "roles": {
+      "DONOR": "Doador",
+      "NGO": "ONG"
+    },
+    "item": "Item",
+    "viewItem": "Ver item",
+    "itemStatus": {
+      "DISPONIVEL": "Disponível",
+      "EM_PROGRESSO": "Em negociação",
+      "DOADO": "Doado"
+    },
+    "moderateNgo": "Abrir na moderação de ONGs",
+    "conversation": "Conversa",
+    "noMessages": "Nenhuma mensagem nesta negociação.",
+    "reportedMessage": "Mensagem da denunciada",
+    "timeline": "Linha do tempo",
+    "events": {
+      "created": "Publicado",
+      "selected": "ONG escolhida",
+      "cancelled": "Negociação cancelada",
+      "donated": "Doação concluída",
+      "other": "De {{from}} para {{to}}"
+    },
+    "by": "por {{name}}",
+    "eventReason": "Motivo: {{reason}}",
+    "resolve": "Marcar como resolvida",
+    "resolved": "Denúncia resolvida.",
+    "alreadyResolved": "Esta denúncia já foi resolvida.",
+    "notFoundTitle": "Denúncia não encontrada",
+    "advertiser": "Quem anunciou",
+    "content": "Conteúdo do anúncio",
+    "photo": "Abrir a foto {{n}} em tamanho real",
+    "noItemDescription": "O anúncio não tem descrição.",
+    "itemReports_one": "Denúncias deste anúncio ({{count}})",
+    "itemReports_other": "Denúncias deste anúncio ({{count}})"
+  },
+  "moderation": {
+    "keep": "Manter anúncio",
+    "remove": "Remover anúncio",
+    "republish": "Republicar anúncio",
+    "isRemoved": "Anúncio removido.",
+    "wasKept": "Denúncia descartada: o anúncio foi mantido.",
+    "hiddenNotice": "Este anúncio saiu do ar sozinho porque 3 pessoas o denunciaram. Ele volta ao feed se você o mantiver.",
+    "removeTitle": "Remover anúncio",
+    "removeText": "\"{{title}}\" sai do ar de vez e todas as denúncias abertas dele são resolvidas. O doador verá o motivo em \"Minhas doações\".",
+    "removeInProgress": "Este item está em negociação: a remoção encerra a conversa e avisa as duas partes.",
+    "reasonLabel": "Motivo (o doador vai ler)",
+    "reasonHint": "De 10 a 500 caracteres",
+    "reasonTooShort": "Escreva ao menos 10 caracteres",
+    "reasonTooLong": "Use até 500 caracteres",
+    "back": "Voltar",
+    "removeConfirm": "Remover anúncio",
+    "removed": "Anúncio removido.",
+    "removedCancelled": "Anúncio removido e negociação encerrada.",
+    "restored": "Anúncio mantido no ar. As denúncias foram descartadas."
+  }
+}

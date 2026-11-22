@@ -1,0 +1,167 @@
+{
+  "tabs": {
+    "label": "Seções do perfil",
+    "page": "Minha página",
+    "account": "Conta"
+  },
+  "common": {
+    "save": "Salvar",
+    "saved": "Alterações salvas.",
+    "viewPage": "Ver minha página",
+    "remove": "Remover",
+    "change": "Trocar"
+  },
+  "avatar": {
+    "title": "Foto de perfil",
+    "description": "Aparece no feed, nas conversas e na sua página. Sem foto, mostramos as suas iniciais.",
+    "add": "Enviar foto",
+    "change": "Trocar foto",
+    "remove": "Remover foto",
+    "removed": "Foto removida.",
+    "saved": "Foto atualizada.",
+    "editor": "Ajustar foto de perfil",
+    "editorHint": "Arraste para posicionar. A foto fica redonda."
+  },
+  "banner": {
+    "title": "Banner da ONG",
+    "description": "Imagem larga no topo da sua página (proporção 3:1).",
+    "add": "Enviar banner",
+    "change": "Trocar banner",
+    "remove": "Remover banner",
+    "removed": "Banner removido.",
+    "saved": "Banner atualizado.",
+    "editor": "Ajustar banner",
+    "editorHint": "Arraste para posicionar. O banner fica no formato 3:1.",
+    "empty": "Sem banner"
+  },
+  "bio": {
+    "title": "Sobre",
+    "descriptionDonor": "Conte um pouco sobre você. Aparece na sua página pessoal.",
+    "descriptionNgo": "Conte o trabalho da ONG: quem vocês atendem e como as doações ajudam.",
+    "label": "Descrição",
+    "counter": "{{count}}/500"
+  },
+  "contact": {
+    "title": "Contato",
+    "description": "Só quem está logado vê, e só depois que a ONG é aprovada.",
+    "phone": "Telefone ou WhatsApp",
+    "instagram": "Instagram",
+    "instagramHint": "O usuário, com ou sem @, ou o link do perfil.",
+    "website": "Site"
+  },
+  "categories": {
+    "title": "Categorias aceitas",
+    "description": "Ajuda os doadores a saber o que a ONG recebe.",
+    "label": "Categorias que a ONG aceita"
+  },
+  "address": {
+    "title": "Endereço",
+    "description": "Para combinar entregas. Só quem está logado vê. Digite o CEP para preencher.",
+    "cep": "CEP",
+    "searching": "Buscando o endereço…",
+    "notFound": "CEP não encontrado. Preencha o endereço à mão.",
+    "otherCity": "Este CEP é de {{city}} - {{state}}, e a sua conta está em outra cidade. Confira.",
+    "street": "Rua",
+    "number": "Número",
+    "complement": "Complemento (opcional)",
+    "neighborhood": "Bairro",
+    "remove": "Remover endereço",
+    "removed": "Endereço removido."
+  },
+  "account": {
+    "title": "Dados da conta",
+    "description": "Mudar a cidade muda as doações que você vê no feed.",
+    "name": "Nome",
+    "ngoName": "Nome da ONG",
+    "email": "E-mail",
+    "emailHint": "O e-mail não pode ser alterado."
+  },
+  "ngoStatus": {
+    "title": "Situação da ONG",
+    "ATIVO": "Aprovada",
+    "PENDENTE_APROVACAO": "Em análise",
+    "REJEITADO": "Não aprovada",
+    "activeText": "A ONG está aprovada e pode demonstrar interesse nas doações.",
+    "pendingText": "Recebemos o seu documento. A análise costuma levar até 2 dias úteis.",
+    "rejectedText": "Motivo: {{reason}}",
+    "resubmitTitle": "Reenviar documento",
+    "resubmit": "Enviar novo documento",
+    "resubmitted": "Documento enviado. A ONG volta para análise.",
+    "document": "Cartão CNPJ ou estatuto"
+  },
+  "password": {
+    "title": "Senha",
+    "description": "Trocar a senha encerra as sessões nos outros aparelhos. Este continua conectado.",
+    "current": "Senha atual",
+    "new": "Nova senha",
+    "confirm": "Repita a nova senha",
+    "submit": "Trocar senha",
+    "changed": "Senha alterada. As outras sessões foram encerradas."
+  },
+  "delete": {
+    "title": "Excluir conta",
+    "description": "Apaga os seus dados pessoais. As doações concluídas continuam no histórico, sem o seu nome.",
+    "button": "Excluir minha conta",
+    "dialogTitle": "Excluir a conta?",
+    "consequences": "Não dá para desfazer. Você sai do app, perde o acesso às conversas e precisa criar outra conta para voltar.",
+    "password": "Confirme com a sua senha",
+    "confirm": "Excluir definitivamente",
+    "done": "Sua conta foi excluída.",
+    "activeNegotiations": "Ver conversas"
+  },
+  "page": {
+    "loading": "Carregando página…",
+    "notFoundTitle": "Página não encontrada",
+    "notFoundDescription": "Esta pessoa ou ONG não está mais no Conecta Doações, ou o link está errado.",
+    "donor": "Doador",
+    "ngo": "ONG",
+    "memberSince": "No Conecta Doações desde {{date}}",
+    "edit": "Editar perfil",
+    "noBio": "Ainda sem descrição.",
+    "accepts": "Aceita",
+    "contact": "Contato",
+    "openMap": "Abrir no mapa",
+    "call": "Ligar",
+    "whatsapp": "WhatsApp",
+    "website": "Site",
+    "instagram": "Instagram",
+    "noContact": "A ONG ainda não informou contatos.",
+    "visitorHint": "Entre para ver o nome, a foto e os contatos.",
+    "login": "Entrar",
+    "donatedTitle": "Doações concluídas",
+    "receivedTitle": "Doações recebidas",
+    "count": "({{count}})",
+    "hiddenDonations": "Este doador prefere não mostrar as doações.",
+    "hiddenSelf": "Só você vê esta lista. Para mostrar na sua página, ligue em Configurações.",
+    "noDonationsDonor": "Nenhuma doação concluída ainda.",
+    "noDonationsNgo": "Nenhuma doação recebida ainda.",
+    "visitorDonations_one": "{{count}} doação",
+    "visitorDonations_other": "{{count}} doações",
+    "loadMore": "Ver mais",
+    "status": {
+      "PENDENTE_APROVACAO": "Em análise",
+      "REJEITADO": "Não aprovada"
+    }
+  },
+  "settings": {
+    "appearance": "Aparência",
+    "appearanceDescription": "Vale em todos os aparelhos em que você entrar.",
+    "color": "Cor do tema",
+    "mode": "Modo",
+    "preview": "Prévia",
+    "previewButton": "Tenho interesse",
+    "previewCard": "Casaco infantil",
+    "saveError": "Não deu para salvar a preferência. Tente de novo.",
+    "privacy": "Privacidade",
+    "showDonations": "Mostrar minhas doações concluídas na minha página",
+    "showDonationsHint": "Desligado, ninguém vê a lista nem o número das suas doações.",
+    "notifications": "Mensagens",
+    "notificationsDescription": "Vale só neste navegador.",
+    "sound": "Som de mensagem nova",
+    "notify": "Aviso de mensagem nova na tela",
+    "shortcuts": "Atalhos",
+    "myPage": "Ver minha página",
+    "editProfile": "Editar perfil",
+    "changePassword": "Trocar senha"
+  }
+}

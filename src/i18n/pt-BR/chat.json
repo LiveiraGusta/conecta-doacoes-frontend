@@ -1,0 +1,92 @@
+{
+  "list": {
+    "title": "Conversas",
+    "tabs": "Filtrar conversas",
+    "active": "Em andamento",
+    "done": "Concluídas",
+    "loading": "Carregando conversas…",
+    "you": "Você: {{text}}",
+    "noMessages": "Nenhuma mensagem ainda. Diga oi!",
+    "unread_one": "{{count}} mensagem não lida",
+    "unread_other": "{{count}} mensagens não lidas",
+    "donated": "Concluída",
+    "emptyTitle": "Nenhuma conversa por aqui",
+    "emptyDonor": "Quando você escolher uma ONG para uma doação, a conversa com ela aparece aqui.",
+    "emptyNgo": "Quando um doador escolher a sua ONG, a conversa aparece aqui.",
+    "emptyDone": "As doações concluídas ficam guardadas aqui, só para leitura.",
+    "errorTitle": "Não deu para carregar as conversas",
+    "pickTitle": "Escolha uma conversa",
+    "pickDescription": "As mensagens aparecem aqui."
+  },
+  "room": {
+    "back": "Voltar para as conversas",
+    "messages": "Mensagens",
+    "loading": "Carregando conversa…",
+    "about": "Sobre {{title}}",
+    "viewItem": "Ver item",
+    "more": "Mais ações",
+    "today": "Hoje",
+    "yesterday": "Ontem",
+    "sending": "Enviando…",
+    "failed": "Não enviada.",
+    "retry": "Tentar de novo",
+    "discard": "Descartar",
+    "newMessages": "Novas mensagens",
+    "placeholder": "Escreva uma mensagem",
+    "inputLabel": "Mensagem para {{name}}",
+    "send": "Enviar",
+    "counter": "{{count}}/2000",
+    "offline": "Conexão em tempo real indisponível. Atualizando a cada 3 segundos.",
+    "donated": "Doação concluída. A conversa fica disponível só para leitura.",
+    "closed": "Esta negociação foi cancelada. A conversa foi encerrada.",
+    "closedDonor": "Escolher outra ONG",
+    "startHint": "Combinem a entrega por aqui: dia, horário e local.",
+    "notFoundTitle": "Conversa não encontrada",
+    "notFoundDescription": "Ela pode ter sido encerrada, ou você não participa desta negociação.",
+    "closedTitle": "Negociação encerrada",
+    "closedDescription": "A negociação foi cancelada e o item voltou para o feed."
+  },
+  "confirm": {
+    "button": "Confirmar recebimento",
+    "title": "Confirmar que recebeu {{title}}?",
+    "text": "A doação fica concluída e a conversa passa a ser só leitura. Faça isso depois de receber o item.",
+    "confirm": "Confirmar recebimento"
+  },
+  "celebrate": {
+    "title": "Doação concluída!",
+    "text": "Obrigado por fazer a doação chegar a quem precisa. A conversa fica guardada na aba Concluídas.",
+    "myInterests": "Ver meus interesses",
+    "close": "Continuar"
+  },
+  "cancel": {
+    "button": "Cancelar negociação",
+    "title": "Cancelar a negociação?",
+    "text": "O item volta para o feed e esta conversa é encerrada.",
+    "reason": "Motivo (opcional)",
+    "reasonHint": "A outra parte vê o motivo. Até 500 caracteres.",
+    "warning": "Algum problema com a outra parte? Denuncie antes de cancelar: depois do cancelamento não dá mais para denunciar.",
+    "reportFirst": "Denunciar primeiro",
+    "confirm": "Cancelar negociação",
+    "keep": "Voltar"
+  },
+  "report": {
+    "button": "Denunciar",
+    "title": "Denunciar {{name}}",
+    "text": "Conte o que aconteceu. A equipe do Conecta Doações analisa e pode suspender a conta.",
+    "reason": "O que aconteceu?",
+    "reasonHint": "De 10 a 1000 caracteres.",
+    "tooShort": "Escreva ao menos 10 caracteres",
+    "tooLong": "Use até 1000 caracteres",
+    "submit": "Enviar denúncia",
+    "done": "Denúncia enviada. A equipe vai analisar."
+  },
+  "notify": {
+    "newMessage": "Nova mensagem de {{name}}",
+    "newMessageGeneric": "Você recebeu uma nova mensagem",
+    "open": "Abrir",
+    "cancelled": "A negociação de \"{{title}}\" foi cancelada pela outra parte.",
+    "removedByModeration": "O anúncio \"{{title}}\" foi removido pela moderação e a negociação foi encerrada.",
+    "donated": "\"{{title}}\": a ONG confirmou o recebimento. Doação concluída!",
+    "itemFallback": "um item"
+  }
+}

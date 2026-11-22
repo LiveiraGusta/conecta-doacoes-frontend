@@ -1,0 +1,42 @@
+{
+  "required": "Campo obrigatório",
+  "email": "E-mail inválido",
+  "minLength": "Mínimo de {{count}} caracteres",
+  "maxLength": "Máximo de {{count}} caracteres",
+  "name": "Informe o nome (de 2 a 255 caracteres)",
+  "password": {
+    "min": "A senha precisa de ao menos 8 caracteres",
+    "max": "A senha pode ter no máximo 72 caracteres",
+    "letterAndNumber": "A senha precisa de ao menos 1 letra e 1 número",
+    "mismatch": "As senhas não conferem",
+    "same": "A nova senha precisa ser diferente da atual"
+  },
+  "uf": "Escolha a UF",
+  "city": "Informe a cidade",
+  "cityNotInList": "Escolha uma cidade da lista (confira a grafia e a UF)",
+  "cnpj": "CNPJ inválido. Confira os 14 dígitos",
+  "website": "Endereço inválido. Use http:// ou https://",
+  "documentRequired": "Envie o documento da ONG (cartão CNPJ)",
+  "documentType": "Envie um PDF, JPG, PNG ou WEBP",
+  "fileSize": "O arquivo precisa ter até 5 MB",
+  "photos": {
+    "count": "Adicione exatamente 3 fotos",
+    "type": "Use fotos JPG, PNG ou WEBP"
+  },
+  "item": {
+    "title": "Informe um título de 3 a 255 caracteres",
+    "category": "Escolha a categoria",
+    "description": "A descrição pode ter até 2000 caracteres",
+    "notes": "As observações podem ter até 1000 caracteres"
+  },
+  "profile": {
+    "bio": "A descrição pode ter até 500 caracteres",
+    "phone": "Telefone com DDD: 10 ou 11 dígitos",
+    "instagram": "Use o usuário do Instagram (letras, números, ponto e _)",
+    "cep": "CEP com 8 dígitos",
+    "street": "Informe a rua (de 2 a 200 caracteres)",
+    "number": "Até 20 caracteres",
+    "complement": "Até 100 caracteres",
+    "neighborhood": "Informe o bairro (de 2 a 100 caracteres)"
+  }
+}
