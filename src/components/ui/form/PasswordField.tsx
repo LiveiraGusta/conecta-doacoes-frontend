@@ -20,7 +20,7 @@ export interface PasswordFieldProps extends Omit<TextFieldProps, 'type'> {
   rulesValue?: string;
 }
 
-/** Senha (TextField do MUI) com mostrar/ocultar e, opcionalmente, o checklist das regras marcando ✓ ao digitar. */
+/** Senha (TextField do MUI) com mostrar/ocultar e, opcionalmente, o checklist das regras, marcando cada uma (ícone Material) ao digitar. */
 export function PasswordField({ hint, showRules = false, rulesValue = '', slotProps, ...rest }: PasswordFieldProps) {
   const [visible, setVisible] = useState(false);
   const { t } = useTranslation('auth');

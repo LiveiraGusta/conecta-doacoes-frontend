@@ -12,7 +12,7 @@ test('Admin aprova a ONG em análise e resolve a denúncia', async ({ page }) =>
     .getByRole('button', { name: 'Aprovar' })
     .click();
   await expect(page.getByText('Instituto Novo Começo aprovada.')).toBeVisible();
-  await expect(page.getByText('Nenhuma ONG esperando análise. 🎉')).toBeVisible();
+  await expect(page.getByText('Nenhuma ONG esperando análise.')).toBeVisible();
 
   await goTo(page, 'Denúncias');
   await page.getByRole('link', { name: /Ver denúncia sobre Leite em pó/ }).click();

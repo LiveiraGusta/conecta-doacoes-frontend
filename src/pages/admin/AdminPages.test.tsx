@@ -28,7 +28,7 @@ describe('Moderação de ONGs', () => {
     expect(await screen.findByText('Instituto Novo Começo aprovada.')).toBeInTheDocument();
     expect(pending().status).toBe('ATIVO');
     await waitFor(() => expect(currentUrl(router)).toBe('/admin/ngos'));
-    expect(await screen.findByText('Nenhuma ONG esperando análise. 🎉')).toBeInTheDocument();
+    expect(await screen.findByText('Nenhuma ONG esperando análise.')).toBeInTheDocument();
   });
 
   it('rejeitar: motivo pronto preenche o texto; menos de 10 caracteres não envia', async () => {
