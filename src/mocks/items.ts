@@ -28,12 +28,36 @@ const CATEGORY_COLORS: Record<Category, [string, string, string]> = {
   LIVROS: ['#7e22ce', '#9333ea', '#a855f7'],
 };
 
-const CATEGORY_GLYPH: Record<Category, string> = { ROUPAS: '👕', BRINQUEDOS: '🧸', ALIMENTOS: '🥫', LIVROS: '📚' };
+/**
+ * Desenho de cada categoria nas fotos falsas: o `d` do mesmo ícone Material da barra de categorias
+ * (features/feed/categories.ts), copiado de @mui/icons-material. Ícones da interface só do Material, nunca emoji.
+ */
+const CATEGORY_ICON_PATH: Record<Category, string> = {
+  ROUPAS:
+    'M21.6 18.2 13 11.75v-.91c1.65-.49 2.8-2.17 2.43-4.05-.26-1.31-1.3-2.4-2.61-2.7-1.76-.4-3.37.53-4.02 1.98-.3.67.18 1.43.91 1.43.39 0 .75-.22.9-.57.23-.55.76-.93 1.39-.93.83 0 1.5.67 1.5 1.5 0 .84-.69 1.52-1.53 1.5-.54-.01-.97.45-.97.99v1.76L2.4 18.2c-.77.58-.36 1.8.6 1.8h18c.96 0 1.37-1.22.6-1.8M6 18l6-4.5 6 4.5z', // CheckroomRounded
+  ALIMENTOS:
+    'M16 6v6c0 1.1.9 2 2 2h1v7c0 .55.45 1 1 1s1-.45 1-1V3.13c0-.65-.61-1.13-1.24-.98C17.6 2.68 16 4.51 16 6m-5 3H9V3c0-.55-.45-1-1-1s-1 .45-1 1v6H5V3c0-.55-.45-1-1-1s-1 .45-1 1v6c0 2.21 1.79 4 4 4v8c0 .55.45 1 1 1s1-.45 1-1v-8c2.21 0 4-1.79 4-4V3c0-.55-.45-1-1-1s-1 .45-1 1z', // RestaurantRounded
+  BRINQUEDOS:
+    'm21.58 16.09-1.09-7.66C20.21 6.46 18.52 5 16.53 5H7.47C5.48 5 3.79 6.46 3.51 8.43l-1.09 7.66C2.2 17.63 3.39 19 4.94 19c.68 0 1.32-.27 1.8-.75L9 16h6l2.25 2.25c.48.48 1.13.75 1.8.75 1.56 0 2.75-1.37 2.53-2.91M11 11H9v2H8v-2H6v-1h2V8h1v2h2zm4-1c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1m2 3c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1', // SportsEsportsRounded
+  LIVROS:
+    'M17.5 4.5c-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5-1.45 0-2.99.22-4.28.79C1.49 5.62 1 6.33 1 7.14v11.28c0 1.3 1.22 2.26 2.48 1.94.98-.25 2.02-.36 3.02-.36 1.56 0 3.22.26 4.56.92.6.3 1.28.3 1.87 0 1.34-.67 3-.92 4.56-.92 1 0 2.04.11 3.02.36 1.26.33 2.48-.63 2.48-1.94V7.14c0-.81-.49-1.52-1.22-1.85-1.28-.57-2.82-.79-4.27-.79M21 17.23c0 .63-.58 1.09-1.2.98-.75-.14-1.53-.2-2.3-.2-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5.92 0 1.83.09 2.7.28.46.1.8.51.8.98z M13.98 11.01c-.32 0-.61-.2-.71-.52-.13-.39.09-.82.48-.94 1.54-.5 3.53-.66 5.36-.45.41.05.71.42.66.83s-.42.71-.83.66c-1.62-.19-3.39-.04-4.73.39-.08.01-.16.03-.23.03m0 2.66c-.32 0-.61-.2-.71-.52-.13-.39.09-.82.48-.94 1.53-.5 3.53-.66 5.36-.45.41.05.71.42.66.83s-.42.71-.83.66c-1.62-.19-3.39-.04-4.73.39-.08.02-.16.03-.23.03m0 2.66c-.32 0-.61-.2-.71-.52-.13-.39.09-.82.48-.94 1.53-.5 3.53-.66 5.36-.45.41.05.71.42.66.83s-.42.7-.83.66c-1.62-.19-3.39-.04-4.73.39-.08.02-.16.03-.23.03', // MenuBookRounded
+};
+
+/** Ícones do banner falso (VolunteerActivismRounded, Inventory2Rounded, FavoriteRounded). */
+const BANNER_ICON_PATHS = [
+  'M3 11c-1.1 0-2 .9-2 2v7c0 1.1.9 2 2 2s2-.9 2-2v-7c0-1.1-.9-2-2-2m7-5.7C10 3.45 11.45 2 13.3 2c1.04 0 2.05.49 2.7 1.25.65-.76 1.66-1.25 2.7-1.25C20.55 2 22 3.45 22 5.3c0 2.1-2.5 4.51-5.33 7.09-.38.35-.97.35-1.35 0C12.5 9.81 10 7.4 10 5.3M19.99 17h-6.83a.96.96 0 0 1-.33-.06l-1.47-.51c-.26-.09-.39-.37-.3-.63s.38-.4.64-.3l1.12.43c.11.04.24.07.36.07h2.63c.65 0 1.18-.53 1.18-1.18 0-.49-.31-.93-.77-1.11L9.3 11.13c-.22-.09-.46-.13-.7-.13H7v9.02l6.37 1.81c.41.12.85.1 1.25-.05L22 19c0-1.11-.9-2-2.01-2',
+  'M20 2H4c-1 0-2 .9-2 2v3.01c0 .72.43 1.34 1 1.69V20c0 1.1 1.1 2 2 2h14c.9 0 2-.9 2-2V8.7c.57-.35 1-.97 1-1.69V4c0-1.1-1-2-2-2m-6 12h-4c-.55 0-1-.45-1-1s.45-1 1-1h4c.55 0 1 .45 1 1s-.45 1-1 1m6-7H4V4h16z',
+  'M13.35 20.13c-.76.69-1.93.69-2.69-.01l-.11-.1C5.3 15.27 1.87 12.16 2 8.28c.06-1.7.93-3.33 2.34-4.29 2.64-1.8 5.9-.96 7.66 1.1 1.76-2.06 5.02-2.91 7.66-1.1 1.41.96 2.28 2.59 2.34 4.29.14 3.88-3.3 6.99-8.55 11.76z',
+];
+
+/** Ícone Material (viewBox 24×24) desenhado em branco, centrado em (cx, cy) com o tamanho pedido. */
+const svgIcon = (d: string, cx: number, cy: number, size: number) =>
+  `<path transform="translate(${cx - size / 2} ${cy - size / 2}) scale(${size / 24})" fill="#fff" d="${d}"/>`;
 
 const escapeXml = (s: string) => s.replace(/[<>&"']/g, (c) => `&#${c.charCodeAt(0)};`);
 
 /**
- * Foto falsa gerada na hora (SVG em data URL, decisão da fase 3): cor da categoria, um símbolo,
+ * Foto falsa gerada na hora (SVG em data URL, decisão da fase 3): cor da categoria, o ícone dela,
  * o título e "foto n/3". Sem internet e sem foto de terceiros.
  */
 export function mockPhoto(title: string, category: Category, n: number): string {
@@ -41,7 +65,7 @@ export function mockPhoto(title: string, category: Category, n: number): string 
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
 <rect width="800" height="600" fill="${color}"/>
 <circle cx="${180 + n * 140}" cy="${140 + n * 30}" r="${90 + n * 20}" fill="#fff" fill-opacity="0.12"/>
-<text x="400" y="290" font-size="140" text-anchor="middle">${CATEGORY_GLYPH[category]}</text>
+${svgIcon(CATEGORY_ICON_PATH[category], 400, 230, 150)}
 <text x="400" y="400" font-family="sans-serif" font-size="38" font-weight="700" fill="#fff" text-anchor="middle">${escapeXml(title)}</text>
 <text x="400" y="450" font-family="sans-serif" font-size="26" fill="#fff" fill-opacity="0.8" text-anchor="middle">foto ${n}/3</text>
 </svg>`;
@@ -54,7 +78,7 @@ export function mockBanner(): string {
 <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0057a8"/><stop offset="1" stop-color="#047857"/></linearGradient></defs>
 <rect width="1500" height="500" fill="url(#g)"/>
 <circle cx="1250" cy="120" r="220" fill="#fff" fill-opacity="0.08"/><circle cx="200" cy="460" r="260" fill="#fff" fill-opacity="0.06"/>
-<text x="750" y="290" font-size="120" text-anchor="middle">🤝 📦 💙</text>
+${BANNER_ICON_PATHS.map((d, i) => svgIcon(d, 570 + i * 180, 250, 120)).join('')}
 </svg>`;
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }

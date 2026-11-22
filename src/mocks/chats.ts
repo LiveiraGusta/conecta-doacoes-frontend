@@ -118,7 +118,7 @@ export function seedChats(ids: { donor: string; donor2: string; ngoActive: strin
 
 /** Respostas automáticas da outra parte no `dev:mock` (para ver o tempo real funcionando). */
 export const AUTO_REPLIES = [
-  'Combinado! 👍',
+  'Combinado!',
   'Perfeito, obrigado pelo aviso.',
   'Pode ser. Te aviso quando estiver saindo.',
   'Ótimo, até lá!',

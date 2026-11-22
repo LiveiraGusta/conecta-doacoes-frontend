@@ -1,3 +1,4 @@
+import ArrowForwardRounded from '@mui/icons-material/ArrowForwardRounded';
 import FlagRounded from '@mui/icons-material/FlagRounded';
 import Chip from '@mui/material/Chip';
 import Paper from '@mui/material/Paper';
@@ -75,8 +76,10 @@ function Parties({ report }: { report: ReportSummary }) {
       <span>
         {report.reporter?.name} <span className="text-fg-muted">({t(`report.roles.${report.reporter!.role}`)})</span>
       </span>
-      <span>
-        → {report.reported?.name} <span className="text-fg-muted">({t(`report.roles.${report.reported!.role}`)})</span>
+      <span className="flex items-center gap-1">
+        <ArrowForwardRounded fontSize="inherit" aria-hidden />
+        <span className="sr-only">{t('reports.reportedLabel')}</span>
+        {report.reported?.name} <span className="text-fg-muted">({t(`report.roles.${report.reported!.role}`)})</span>
       </span>
     </span>
   );

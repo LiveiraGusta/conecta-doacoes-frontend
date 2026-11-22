@@ -149,7 +149,7 @@ describe('Conversas (ONG)', () => {
     await user.click(screen.getByRole('button', { name: 'Confirmar recebimento' }));
     const dialog = await screen.findByRole('dialog', { name: 'Confirmar que recebeu Bicicleta aro 20?' });
     await user.click(within(dialog).getByRole('button', { name: 'Confirmar recebimento' }));
-    const celebration = await screen.findByRole('dialog', { name: 'Doação concluída! 🎉' });
+    const celebration = await screen.findByRole('dialog', { name: 'Doação concluída!' });
     expect(within(celebration).getByText('Bicicleta aro 20')).toBeInTheDocument();
     await user.click(within(celebration).getByRole('button', { name: 'Continuar' }));
     expect(

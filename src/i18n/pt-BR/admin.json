@@ -23,7 +23,7 @@
     "reviewNgo": "Analisar {{name}}",
     "loading": "Carregando ONGs…",
     "emptyTitle": "Nada por aqui",
-    "emptyPending": "Nenhuma ONG esperando análise. 🎉",
+    "emptyPending": "Nenhuma ONG esperando análise.",
     "emptyOther": "Nenhuma ONG nesta situação.",
     "errorTitle": "Não deu para carregar a fila",
     "loadMore": "Carregar mais",
@@ -71,6 +71,7 @@
     "tabs": "Filtrar denúncias",
     "kindFilter": "Filtrar por tipo",
     "kindAll": "Todas",
+    "reportedLabel": "Denunciada:",
     "kind": {
       "CHAT": "Negociação",
       "ITEM": "Anúncio"
@@ -92,13 +93,13 @@
       "date": "Data",
       "reason": "Motivo",
       "item": "Item",
-      "parties": "Quem denunciou → denunciada",
+      "parties": "Quem denunciou e quem foi denunciada",
       "actions": "Ações"
     },
     "open": "Ver",
     "openReport": "Ver denúncia sobre {{title}}",
     "loading": "Carregando denúncias…",
-    "emptyOpen": "Nenhuma denúncia aberta. 🎉",
+    "emptyOpen": "Nenhuma denúncia aberta.",
     "emptyResolved": "Nenhuma denúncia resolvida ainda.",
     "errorTitle": "Não deu para carregar as denúncias",
     "loadMore": "Carregar mais"
@@ -132,7 +133,7 @@
       "selected": "ONG escolhida",
       "cancelled": "Negociação cancelada",
       "donated": "Doação concluída",
-      "other": "{{from}} → {{to}}"
+      "other": "De {{from}} para {{to}}"
     },
     "by": "por {{name}}",
     "eventReason": "Motivo: {{reason}}",
